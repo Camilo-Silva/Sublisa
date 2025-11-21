@@ -11,6 +11,21 @@
         class="search-input"
       />
     </div>
+
+    <!-- Filtros por categoría -->
+    <div class="filtros-container">
+      <div class="filtros-chips">
+        @for (categoria of categorias(); track categoria) {
+          <button
+            class="chip-categoria"
+            [class.active]="categoriaSeleccionada() === categoria"
+            (click)="filtrarPorCategoria(categoria)"
+          >
+            {{ categoria }}
+          </button>
+        }
+      </div>
+    </div>
   </div>
 
   @if (loading()) {
@@ -31,7 +46,7 @@
     </div>
   } @else {
     <div class="productos-grid">
-      @for (producto of productos(); track producto.id) {
+      @for (producto of productosFiltrados(); track producto.id) {
         <app-producto-card [producto]="producto" />
       }
     </div>

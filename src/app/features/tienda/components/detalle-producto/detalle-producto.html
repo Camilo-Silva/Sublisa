@@ -17,8 +17,9 @@
 
     <div class="producto-detalle">
       <div class="galeria-section">
-        <div class="imagen-principal">
+        <div class="imagen-principal" (click)="abrirLightbox()">
           <img [src]="imagenSeleccionada()" [alt]="prod.nombre" />
+          <div class="zoom-hint">🔍 Click para ampliar</div>
           @if (prod.stock === 0) {
             <div class="sin-stock-overlay">
               <span>Sin Stock</span>
@@ -112,5 +113,22 @@
         }
       </div>
     </div>
+
+    <!-- Lightbox Modal -->
+    @if (lightboxAbierto()) {
+      <div class="lightbox-overlay" (click)="cerrarLightbox()">
+        <div class="lightbox-content" (click)="$event.stopPropagation()">
+          <button class="lightbox-close" (click)="cerrarLightbox()">✕</button>
+          <img [src]="imagenSeleccionada()" [alt]="prod.nombre" />
+          
+          @if (prod.imagenes && prod.imagenes.length > 1) {
+            <div class="lightbox-navigation">
+              <button class="nav-btn prev" (click)="imagenAnterior()">‹</button>
+              <button class="nav-btn next" (click)="imagenSiguiente()">›</button>
+            </div>
+          }
+        </div>
+      </div>
+    }
   }
 </div>

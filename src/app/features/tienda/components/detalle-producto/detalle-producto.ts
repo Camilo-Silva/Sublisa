@@ -17,6 +17,8 @@ export class DetalleProducto implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
   cantidad = signal(1);
+  lightboxAbierto = signal(false);
+  indiceImagenActual = signal(0);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -89,5 +91,48 @@ export class DetalleProducto implements OnInit {
   get puedeAgregar(): boolean {
     const prod = this.producto();
     return prod !== null && prod.stock >= this.cantidad();
+  }
+
+  // Métodos del Lightbox
+  abrirLightbox() {
+    const prod = this.producto();
+    if (prod?.imagenes) {
+      this.indiceImagenActual.set(
+        prod.imagenes.findIndex(img => img.url === this.imagenSeleccionada())
+      );
+    }
+    this.lightboxAbierto.set(true);
+    document.body.style.overflow = 'hidden'; // Bloquear scroll
+  }
+
+  cerrarLightbox() {
+    this.lightboxAbierto.set(false);
+    document.body.style.overflow = 'auto'; // Restaurar scroll
+  }
+
+  imagenAnterior() {
+    const prod = this.producto();
+    if (!prod?.imagenes) return;
+
+    let nuevoIndice = this.indiceImagenActual() - 1;
+    if (nuevoIndice < 0) {
+      nuevoIndice = prod.imagenes.length - 1;
+    }
+    
+    this.indiceImagenActual.set(nuevoIndice);
+    this.imagenSeleccionada.set(prod.imagenes[nuevoIndice].url);
+  }
+
+  imagenSiguiente() {
+    const prod = this.producto();
+    if (!prod?.imagenes) return;
+
+    let nuevoIndice = this.indiceImagenActual() + 1;
+    if (nuevoIndice >= prod.imagenes.length) {
+      nuevoIndice = 0;
+    }
+    
+    this.indiceImagenActual.set(nuevoIndice);
+    this.imagenSeleccionada.set(prod.imagenes[nuevoIndice].url);
   }
 }

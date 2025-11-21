@@ -23,6 +23,44 @@ export class PedidosService {
   }
 
   /**
+   * Valida que hay stock suficiente para todos los productos
+   */
+  private async validarStock(items: ItemCarrito[]): Promise<void> {
+    const productosIds = items.map(item => item.producto.id);
+
+    // Obtener stock actual de todos los productos
+    const { data: productos, error } = await this.supabase.getClient()
+      .from('productos')
+      .select('id, nombre, stock')
+      .in('id', productosIds);
+
+    if (error) throw error;
+
+    // Verificar stock de cada item
+    const productosInsuficientes: string[] = [];
+
+    for (const item of items) {
+      const producto = productos?.find(p => p.id === item.producto.id);
+      
+      if (!producto) {
+        throw new Error(`Producto ${item.producto.nombre} no encontrado`);
+      }
+
+      if (producto.stock < item.cantidad) {
+        productosInsuficientes.push(
+          `${producto.nombre} (disponible: ${producto.stock}, solicitado: ${item.cantidad})`
+        );
+      }
+    }
+
+    if (productosInsuficientes.length > 0) {
+      throw new Error(
+        `Stock insuficiente para:\n${productosInsuficientes.join('\n')}`
+      );
+    }
+  }
+
+  /**
    * Crea un nuevo pedido con todos los detalles
    */
   async crearPedido(
@@ -31,7 +69,10 @@ export class PedidosService {
     notas?: string
   ): Promise<Pedido> {
     try {
-      // 1. Crear el cliente
+      // 1. Validar stock disponible
+      await this.validarStock(items);
+
+      // 2. Crear el cliente
       const { data: clienteData, error: clienteError } = await this.supabase.getClient()
         .from('clientes')
         .insert(cliente)
@@ -40,7 +81,7 @@ export class PedidosService {
 
       if (clienteError) throw clienteError;
 
-      // 2. Calcular totales
+      // 3. Calcular totales
       const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
       const total = subtotal; // Aquí podrías agregar impuestos o descuentos
 

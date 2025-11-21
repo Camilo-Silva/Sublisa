@@ -23,7 +23,7 @@
 
 .search-bar {
   max-width: 500px;
-  margin: 0 auto;
+  margin: 0 auto 1.5rem;
 
   .search-input {
     width: 100%;
@@ -36,6 +36,45 @@
     &:focus {
       outline: none;
       border-color: #007bff;
+    }
+  }
+}
+
+.filtros-container {
+  margin-top: 1.5rem;
+  
+  .filtros-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    align-items: center;
+
+    .chip-categoria {
+      padding: 0.5rem 1.25rem;
+      border: 2px solid #ddd;
+      background: white;
+      color: #666;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: capitalize;
+
+      &:hover {
+        border-color: #E91E63;
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1) 0%, rgba(0, 188, 212, 0.1) 100%);
+        color: #E91E63;
+        transform: translateY(-2px);
+      }
+
+      &.active {
+        background: linear-gradient(135deg, #E91E63 0%, #00BCD4 100%);
+        border-color: transparent;
+        color: white;
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+      }
     }
   }
 }
