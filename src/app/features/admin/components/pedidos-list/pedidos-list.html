@@ -62,6 +62,12 @@
         <button (click)="limpiarFiltros()" class="btn-limpiar">
           🔄 Limpiar Filtros
         </button>
+        <button (click)="exportarAExcel()" class="btn-exportar" title="Exportar resumen de pedidos">
+          📥 Exportar Excel
+        </button>
+        <button (click)="exportarAExcelDetallado()" class="btn-exportar-detallado" title="Exportar informe detallado con totales">
+          📊 Exportar Detallado
+        </button>
       </div>
     </div>
   </div>
@@ -95,6 +101,15 @@
       </div>
     </div>
 
+    <!-- Info de paginación -->
+    <div class="resultados-info">
+      <p>
+        Mostrando {{ (paginaActual() - 1) * itemsPorPagina() + 1 }} - 
+        {{ Math.min(paginaActual() * itemsPorPagina(), pedidosFiltrados().length) }} 
+        de {{ pedidosFiltrados().length }} pedidos
+      </p>
+    </div>
+
     <!-- Tabla de pedidos -->
     <div class="pedidos-table-container">
       <table class="pedidos-table">
@@ -110,7 +125,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (pedido of pedidosFiltrados(); track pedido.id) {
+          @for (pedido of pedidosPaginados(); track pedido.id) {
             <tr>
               <td class="pedido-numero">#{{ pedido.numero_pedido }}</td>
               <td>
@@ -158,5 +173,42 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Controles de paginación -->
+    @if (totalPaginas() > 1) {
+      <div class="paginacion-container">
+        <button
+          class="btn-paginacion"
+          [disabled]="paginaActual() === 1"
+          (click)="paginaAnterior()"
+        >
+          ← Anterior
+        </button>
+
+        <div class="paginas-numeros">
+          @for (pagina of getPaginasVisibles(); track $index) {
+            @if (pagina === -1) {
+              <span class="pagina-separador">...</span>
+            } @else {
+              <button
+                class="btn-pagina"
+                [class.active]="pagina === paginaActual()"
+                (click)="irAPagina(pagina)"
+              >
+                {{ pagina }}
+              </button>
+            }
+          }
+        </div>
+
+        <button
+          class="btn-paginacion"
+          [disabled]="paginaActual() === totalPaginas()"
+          (click)="paginaSiguiente()"
+        >
+          Siguiente →
+        </button>
+      </div>
+    }
   }
 </div>

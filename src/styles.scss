@@ -5,23 +5,23 @@
   --color-cyan: #00BCD4;
   --color-amarillo: #FFC107;
   --color-negro: #212121;
-  
+
   /* Variantes */
   --color-magenta-dark: #C2185B;
   --color-cyan-dark: #0097A7;
   --color-amarillo-dark: #FFA000;
-  
+
   /* Gradientes vibrantes */
   --gradient-principal: linear-gradient(135deg, var(--color-magenta) 0%, var(--color-cyan) 100%);
   --gradient-secundario: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-amarillo) 100%);
   --gradient-accent: linear-gradient(135deg, var(--color-amarillo) 0%, var(--color-magenta) 100%);
-  
+
   /* Colores neutrales */
   --color-gris-claro: #F5F5F5;
   --color-gris-medio: #9E9E9E;
   --color-gris-oscuro: #424242;
   --color-blanco: #FFFFFF;
-  
+
   /* Sombras vibrantes */
   --shadow-magenta: 0 4px 20px rgba(233, 30, 99, 0.3);
   --shadow-cyan: 0 4px 20px rgba(0, 188, 212, 0.3);

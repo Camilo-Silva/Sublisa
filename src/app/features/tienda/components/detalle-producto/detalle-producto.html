@@ -120,7 +120,7 @@
         <div class="lightbox-content" (click)="$event.stopPropagation()">
           <button class="lightbox-close" (click)="cerrarLightbox()">✕</button>
           <img [src]="imagenSeleccionada()" [alt]="prod.nombre" />
-          
+
           @if (prod.imagenes && prod.imagenes.length > 1) {
             <div class="lightbox-navigation">
               <button class="nav-btn prev" (click)="imagenAnterior()">‹</button>

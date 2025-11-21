@@ -25,6 +25,15 @@ export class PedidosList implements OnInit {
   fechaDesde = signal('');
   fechaHasta = signal('');
 
+  // Paginación
+  paginaActual = signal(1);
+  itemsPorPagina = signal(20);
+  totalPaginas = signal(1);
+  pedidosPaginados = signal<Pedido[]>([]);
+
+  // Exponer Math para el template
+  Math = Math;
+
   estados: EstadoPedido[] = [
     'TODOS',
     'PENDIENTE_CONTACTO',
@@ -92,6 +101,8 @@ export class PedidosList implements OnInit {
     }
 
     this.pedidosFiltrados.set(filtrados);
+    this.paginaActual.set(1); // Resetear a página 1 al filtrar
+    this.calcularPaginacion();
   }
 
   limpiarFiltros() {
@@ -100,6 +111,78 @@ export class PedidosList implements OnInit {
     this.fechaDesde.set('');
     this.fechaHasta.set('');
     this.aplicarFiltros();
+  }
+
+  private calcularPaginacion() {
+    const totalItems = this.pedidosFiltrados().length;
+    const paginas = Math.ceil(totalItems / this.itemsPorPagina());
+    this.totalPaginas.set(paginas || 1);
+
+    const inicio = (this.paginaActual() - 1) * this.itemsPorPagina();
+    const fin = inicio + this.itemsPorPagina();
+    const paginados = this.pedidosFiltrados().slice(inicio, fin);
+    this.pedidosPaginados.set(paginados);
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual() > 1) {
+      this.paginaActual.update(p => p - 1);
+      this.calcularPaginacion();
+      this.scrollToTop();
+    }
+  }
+
+  paginaSiguiente() {
+    if (this.paginaActual() < this.totalPaginas()) {
+      this.paginaActual.update(p => p + 1);
+      this.calcularPaginacion();
+      this.scrollToTop();
+    }
+  }
+
+  irAPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.totalPaginas()) {
+      this.paginaActual.set(pagina);
+      this.calcularPaginacion();
+      this.scrollToTop();
+    }
+  }
+
+  getPaginasVisibles(): number[] {
+    const total = this.totalPaginas();
+    const actual = this.paginaActual();
+    const paginas: number[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+      
+      if (actual > 3) {
+        paginas.push(-1);
+      }
+
+      const inicio = Math.max(2, actual - 1);
+      const fin = Math.min(total - 1, actual + 1);
+
+      for (let i = inicio; i <= fin; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push(-1);
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
+  }
+
+  private scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   verDetalle(pedidoId: string) {
@@ -133,5 +216,92 @@ export class PedidosList implements OnInit {
 
   getTotalPedidos(): number {
     return this.pedidosFiltrados().reduce((sum, p) => sum + p.total, 0);
+  }
+
+  exportarAExcel() {
+    const pedidos = this.pedidosFiltrados();
+    
+    if (pedidos.length === 0) {
+      alert('No hay pedidos para exportar');
+      return;
+    }
+
+    // Preparar datos para CSV
+    const headers = ['Número', 'Fecha', 'Cliente', 'Teléfono', 'Estado', 'Total'];
+    const rows = pedidos.map(p => [
+      p.numero_pedido,
+      p.created_at ? new Date(p.created_at).toLocaleString('es-AR') : '',
+      p.cliente?.nombre || '',
+      p.cliente?.telefono || '',
+      this.getEstadoTexto(p.estado),
+      `$${p.total.toFixed(2)}`
+    ]);
+
+    // Construir CSV
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Crear y descargar archivo
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    const fechaHoy = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `pedidos_${fechaHoy}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  exportarAExcelDetallado() {
+    const pedidos = this.pedidosFiltrados();
+    
+    if (pedidos.length === 0) {
+      alert('No hay pedidos para exportar');
+      return;
+    }
+
+    // CSV con formato más detallado
+    let csvContent = '\ufeff'; // BOM para Excel
+    csvContent += 'REPORTE DE PEDIDOS - SUBLISA\n';
+    csvContent += `Fecha de exportación: ${new Date().toLocaleString('es-AR')}\n`;
+    csvContent += `Total de pedidos: ${pedidos.length}\n`;
+    csvContent += `Monto total: $${this.getTotalPedidos().toFixed(2)}\n\n`;
+    
+    csvContent += 'Número,Fecha,Cliente,Teléfono,Email,Estado,Subtotal,Total,Notas\n';
+    
+    for (const p of pedidos) {
+      const row = [
+        p.numero_pedido,
+        p.created_at ? new Date(p.created_at).toLocaleString('es-AR') : '',
+        p.cliente?.nombre || '',
+        p.cliente?.telefono || '',
+        p.cliente?.email || '',
+        this.getEstadoTexto(p.estado),
+        p.subtotal.toFixed(2),
+        p.total.toFixed(2),
+        (p.notas || '').replaceAll(',', ';')
+      ];
+      csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
+    }
+
+    // Descargar
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    const fechaHoy = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `pedidos_detallado_${fechaHoy}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 }

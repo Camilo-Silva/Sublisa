@@ -45,10 +45,56 @@
       }
     </div>
   } @else {
+    <!-- Info de resultados -->
+    <div class="resultados-info">
+      <p>
+        Mostrando {{ (paginaActual() - 1) * itemsPorPagina() + 1 }} - 
+        {{ Math.min(paginaActual() * itemsPorPagina(), productosFiltrados().length) }} 
+        de {{ productosFiltrados().length }} productos
+      </p>
+    </div>
+
     <div class="productos-grid">
-      @for (producto of productosFiltrados(); track producto.id) {
+      @for (producto of productosPaginados(); track producto.id) {
         <app-producto-card [producto]="producto" />
       }
     </div>
+
+    <!-- Controles de paginación -->
+    @if (totalPaginas() > 1) {
+      <div class="paginacion-container">
+        <button
+          class="btn-paginacion"
+          [disabled]="paginaActual() === 1"
+          (click)="paginaAnterior()"
+        >
+          ← Anterior
+        </button>
+
+        <div class="paginas-numeros">
+          @for (pagina of getPaginasVisibles(); track $index) {
+            @if (pagina === -1) {
+              <span class="pagina-separador">...</span>
+            } @else {
+              <button
+                class="btn-pagina"
+                [class.active]="pagina === paginaActual()"
+                (click)="irAPagina(pagina)"
+              >
+                {{ pagina }}
+              </button>
+            }
+          }
+        </div>
+
+        <button
+          class="btn-paginacion"
+          [disabled]="paginaActual() === totalPaginas()"
+          (click)="paginaSiguiente()"
+        >
+          Siguiente →
+        </button>
+      </div>
+    }
   }
 </div>

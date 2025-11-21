@@ -6,7 +6,7 @@ import { Pedido, DetallePedido, Cliente, ItemCarrito } from '../models';
   providedIn: 'root'
 })
 export class PedidosService {
-  
+
   constructor(private readonly supabase: SupabaseService) {}
 
   /**
@@ -18,7 +18,7 @@ export class PedidosService {
     const month = String(fecha.getMonth() + 1).padStart(2, '0');
     const day = String(fecha.getDate()).padStart(2, '0');
     const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-    
+
     return `PED-${year}${month}${day}-${random}`;
   }
 
@@ -41,7 +41,7 @@ export class PedidosService {
 
     for (const item of items) {
       const producto = productos?.find(p => p.id === item.producto.id);
-      
+
       if (!producto) {
         throw new Error(`Producto ${item.producto.nombre} no encontrado`);
       }
@@ -87,7 +87,7 @@ export class PedidosService {
 
       // 3. Crear el pedido
       const numeroPedido = this.generateNumeroPedido();
-      
+
       const { data: pedidoData, error: pedidoError } = await this.supabase.getClient()
         .from('pedidos')
         .insert({
@@ -154,14 +154,14 @@ export class PedidosService {
       const emailVendedor = config?.valor || 'camilosilva.0301@gmail.com';
 
       // Construir el cuerpo del email
-      const productosTexto = items.map(item => 
+      const productosTexto = items.map(item =>
         `• ${item.producto.nombre} x${item.cantidad} - $${item.subtotal.toFixed(2)}`
       ).join('\n');
 
       const fechaPedido = new Date().toLocaleString('es-AR');
 
       const asunto = `🛒 Nuevo Pedido #${numeroPedido} - Sublisa`;
-      
+
       const mensaje = `
 ¡Nuevo Pedido Recibido!
 
@@ -199,7 +199,7 @@ Este es un correo automático del sistema Sublisa
       // Usar EmailJS (servicio gratuito) o FormSubmit
       // Opción 1: Usar fetch para enviar a un webhook
       const webhookUrl = 'https://formsubmit.co/ajax/' + emailVendedor;
-      
+
       await fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -238,7 +238,7 @@ Este es un correo automático del sistema Sublisa
       `)
       .eq('id', id)
       .single();
-    
+
     if (error) throw error;
     return data;
   }
@@ -264,7 +264,7 @@ Este es un correo automático del sistema Sublisa
     }
 
     const { data, error } = await query;
-    
+
     if (error) throw error;
     return data || [];
   }
@@ -275,14 +275,14 @@ Este es un correo automático del sistema Sublisa
   async actualizarEstadoPedido(id: string, estado: string): Promise<Pedido> {
     const { data, error } = await this.supabase.getClient()
       .from('pedidos')
-      .update({ 
+      .update({
         estado,
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   }
@@ -294,7 +294,7 @@ Este es un correo automático del sistema Sublisa
     const { data, error } = await this.supabase.getClient()
       .from('pedidos')
       .select('estado, total');
-    
+
     if (error) throw error;
 
     const stats = {

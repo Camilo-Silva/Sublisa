@@ -18,6 +18,15 @@ export class Catalogo implements OnInit {
   busqueda = signal('');
   categoriaSeleccionada = signal<string>('TODAS');
   categorias = signal<string[]>(['TODAS']);
+  
+  // Paginación
+  paginaActual = signal(1);
+  itemsPorPagina = signal(12);
+  totalPaginas = signal(1);
+  productosPaginados = signal<Producto[]>([]);
+
+  // Exponer Math para el template
+  Math = Math;
 
   constructor(private readonly productosService: ProductosService) {}
 
@@ -32,10 +41,13 @@ export class Catalogo implements OnInit {
       const data = await this.productosService.getProductos();
       this.productos.set(data);
       this.productosFiltrados.set(data);
-      
+
       // Extraer categorías únicas
       const categoriasUnicas = ['TODAS', ...new Set(data.map(p => p.categoria).filter(Boolean))];
       this.categorias.set(categoriasUnicas as string[]);
+
+      // Calcular paginación inicial
+      this.calcularPaginacion();
     } catch (err) {
       console.error('Error al cargar productos:', err);
       this.error.set('Error al cargar los productos. Por favor, intenta de nuevo.');
@@ -81,5 +93,79 @@ export class Catalogo implements OnInit {
     }
 
     this.productosFiltrados.set(filtrados);
+    this.paginaActual.set(1); // Resetear a página 1 al filtrar
+    this.calcularPaginacion();
+  }
+
+  private calcularPaginacion() {
+    const totalItems = this.productosFiltrados().length;
+    const paginas = Math.ceil(totalItems / this.itemsPorPagina());
+    this.totalPaginas.set(paginas || 1);
+
+    const inicio = (this.paginaActual() - 1) * this.itemsPorPagina();
+    const fin = inicio + this.itemsPorPagina();
+    const paginados = this.productosFiltrados().slice(inicio, fin);
+    this.productosPaginados.set(paginados);
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual() > 1) {
+      this.paginaActual.update(p => p - 1);
+      this.calcularPaginacion();
+      this.scrollToTop();
+    }
+  }
+
+  paginaSiguiente() {
+    if (this.paginaActual() < this.totalPaginas()) {
+      this.paginaActual.update(p => p + 1);
+      this.calcularPaginacion();
+      this.scrollToTop();
+    }
+  }
+
+  irAPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.totalPaginas()) {
+      this.paginaActual.set(pagina);
+      this.calcularPaginacion();
+      this.scrollToTop();
+    }
+  }
+
+  getPaginasVisibles(): number[] {
+    const total = this.totalPaginas();
+    const actual = this.paginaActual();
+    const paginas: number[] = [];
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        paginas.push(i);
+      }
+    } else {
+      paginas.push(1);
+      
+      if (actual > 3) {
+        paginas.push(-1); // Indicador de "..."
+      }
+
+      const inicio = Math.max(2, actual - 1);
+      const fin = Math.min(total - 1, actual + 1);
+
+      for (let i = inicio; i <= fin; i++) {
+        paginas.push(i);
+      }
+
+      if (actual < total - 2) {
+        paginas.push(-1); // Indicador de "..."
+      }
+
+      paginas.push(total);
+    }
+
+    return paginas;
+  }
+
+  private scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

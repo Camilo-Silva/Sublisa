@@ -118,7 +118,7 @@ export class DetalleProducto implements OnInit {
     if (nuevoIndice < 0) {
       nuevoIndice = prod.imagenes.length - 1;
     }
-    
+
     this.indiceImagenActual.set(nuevoIndice);
     this.imagenSeleccionada.set(prod.imagenes[nuevoIndice].url);
   }
@@ -131,7 +131,7 @@ export class DetalleProducto implements OnInit {
     if (nuevoIndice >= prod.imagenes.length) {
       nuevoIndice = 0;
     }
-    
+
     this.indiceImagenActual.set(nuevoIndice);
     this.imagenSeleccionada.set(prod.imagenes[nuevoIndice].url);
   }
