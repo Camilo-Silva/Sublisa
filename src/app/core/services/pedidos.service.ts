@@ -273,18 +273,92 @@ Este es un correo automático del sistema Sublisa
    * Actualiza el estado de un pedido
    */
   async actualizarEstadoPedido(id: string, estado: string): Promise<Pedido> {
-    const { data, error } = await this.supabase.getClient()
-      .from('pedidos')
-      .update({
-        estado,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select()
-      .single();
+    try {
+      // Si el estado cambia a CONFIRMADO, descontar stock
+      if (estado === 'CONFIRMADO') {
+        // Obtener el pedido actual con sus detalles
+        const pedidoActual = await this.getPedidoById(id);
 
-    if (error) throw error;
-    return data;
+        // Solo descontar si el pedido no estaba confirmado previamente
+        if (pedidoActual && pedidoActual.estado !== 'CONFIRMADO') {
+          await this.descontarStockPedido(id);
+        }
+      }
+
+      // Actualizar el estado del pedido
+      const { data, error } = await this.supabase.getClient()
+        .from('pedidos')
+        .update({
+          estado,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error al actualizar estado del pedido:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Descuenta el stock de los productos en un pedido confirmado
+   */
+  private async descontarStockPedido(pedidoId: string): Promise<void> {
+    try {
+      // Obtener detalles del pedido
+      const { data: detalles, error: detallesError } = await this.supabase.getClient()
+        .from('detalle_pedido')
+        .select('producto_id, cantidad')
+        .eq('pedido_id', pedidoId);
+
+      if (detallesError) throw detallesError;
+
+      if (!detalles || detalles.length === 0) {
+        throw new Error('No se encontraron detalles del pedido');
+      }
+
+      // Descontar stock de cada producto
+      for (const detalle of detalles) {
+        const { data: producto, error: productoError } = await this.supabase.getClient()
+          .from('productos')
+          .select('id, nombre, stock')
+          .eq('id', detalle.producto_id)
+          .single();
+
+        if (productoError) throw productoError;
+
+        if (!producto) {
+          throw new Error(`Producto con ID ${detalle.producto_id} no encontrado`);
+        }
+
+        // Verificar que hay stock suficiente
+        if (producto.stock < detalle.cantidad) {
+          throw new Error(
+            `Stock insuficiente para ${producto.nombre}. Disponible: ${producto.stock}, Requerido: ${detalle.cantidad}`
+          );
+        }
+
+        // Actualizar stock
+        const nuevoStock = producto.stock - detalle.cantidad;
+        const { error: updateError } = await this.supabase.getClient()
+          .from('productos')
+          .update({ stock: nuevoStock })
+          .eq('id', producto.id);
+
+        if (updateError) throw updateError;
+
+        console.log(`Stock actualizado: ${producto.nombre} - Stock anterior: ${producto.stock}, Nuevo stock: ${nuevoStock}`);
+      }
+
+      console.log(`✅ Stock descontado exitosamente para el pedido ${pedidoId}`);
+    } catch (error) {
+      console.error('Error al descontar stock:', error);
+      throw error;
+    }
   }
 
   /**

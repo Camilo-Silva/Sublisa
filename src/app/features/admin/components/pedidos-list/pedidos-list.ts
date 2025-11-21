@@ -159,7 +159,7 @@ export class PedidosList implements OnInit {
       }
     } else {
       paginas.push(1);
-      
+
       if (actual > 3) {
         paginas.push(-1);
       }
@@ -220,7 +220,7 @@ export class PedidosList implements OnInit {
 
   exportarAExcel() {
     const pedidos = this.pedidosFiltrados();
-    
+
     if (pedidos.length === 0) {
       alert('No hay pedidos para exportar');
       return;
@@ -247,12 +247,12 @@ export class PedidosList implements OnInit {
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     const fechaHoy = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
     link.setAttribute('download', `pedidos_${fechaHoy}.csv`);
     link.style.visibility = 'hidden';
-    
+
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -260,7 +260,7 @@ export class PedidosList implements OnInit {
 
   exportarAExcelDetallado() {
     const pedidos = this.pedidosFiltrados();
-    
+
     if (pedidos.length === 0) {
       alert('No hay pedidos para exportar');
       return;
@@ -272,9 +272,9 @@ export class PedidosList implements OnInit {
     csvContent += `Fecha de exportación: ${new Date().toLocaleString('es-AR')}\n`;
     csvContent += `Total de pedidos: ${pedidos.length}\n`;
     csvContent += `Monto total: $${this.getTotalPedidos().toFixed(2)}\n\n`;
-    
+
     csvContent += 'Número,Fecha,Cliente,Teléfono,Email,Estado,Subtotal,Total,Notas\n';
-    
+
     for (const p of pedidos) {
       const row = [
         p.numero_pedido,
@@ -294,12 +294,12 @@ export class PedidosList implements OnInit {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     const fechaHoy = new Date().toISOString().split('T')[0];
     link.setAttribute('href', url);
     link.setAttribute('download', `pedidos_detallado_${fechaHoy}.csv`);
     link.style.visibility = 'hidden';
-    
+
     document.body.appendChild(link);
     link.click();
     link.remove();

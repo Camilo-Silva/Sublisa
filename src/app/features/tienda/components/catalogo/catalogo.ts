@@ -18,7 +18,7 @@ export class Catalogo implements OnInit {
   busqueda = signal('');
   categoriaSeleccionada = signal<string>('TODAS');
   categorias = signal<string[]>(['TODAS']);
-  
+
   // Paginación
   paginaActual = signal(1);
   itemsPorPagina = signal(12);
@@ -143,7 +143,7 @@ export class Catalogo implements OnInit {
       }
     } else {
       paginas.push(1);
-      
+
       if (actual > 3) {
         paginas.push(-1); // Indicador de "..."
       }

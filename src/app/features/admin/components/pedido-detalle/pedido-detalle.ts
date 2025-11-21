@@ -67,20 +67,42 @@ export class PedidoDetalle implements OnInit {
     const pedido = this.pedido();
     if (!pedido?.id) return;
 
-    if (!confirm(`¿Cambiar estado del pedido a ${this.getEstadoTexto(this.nuevoEstado())}?`)) {
+    const estadoActual = pedido.estado;
+    const nuevoEstadoValor = this.nuevoEstado();
+
+    // Mensaje especial si se va a confirmar el pedido
+    let mensajeConfirmacion = `¿Cambiar estado del pedido a ${this.getEstadoTexto(nuevoEstadoValor)}?`;
+
+    if (nuevoEstadoValor === 'CONFIRMADO' && estadoActual !== 'CONFIRMADO') {
+      mensajeConfirmacion = `⚠️ IMPORTANTE: Al confirmar este pedido se descontará automáticamente el stock de los productos.\n\n¿Desea confirmar el pedido #${pedido.numero_pedido}?`;
+    }
+
+    if (!confirm(mensajeConfirmacion)) {
       return;
     }
 
     try {
       this.actualizandoEstado.set(true);
-      await this.pedidosService.actualizarEstadoPedido(pedido.id, this.nuevoEstado());
+      await this.pedidosService.actualizarEstadoPedido(pedido.id, nuevoEstadoValor);
 
       // Recargar pedido
       await this.cargarPedido(pedido.id);
-      alert('✅ Estado actualizado exitosamente');
-    } catch (err) {
+
+      // Mensaje específico según el cambio de estado
+      if (nuevoEstadoValor === 'CONFIRMADO' && estadoActual !== 'CONFIRMADO') {
+        alert('✅ Pedido confirmado exitosamente\n\n📦 El stock de los productos ha sido descontado automáticamente.');
+      } else {
+        alert('✅ Estado actualizado exitosamente');
+      }
+    } catch (err: unknown) {
       console.error('Error al cambiar estado:', err);
-      alert('❌ Error al cambiar el estado');
+      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
+
+      if (errorMessage.includes('Stock insuficiente')) {
+        alert(`❌ Error: ${errorMessage}\n\nNo se puede confirmar el pedido porque no hay stock suficiente.`);
+      } else {
+        alert(`❌ Error al cambiar el estado: ${errorMessage}`);
+      }
     } finally {
       this.actualizandoEstado.set(false);
     }
