@@ -1,0 +1,117 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h1>Finalizar Pedido</h1>
+  </div>
+
+  <div class="checkout-contenido">
+    <div class="formulario-section">
+      <h2>Datos de Contacto</h2>
+
+      @if (error) {
+        <div class="error-mensaje">
+          {{ error }}
+        </div>
+      }
+
+      <form (ngSubmit)="finalizarPedido()" #checkoutForm="ngForm">
+        <div class="form-group">
+          <label for="nombre">Nombre Completo *</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            [(ngModel)]="cliente.nombre"
+            required
+            placeholder="Ej: Juan Pérez"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono / WhatsApp *</label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            [(ngModel)]="cliente.telefono"
+            required
+            placeholder="+5491138824544"
+            class="form-control"
+          />
+          <small class="form-hint">📱 Formato: +54 9 11 XXXX XXXX (Buenos Aires) o +54 9 XXX XXX XXXX (Interior)</small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email (opcional)</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="cliente.email"
+            placeholder="tu@email.com"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="notas">Notas adicionales (opcional)</label>
+          <textarea
+            id="notas"
+            name="notas"
+            [(ngModel)]="notas"
+            rows="4"
+            placeholder="Agrega cualquier comentario o instrucción especial..."
+            class="form-control"
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <a routerLink="/carrito" class="btn-volver">Volver al Carrito</a>
+          <button
+            type="submit"
+            [disabled]="procesando || !checkoutForm.valid"
+            class="btn-confirmar"
+          >
+            @if (procesando) {
+              Procesando...
+            } @else {
+              Confirmar Pedido
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="resumen-section">
+      <h2>Resumen del Pedido</h2>
+
+      <div class="items-resumen">
+        @for (item of carritoService.items(); track item.producto.id) {
+          <div class="item-resumen">
+            <div class="item-info">
+              <span class="item-nombre">{{ item.producto.nombre }}</span>
+              <span class="item-cantidad">x{{ item.cantidad }}</span>
+            </div>
+            <span class="item-precio">${{ item.subtotal | number:'1.2-2' }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="totales">
+        <div class="total-linea">
+          <span>Subtotal</span>
+          <span>${{ carritoService.subtotal() | number:'1.2-2' }}</span>
+        </div>
+        <div class="total-linea total">
+          <span>Total</span>
+          <span>${{ carritoService.subtotal() | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>ℹ️ Información Importante</h3>
+        <p>Una vez confirmado tu pedido, nuestro equipo lo revisará y te contactará por WhatsApp para coordinar el pago y la entrega.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,162 @@
+<div class="pedido-detalle-container">
+  <div class="page-header no-print">
+    <h1>📝 Detalle del Pedido</h1>
+    <div class="header-actions">
+      <button (click)="imprimirPedido()" class="btn-imprimir">
+        🖨️ Imprimir
+      </button>
+      <a routerLink="/admin/pedidos" class="btn-volver">
+        ← Volver
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando pedido...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <a routerLink="/admin/pedidos" class="btn-volver-lista">Volver a la lista</a>
+    </div>
+  } @else if (pedido(); as ped) {
+    <!-- Info principal -->
+    <div class="info-principal">
+      <div class="info-card">
+        <h2>Información del Pedido</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Número:</span>
+            <span class="value numero">#{{ ped.numero_pedido }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Fecha:</span>
+            <span class="value">{{ ped.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Estado:</span>
+            <span
+              class="estado-badge"
+              [ngClass]="getEstadoClass(ped.estado)"
+            >
+              {{ getEstadoTexto(ped.estado) }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="label">Total:</span>
+            <span class="value total">${{ ped.total | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h2>👤 Cliente</h2>
+        <div class="info-grid">
+          <div class="info-item full-width">
+            <span class="label">Nombre:</span>
+            <span class="value">{{ ped.cliente?.nombre || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Teléfono:</span>
+            <span class="value">{{ ped.cliente?.telefono || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ ped.cliente?.email || 'N/A' }}</span>
+          </div>
+        </div>
+        <button
+          (click)="abrirWhatsApp()"
+          class="btn-whatsapp no-print"
+          [disabled]="!ped.cliente?.telefono"
+        >
+          📱 Contactar por WhatsApp
+        </button>
+      </div>
+    </div>
+
+    <!-- Detalles del pedido -->
+    <div class="detalles-section">
+      <h2>📦 Productos del Pedido</h2>
+      <div class="detalles-table-container">
+        <table class="detalles-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (ped.detalles && ped.detalles.length > 0) {
+              @for (detalle of ped.detalles; track detalle.id) {
+                <tr>
+                  <td>
+                    <strong>{{ detalle.producto?.nombre || 'Producto' }}</strong>
+                    @if (detalle.producto?.sku) {
+                      <small class="sku">SKU: {{ detalle.producto?.sku }}</small>
+                    }
+                  </td>
+                  <td class="cantidad">{{ detalle.cantidad }}</td>
+                  <td class="precio">${{ detalle.precio_unitario | number:'1.2-2' }}</td>
+                  <td class="subtotal">${{ detalle.subtotal | number:'1.2-2' }}</td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="4" class="no-items">No hay productos en este pedido</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3"><strong>Total:</strong></td>
+              <td class="total-final"><strong>${{ ped.total | number:'1.2-2' }}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    @if (ped.notas) {
+      <div class="notas-section">
+        <h2>📝 Notas del Cliente</h2>
+        <div class="notas-content">
+          <p>{{ ped.notas }}</p>
+        </div>
+      </div>
+    }
+
+    <!-- Cambiar estado -->
+    <div class="estado-section no-print">
+      <h2>🔄 Cambiar Estado del Pedido</h2>
+      <div class="estado-form">
+        <div class="form-group">
+          <label for="nuevoEstado">Nuevo Estado:</label>
+          <select
+            id="nuevoEstado"
+            [(ngModel)]="nuevoEstado"
+          >
+            @for (estado of estados; track estado) {
+              <option [value]="estado">{{ getEstadoTexto(estado) }}</option>
+            }
+          </select>
+        </div>
+        <button
+          (click)="cambiarEstado()"
+          class="btn-cambiar-estado"
+          [disabled]="actualizandoEstado() || nuevoEstado() === ped.estado"
+        >
+          @if (actualizandoEstado()) {
+            <span>Actualizando...</span>
+          } @else {
+            <span>✅ Actualizar Estado</span>
+          }
+        </button>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,116 @@
+<div class="detalle-container">
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando producto...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>{{ error() }}</p>
+      <a routerLink="/" class="btn-volver">Volver al catálogo</a>
+    </div>
+  } @else if (producto(); as prod) {
+    <div class="breadcrumb">
+      <a routerLink="/">Inicio</a>
+      <span class="separator">/</span>
+      <span class="current">{{ prod.nombre }}</span>
+    </div>
+
+    <div class="producto-detalle">
+      <div class="galeria-section">
+        <div class="imagen-principal">
+          <img [src]="imagenSeleccionada()" [alt]="prod.nombre" />
+          @if (prod.stock === 0) {
+            <div class="sin-stock-overlay">
+              <span>Sin Stock</span>
+            </div>
+          }
+        </div>
+
+        @if (prod.imagenes && prod.imagenes.length > 1) {
+          <div class="imagenes-miniaturas">
+            @for (imagen of prod.imagenes; track imagen.id) {
+              <div
+                class="miniatura"
+                [class.active]="imagenSeleccionada() === imagen.url"
+                (click)="seleccionarImagen(imagen.url)"
+              >
+                <img [src]="imagen.url" [alt]="prod.nombre" />
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="info-section">
+        <h1>{{ prod.nombre }}</h1>
+
+        @if (prod.sku) {
+          <p class="sku">SKU: {{ prod.sku }}</p>
+        }
+
+        @if (prod.categoria) {
+          <span class="categoria-badge">{{ prod.categoria }}</span>
+        }
+
+        <div class="precio-section">
+          <span class="precio">${{ prod.precio | number:'1.2-2' }}</span>
+        </div>
+
+        @if (prod.stock > 0) {
+          <div class="stock-info">
+            <span class="stock-disponible">✓ {{ prod.stock }} unidades disponibles</span>
+          </div>
+        } @else {
+          <div class="stock-info sin-stock">
+            <span>✗ Sin stock disponible</span>
+          </div>
+        }
+
+        @if (prod.descripcion) {
+          <div class="descripcion">
+            <h3>Descripción</h3>
+            <p>{{ prod.descripcion }}</p>
+          </div>
+        }
+
+        @if (prod.stock > 0) {
+          <div class="cantidad-selector">
+            <label>Cantidad:</label>
+            <div class="selector">
+              <button
+                (click)="disminuirCantidad()"
+                [disabled]="cantidad() <= 1"
+                class="btn-cantidad"
+              >
+                -
+              </button>
+              <span class="cantidad">{{ cantidad() }}</span>
+              <button
+                (click)="aumentarCantidad()"
+                [disabled]="cantidad() >= prod.stock"
+                class="btn-cantidad"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="acciones">
+            <button
+              (click)="agregarAlCarrito()"
+              [disabled]="!puedeAgregar"
+              class="btn-agregar-carrito"
+            >
+              🛒 Agregar al Carrito
+            </button>
+            <a routerLink="/" class="btn-seguir-comprando">Seguir Comprando</a>
+          </div>
+        } @else {
+          <div class="acciones">
+            <a routerLink="/" class="btn-volver-completo">Volver al Catálogo</a>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

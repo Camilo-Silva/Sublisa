@@ -1,0 +1,210 @@
+<div class="producto-form-container">
+  <div class="page-header">
+    <h1>
+      {{ isEditMode() ? '✏️ Editar Producto' : '➕ Nuevo Producto' }}
+    </h1>
+    <a routerLink="/admin/productos" class="btn-volver">
+      ← Volver a Productos
+    </a>
+  </div>
+
+  @if (loading() && isEditMode()) {
+    <div class="loading-state">
+      <p>Cargando producto...</p>
+    </div>
+  } @else {
+    <form (ngSubmit)="onSubmit()" class="producto-form">
+      @if (error()) {
+        <div class="error-message">
+          ❌ {{ error() }}
+        </div>
+      }
+
+      <div class="form-section">
+        <h2>📝 Información Básica</h2>
+
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="nombre">Nombre del Producto *</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              [(ngModel)]="formData().nombre"
+              required
+              placeholder="Ej: Remera Lisa Sublimable"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="descripcion">Descripción</label>
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              [(ngModel)]="formData().descripcion"
+              rows="4"
+              placeholder="Descripción detallada del producto..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sku">SKU / Código</label>
+            <input
+              type="text"
+              id="sku"
+              name="sku"
+              [(ngModel)]="formData().sku"
+              placeholder="Ej: REM-SUB-001"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="categoria">Categoría</label>
+            <input
+              type="text"
+              id="categoria"
+              name="categoria"
+              [(ngModel)]="formData().categoria"
+              placeholder="Ej: Textiles, Tazas, etc."
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>💰 Precio e Inventario</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="precio">Precio ($) *</label>
+            <input
+              type="number"
+              id="precio"
+              name="precio"
+              [(ngModel)]="formData().precio"
+              required
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="stock">Stock *</label>
+            <input
+              type="number"
+              id="stock"
+              name="stock"
+              [(ngModel)]="formData().stock"
+              required
+              min="0"
+              placeholder="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>🖼️ Imágenes</h2>
+
+        @if (isEditMode() && imagenes().length > 0) {
+          <div class="imagenes-existentes">
+            <h3>Imágenes Actuales</h3>
+            <div class="imagenes-grid">
+              @for (imagen of imagenes(); track imagen.id) {
+                <div class="imagen-item" [class.principal]="imagen.es_principal">
+                  <img [src]="imagen.url" [alt]="formData().nombre" />
+                  @if (imagen.es_principal) {
+                    <div class="badge-principal">⭐ Principal</div>
+                  }
+                  <div class="imagen-acciones">
+                    @if (!imagen.es_principal) {
+                      <button
+                        type="button"
+                        (click)="setImagenPrincipal(imagen.id)"
+                        class="btn-set-principal"
+                        title="Marcar como principal"
+                      >
+                        ⭐
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      (click)="removeExistingImage(imagen.id, imagen.url)"
+                      class="btn-remove-imagen"
+                      title="Eliminar imagen"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="upload-section">
+          <label class="upload-label">
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              (change)="onFileSelected($event)"
+              hidden
+              #fileInput
+            />
+            <div class="upload-box">
+              <span class="upload-icon">📎</span>
+              <span class="upload-text">Haz clic para seleccionar imágenes</span>
+              <span class="upload-hint">Puedes seleccionar múltiples archivos</span>
+            </div>
+          </label>
+        </div>
+
+        @if (previewUrls().length > 0) {
+          <div class="imagenes-preview">
+            <h3>Nuevas Imágenes a Subir</h3>
+            <div class="imagenes-grid">
+              @for (url of previewUrls(); track $index) {
+                <div class="imagen-item preview">
+                  <img [src]="url" alt="Preview" />
+                  <button
+                    type="button"
+                    (click)="removePreview($index)"
+                    class="btn-remove-preview"
+                    title="Quitar"
+                  >
+                    ❌
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/admin/productos" class="btn-cancelar">
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="btn-guardar"
+          [disabled]="loading() || uploadingImages()"
+        >
+          @if (uploadingImages()) {
+            <span>📎 Subiendo imágenes...</span>
+          } @else if (loading()) {
+            <span>Guardando...</span>
+          } @else {
+            <span>✔️ {{ isEditMode() ? 'Actualizar' : 'Crear' }} Producto</span>
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

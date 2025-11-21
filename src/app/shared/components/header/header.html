@@ -1,0 +1,31 @@
+<header class="header">
+  <div class="header-container">
+    <div class="logo">
+      <a routerLink="/" (click)="cerrarMenu()">
+        <span class="logo-icon">🌈</span>
+        <span class="logo-text">Sublisa</span>
+      </a>
+    </div>
+
+    <button class="menu-toggle" (click)="toggleMenu()" [class.active]="menuAbierto">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav" [class.open]="menuAbierto">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="cerrarMenu()" class="nav-link">
+        Productos
+      </a>
+      <a routerLink="/carrito" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link carrito-link">
+        🛒 Carrito
+        @if (carritoService.cantidadTotal() > 0) {
+          <span class="badge">{{ carritoService.cantidadTotal() }}</span>
+        }
+      </a>
+      <a routerLink="/admin/login" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link admin-link">
+        Admin
+      </a>
+    </nav>
+  </div>
+</header>

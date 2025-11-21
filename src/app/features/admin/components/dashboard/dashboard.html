@@ -1,0 +1,152 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>📈 Dashboard Administrador</h1>
+      @if (adminEmail()) {
+        <p class="admin-info">👤 {{ adminEmail() }}</p>
+      }
+    </div>
+    <button (click)="cerrarSesion()" class="btn-logout">
+      🚪 Cerrar Sesión
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando dashboard...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <button (click)="cargarDashboard()" class="btn-retry">Reintentar</button>
+    </div>
+  } @else {
+    <!-- Estadísticas -->
+    <div class="stats-grid">
+      <div class="stat-card stat-pedidos">
+        <div class="stat-icon">📎</div>
+        <div class="stat-info">
+          <h3>{{ stats().totalPedidos }}</h3>
+          <p>Total Pedidos</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-pendientes">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <h3>{{ stats().pedidosPendientes }}</h3>
+          <p>Pedidos Pendientes</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-confirmados">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <h3>{{ stats().pedidosConfirmados }}</h3>
+          <p>Pedidos Confirmados</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-productos">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <h3>{{ stats().totalProductos }}</h3>
+          <p>Total Productos</p>
+        </div>
+      </div>
+
+      @if (stats().productosStockBajo > 0) {
+        <div class="stat-card stat-alerta">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <h3>{{ stats().productosStockBajo }}</h3>
+            <p>Productos con Stock Bajo</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="quick-actions">
+      <h2>⚡ Acciones Rápidas</h2>
+      <div class="actions-grid">
+        <a routerLink="/admin/productos/nuevo" class="action-card">
+          <span class="action-icon">➕</span>
+          <span class="action-label">Nuevo Producto</span>
+        </a>
+        <a routerLink="/admin/productos" class="action-card">
+          <span class="action-icon">📦</span>
+          <span class="action-label">Ver Productos</span>
+        </a>
+        <a routerLink="/admin/pedidos" class="action-card">
+          <span class="action-icon">📝</span>
+          <span class="action-label">Ver Pedidos</span>
+        </a>
+        <a href="/" target="_blank" class="action-card">
+          <span class="action-icon">🛍️</span>
+          <span class="action-label">Ver Tienda</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Pedidos Recientes -->
+    @if (pedidosRecientes().length > 0) {
+      <div class="recent-orders">
+        <div class="section-header">
+          <h2>🕒 Pedidos Recientes</h2>
+          <a routerLink="/admin/pedidos" class="link-ver-todos">Ver todos →</a>
+        </div>
+
+        <div class="orders-table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pedido of pedidosRecientes(); track pedido.id) {
+                <tr>
+                  <td class="pedido-numero">#{{ pedido.numero_pedido }}</td>
+                  <td>
+                    <div class="cliente-info">
+                      <strong>{{ pedido.clientes?.nombre || 'N/A' }}</strong>
+                      <small>{{ pedido.clientes?.telefono || '' }}</small>
+                    </div>
+                  </td>
+                  <td>{{ pedido.created_at | date:'dd/MM/yy HH:mm' }}</td>
+                  <td class="pedido-total">${{ pedido.total | number:'1.2-2' }}</td>
+                  <td>
+                    <span
+                      class="estado-badge"
+                      [ngClass]="getEstadoClass(pedido.estado)"
+                    >
+                      {{ getEstadoTexto(pedido.estado) }}
+                    </span>
+                  </td>
+                  <td>
+                    <a
+                      [routerLink]="['/admin/pedidos', pedido.id]"
+                      class="btn-ver-detalle"
+                    >
+                      Ver
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    } @else {
+      <div class="no-orders">
+        <p>📦 No hay pedidos registrados aún</p>
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,33 @@
+<div class="producto-card" [routerLink]="['/producto', producto.id]">
+  <div class="producto-imagen">
+    <img [src]="imagenPrincipal" [alt]="producto.nombre" />
+    @if (producto.stock === 0) {
+      <div class="sin-stock-badge">Sin Stock</div>
+    }
+  </div>
+
+  <div class="producto-info">
+    <h3 class="producto-nombre">{{ producto.nombre }}</h3>
+
+    @if (producto.descripcion) {
+      <p class="producto-descripcion">{{ producto.descripcion.substring(0, 80) }}{{ producto.descripcion.length > 80 ? '...' : '' }}</p>
+    }
+
+    <div class="producto-footer">
+      <span class="producto-precio">${{ producto.precio | number:'1.2-2' }}</span>
+
+      <button
+        (click)="agregarAlCarrito($event)"
+        [disabled]="producto.stock === 0"
+        class="btn-agregar"
+        [class.en-carrito]="estaEnCarrito"
+      >
+        @if (estaEnCarrito) {
+          ✓ En carrito
+        } @else {
+          Agregar
+        }
+      </button>
+    </div>
+  </div>
+</div>

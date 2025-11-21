@@ -1,0 +1,151 @@
+<div class="productos-list-container">
+  <div class="page-header">
+    <div>
+      <h1>📦 Gestión de Productos</h1>
+      <p>Administra el catálogo de productos</p>
+    </div>
+    <a routerLink="/admin/productos/nuevo" class="btn-nuevo">
+      ➕ Nuevo Producto
+    </a>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="🔍 Buscar por nombre, SKU, categoría..."
+        [(ngModel)]="busqueda"
+        (input)="filtrarProductos()"
+      />
+    </div>
+    <a routerLink="/admin/dashboard" class="btn-volver">
+      ← Volver al Dashboard
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando productos...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <button (click)="cargarProductos()" class="btn-retry">Reintentar</button>
+    </div>
+  } @else if (productosFiltrados().length === 0) {
+    <div class="empty-state">
+      <p>📦 No hay productos registrados</p>
+      <a routerLink="/admin/productos/nuevo" class="btn-crear-primero">
+        Crear primer producto
+      </a>
+    </div>
+  } @else {
+    <div class="productos-table-container">
+      <table class="productos-table">
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>SKU</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (producto of productosFiltrados(); track producto.id) {
+            <tr>
+              <td>
+                <div class="producto-imagen">
+                  @if (producto.imagenes && producto.imagenes.length > 0) {
+                    <img
+                      [src]="producto.imagenes[0].url"
+                      [alt]="producto.nombre"
+                    />
+                  } @else {
+                    <div class="sin-imagen">🖼️</div>
+                  }
+                </div>
+              </td>
+              <td>
+                <div class="producto-info">
+                  <strong>{{ producto.nombre }}</strong>
+                  @if (producto.descripcion) {
+                    <small>{{ producto.descripcion | slice:0:50 }}{{ producto.descripcion.length > 50 ? '...' : '' }}</small>
+                  }
+                </div>
+              </td>
+              <td>
+                <span class="sku">{{ producto.sku || '-' }}</span>
+              </td>
+              <td>
+                @if (producto.categoria) {
+                  <span class="categoria-badge">{{ producto.categoria }}</span>
+                } @else {
+                  <span class="texto-muted">Sin categoría</span>
+                }
+              </td>
+              <td class="precio">
+                ${{ producto.precio | number:'1.2-2' }}
+              </td>
+              <td>
+                <span
+                  class="stock-badge"
+                  [ngClass]="getStockClass(producto.stock)"
+                >
+                  {{ producto.stock }}
+                </span>
+              </td>
+              <td>
+                <div class="acciones">
+                  <button
+                    (click)="editarProducto(producto.id)"
+                    class="btn-editar"
+                    title="Editar"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    (click)="confirmarEliminar(producto)"
+                    class="btn-eliminar"
+                    title="Eliminar"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="resumen">
+      <p>Mostrando {{ productosFiltrados().length }} de {{ productos().length }} productos</p>
+    </div>
+  }
+
+  <!-- Modal de confirmación -->
+  @if (productoAEliminar()) {
+    <div class="modal-overlay" (click)="cancelarEliminar()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>⚠️ Confirmar Eliminación</h2>
+        </div>
+        <div class="modal-body">
+          <p>¿Estás seguro de que deseas eliminar el producto <strong>{{ productoAEliminar()!.nombre }}</strong>?</p>
+          <p class="warning-text">Esta acción no se puede deshacer y también eliminará todas las imágenes asociadas.</p>
+        </div>
+        <div class="modal-footer">
+          <button (click)="cancelarEliminar()" class="btn-cancelar">
+            Cancelar
+          </button>
+          <button (click)="eliminarProducto()" class="btn-confirmar-eliminar">
+            Eliminar Producto
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

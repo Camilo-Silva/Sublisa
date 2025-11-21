@@ -1,0 +1,277 @@
+.carrito-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.carrito-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    color: #333;
+  }
+
+  .btn-vaciar {
+    padding: 0.5rem 1rem;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #c82333;
+    }
+  }
+}
+
+.carrito-vacio {
+  text-align: center;
+  padding: 4rem 2rem;
+
+  p {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  .btn-continuar {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}
+
+.carrito-contenido {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+}
+
+.items-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item-carrito {
+  display: grid;
+  grid-template-columns: 100px 1fr auto auto auto;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: center;
+}
+
+.item-imagen {
+  img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+}
+
+.item-info {
+  h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .item-precio {
+    color: #666;
+    margin: 0;
+  }
+}
+
+.item-cantidad {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .btn-cantidad {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .cantidad {
+    min-width: 30px;
+    text-align: center;
+    font-weight: 600;
+  }
+}
+
+.item-subtotal {
+  .subtotal {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #007bff;
+  }
+}
+
+.btn-eliminar {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+.carrito-resumen {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem 0;
+    color: #333;
+  }
+}
+
+.resumen-linea {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  color: #666;
+
+  &.total {
+    border-bottom: none;
+    border-top: 2px solid #333;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+
+    .valor {
+      color: #007bff;
+    }
+  }
+
+  .valor {
+    font-weight: 600;
+  }
+}
+
+.resumen-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+
+  a {
+    padding: 0.75rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .btn-seguir {
+    background-color: #6c757d;
+    color: white;
+
+    &:hover {
+      background-color: #5a6268;
+    }
+  }
+
+  .btn-finalizar {
+    background-color: #28a745;
+    color: white;
+
+    &:hover {
+      background-color: #218838;
+    }
+  }
+}
+
+@media (max-width: 968px) {
+  .carrito-contenido {
+    grid-template-columns: 1fr;
+  }
+
+  .carrito-resumen {
+    position: static;
+  }
+
+  .item-carrito {
+    grid-template-columns: 80px 1fr;
+    grid-template-areas:
+      "imagen info"
+      "cantidad subtotal"
+      "eliminar eliminar";
+
+    .item-imagen {
+      grid-area: imagen;
+    }
+
+    .item-info {
+      grid-area: info;
+    }
+
+    .item-cantidad {
+      grid-area: cantidad;
+    }
+
+    .item-subtotal {
+      grid-area: subtotal;
+      text-align: right;
+    }
+
+    .btn-eliminar {
+      grid-area: eliminar;
+      width: 100%;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+  }
+}

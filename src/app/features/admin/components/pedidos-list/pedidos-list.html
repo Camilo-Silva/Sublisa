@@ -1,0 +1,162 @@
+<div class="pedidos-list-container">
+  <div class="page-header">
+    <div>
+      <h1>📋 Gestión de Pedidos</h1>
+      <p>Administra y consulta todos los pedidos</p>
+    </div>
+    <a routerLink="/admin/dashboard" class="btn-volver">
+      ← Volver al Dashboard
+    </a>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <h2>🔍 Filtros de Búsqueda</h2>
+
+    <div class="filtros-grid">
+      <div class="filtro-item">
+        <label for="busqueda">Buscar</label>
+        <input
+          type="text"
+          id="busqueda"
+          placeholder="Número de pedido, cliente, teléfono..."
+          [(ngModel)]="busqueda"
+          (input)="aplicarFiltros()"
+        />
+      </div>
+
+      <div class="filtro-item">
+        <label for="estado">Estado</label>
+        <select
+          id="estado"
+          [(ngModel)]="estadoFiltro"
+          (change)="aplicarFiltros()"
+        >
+          @for (estado of estados; track estado) {
+            <option [value]="estado">{{ getEstadoTexto(estado) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filtro-item">
+        <label for="fechaDesde">Fecha Desde</label>
+        <input
+          type="date"
+          id="fechaDesde"
+          [(ngModel)]="fechaDesde"
+          (change)="aplicarFiltros()"
+        />
+      </div>
+
+      <div class="filtro-item">
+        <label for="fechaHasta">Fecha Hasta</label>
+        <input
+          type="date"
+          id="fechaHasta"
+          [(ngModel)]="fechaHasta"
+          (change)="aplicarFiltros()"
+        />
+      </div>
+
+      <div class="filtro-item filtro-actions">
+        <button (click)="limpiarFiltros()" class="btn-limpiar">
+          🔄 Limpiar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando pedidos...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>❌ {{ error() }}</p>
+      <button (click)="cargarPedidos()" class="btn-retry">Reintentar</button>
+    </div>
+  } @else if (pedidosFiltrados().length === 0) {
+    <div class="empty-state">
+      <p>📦 No se encontraron pedidos con los filtros aplicados</p>
+      <button (click)="limpiarFiltros()" class="btn-limpiar-filtros">
+        Limpiar filtros
+      </button>
+    </div>
+  } @else {
+    <!-- Resumen -->
+    <div class="resumen-pedidos">
+      <div class="resumen-item">
+        <span class="resumen-label">Total Pedidos:</span>
+        <span class="resumen-valor">{{ pedidosFiltrados().length }}</span>
+      </div>
+      <div class="resumen-item">
+        <span class="resumen-label">Monto Total:</span>
+        <span class="resumen-valor resumen-monto">${{ getTotalPedidos() | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div class="pedidos-table-container">
+      <table class="pedidos-table">
+        <thead>
+          <tr>
+            <th>Número</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Contacto</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pedido of pedidosFiltrados(); track pedido.id) {
+            <tr>
+              <td class="pedido-numero">#{{ pedido.numero_pedido }}</td>
+              <td>
+                <div class="pedido-fecha">
+                  <strong>{{ pedido.created_at | date:'dd/MM/yyyy' }}</strong>
+                  <small>{{ pedido.created_at | date:'HH:mm' }}</small>
+                </div>
+              </td>
+              <td>
+                <strong>{{ pedido.cliente?.nombre || 'N/A' }}</strong>
+              </td>
+              <td>
+                <div class="contacto-info">
+                  @if (pedido.cliente?.telefono) {
+                    <span>📱 {{ pedido.cliente?.telefono }}</span>
+                  }
+                  @if (pedido.cliente?.email) {
+                    <small>{{ pedido.cliente?.email }}</small>
+                  }
+                </div>
+              </td>
+              <td class="pedido-total">
+                ${{ pedido.total | number:'1.2-2' }}
+              </td>
+              <td>
+                <span
+                  class="estado-badge"
+                  [ngClass]="getEstadoClass(pedido.estado)"
+                >
+                  {{ getEstadoTexto(pedido.estado) }}
+                </span>
+              </td>
+              <td>
+                @if (pedido.id) {
+                  <button
+                    (click)="verDetalle(pedido.id)"
+                    class="btn-ver-detalle"
+                  >
+                    👁️ Ver
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

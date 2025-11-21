@@ -1,0 +1,39 @@
+<div class="catalogo-container">
+  <div class="catalogo-header">
+    <h1>Nuestros Productos</h1>
+    <p class="subtitle">Productos de sublimación de alta calidad</p>
+
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Buscar productos..."
+        (input)="buscarProductos($event)"
+        class="search-input"
+      />
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando productos...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>{{ error() }}</p>
+      <button (click)="cargarProductos()" class="btn-retry">Reintentar</button>
+    </div>
+  } @else if (productos().length === 0) {
+    <div class="empty-state">
+      <p>No se encontraron productos</p>
+      @if (busqueda()) {
+        <button (click)="cargarProductos()" class="btn-clear">Ver todos los productos</button>
+      }
+    </div>
+  } @else {
+    <div class="productos-grid">
+      @for (producto of productos(); track producto.id) {
+        <app-producto-card [producto]="producto" />
+      }
+    </div>
+  }
+</div>

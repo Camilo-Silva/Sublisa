@@ -1,0 +1,75 @@
+<div class="confirmacion-container">
+  @if (pedido) {
+    <div class="confirmacion-card">
+      <div class="icono-exito">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+
+      <h1>¡Tu pedido ha sido registrado con éxito!</h1>
+
+      <div class="numero-pedido">
+        <span class="label">Número de Pedido:</span>
+        <span class="numero">{{ pedido.numero_pedido }}</span>
+      </div>
+
+      <div class="mensaje-importante">
+        <p class="mensaje-principal">
+          Tu orden será revisada por nuestro equipo para confirmar stock y los detalles finales.
+        </p>
+        <p class="mensaje-secundario">
+          <strong>Pronto te contactaremos vía WhatsApp</strong> para acordar la forma de pago y la entrega.
+        </p>
+      </div>
+
+      <div class="detalles-contacto">
+        <h3>Datos de Contacto Registrados</h3>
+        <div class="info-linea">
+          <span class="icono">👤</span>
+          <span>{{ pedido.cliente?.nombre }}</span>
+        </div>
+        <div class="info-linea">
+          <span class="icono">📱</span>
+          <span>{{ pedido.cliente?.telefono }}</span>
+        </div>
+        @if (pedido.cliente?.email) {
+          <div class="info-linea">
+            <span class="icono">✉️</span>
+            <span>{{ pedido.cliente?.email }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="resumen-pedido">
+        <h3>Resumen del Pedido</h3>
+        @if (pedido.detalles && pedido.detalles.length > 0) {
+          <div class="items-lista">
+            @for (detalle of pedido.detalles; track detalle.id) {
+              <div class="item">
+                <span class="item-nombre">
+                  {{ detalle.producto?.nombre || 'Producto' }}
+                  <span class="cantidad">x{{ detalle.cantidad }}</span>
+                </span>
+                <span class="item-precio">${{ detalle.subtotal | number:'1.2-2' }}</span>
+              </div>
+            }
+          </div>
+        }
+        <div class="total">
+          <span>Total:</span>
+          <span class="total-monto">${{ pedido.total | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <a routerLink="/" class="btn-inicio">Volver al Inicio</a>
+      </div>
+
+      <div class="nota-adicional">
+        <p>📝 <strong>Nota:</strong> Guarda tu número de pedido para futuras consultas.</p>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,65 @@
+<div class="carrito-container">
+  <div class="carrito-header">
+    <h1>Mi Carrito</h1>
+    @if (carritoService.cantidadTotal() > 0) {
+      <button (click)="vaciarCarrito()" class="btn-vaciar">Vaciar Carrito</button>
+    }
+  </div>
+
+  @if (carritoService.items().length === 0) {
+    <div class="carrito-vacio">
+      <p>Tu carrito está vacío</p>
+      <a routerLink="/" class="btn-continuar">Ver Productos</a>
+    </div>
+  } @else {
+    <div class="carrito-contenido">
+      <div class="items-lista">
+        @for (item of carritoService.items(); track item.producto.id) {
+          <div class="item-carrito">
+            <div class="item-imagen">
+              <img [src]="item.producto.imagenes?.[0]?.url || 'https://via.placeholder.com/100'" [alt]="item.producto.nombre" />
+            </div>
+
+            <div class="item-info">
+              <h3>{{ item.producto.nombre }}</h3>
+              <p class="item-precio">${{ item.producto.precio | number:'1.2-2' }} c/u</p>
+            </div>
+
+            <div class="item-cantidad">
+              <button (click)="disminuirCantidad(item.producto.id, item.cantidad)" class="btn-cantidad">-</button>
+              <span class="cantidad">{{ item.cantidad }}</span>
+              <button (click)="aumentarCantidad(item.producto.id, item.cantidad)" class="btn-cantidad">+</button>
+            </div>
+
+            <div class="item-subtotal">
+              <span class="subtotal">${{ item.subtotal | number:'1.2-2' }}</span>
+            </div>
+
+            <button (click)="eliminarProducto(item.producto.id)" class="btn-eliminar">
+              ×
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="carrito-resumen">
+        <h2>Resumen del Pedido</h2>
+
+        <div class="resumen-linea">
+          <span>Subtotal</span>
+          <span class="valor">${{ carritoService.subtotal() | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="resumen-linea total">
+          <span>Total</span>
+          <span class="valor">${{ carritoService.subtotal() | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="resumen-acciones">
+          <a routerLink="/" class="btn-seguir">Seguir Comprando</a>
+          <a routerLink="/checkout" class="btn-finalizar">Finalizar Pedido</a>
+        </div>
+      </div>
+    </div>
+  }
+</div>
