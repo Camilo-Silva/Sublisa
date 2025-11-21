@@ -77,7 +77,10 @@ export class PedidosService {
 
       if (detallesError) throw detallesError;
 
-      // 5. Retornar el pedido completo con relaciones
+      // 5. Enviar notificación por email
+      await this.enviarNotificacionEmail(pedidoData.id, numeroPedido, clienteData, items, total);
+
+      // 6. Retornar el pedido completo con relaciones
       return {
         ...pedidoData,
         cliente: clienteData
@@ -86,6 +89,95 @@ export class PedidosService {
     } catch (error) {
       console.error('Error al crear pedido:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Envía notificación por email al administrador
+   */
+  private async enviarNotificacionEmail(
+    pedidoId: string,
+    numeroPedido: string,
+    cliente: Cliente,
+    items: ItemCarrito[],
+    total: number
+  ): Promise<void> {
+    try {
+      // Obtener email del vendedor desde configuración
+      const { data: config } = await this.supabase.getClient()
+        .from('configuracion')
+        .select('valor')
+        .eq('clave', 'email_contacto')
+        .single();
+
+      const emailVendedor = config?.valor || 'camilosilva.0301@gmail.com';
+
+      // Construir el cuerpo del email
+      const productosTexto = items.map(item => 
+        `• ${item.producto.nombre} x${item.cantidad} - $${item.subtotal.toFixed(2)}`
+      ).join('\n');
+
+      const fechaPedido = new Date().toLocaleString('es-AR');
+
+      const asunto = `🛒 Nuevo Pedido #${numeroPedido} - Sublisa`;
+      
+      const mensaje = `
+¡Nuevo Pedido Recibido!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 PEDIDO #${numeroPedido}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 Fecha: ${fechaPedido}
+📌 Estado: PENDIENTE_CONTACTO
+
+👤 DATOS DEL CLIENTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Nombre: ${cliente.nombre}
+Teléfono/WhatsApp: ${cliente.telefono}
+${cliente.email ? `Email: ${cliente.email}` : ''}
+
+📦 PRODUCTOS SOLICITADOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${productosTexto}
+
+💰 TOTAL: $${total.toFixed(2)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 Contactar por WhatsApp:
+https://wa.me/${cliente.telefono.replaceAll(/\D/g, '')}
+
+📱 Gestionar en Admin:
+https://ickamngcpuxaqppwzory.supabase.co/project/_/editor
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Este es un correo automático del sistema Sublisa
+      `.trim();
+
+      // Usar EmailJS (servicio gratuito) o FormSubmit
+      // Opción 1: Usar fetch para enviar a un webhook
+      const webhookUrl = 'https://formsubmit.co/ajax/' + emailVendedor;
+      
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: asunto,
+          message: mensaje,
+          _template: 'box',
+          _captcha: 'false'
+        })
+      });
+
+      console.log('✅ Email enviado a:', emailVendedor);
+
+    } catch (error) {
+      // No lanzar error para no bloquear la creación del pedido
+      console.error('⚠️ Error al enviar email (pedido creado correctamente):', error);
     }
   }
 
