@@ -2,8 +2,7 @@
   <div class="header-container">
     <div class="logo">
       <a routerLink="/" (click)="cerrarMenu()">
-        <span class="logo-icon">🌈</span>
-        <span class="logo-text">Sublisa</span>
+        <img src="/images/LOGOSUBLISA.png" alt="Sublisa Logo" class="logo-image">
       </a>
     </div>
 
@@ -14,9 +13,36 @@
     </button>
 
     <nav class="nav" [class.open]="menuAbierto">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="cerrarMenu()" class="nav-link">
-        Productos
+      <div class="nav-item-dropdown"
+           (mouseenter)="menuProductosAbierto.set(true)"
+           (mouseleave)="cerrarMenuProductos()">
+        <a routerLink="/"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact: true}"
+           (click)="toggleMenuProductos(); $event.preventDefault()"
+           class="nav-link productos-link">
+          Productos ▾
+        </a>
+        <div class="dropdown-menu" [class.show]="menuProductosAbierto()">
+          @for (categoria of categorias(); track categoria) {
+            <a [routerLink]="['/']"
+               [queryParams]="{categoria: categoria}"
+               (click)="cerrarMenu()"
+               class="dropdown-item">
+              {{ categoria }}
+            </a>
+          }
+        </div>
+      </div>
+
+      <a routerLink="/quienes-somos" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link">
+        Quiénes Somos
       </a>
+
+      <a routerLink="/como-comprar" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link">
+        Cómo Comprar
+      </a>
+
       <a routerLink="/carrito" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link carrito-link">
         🛒 Carrito
         @if (carritoService.cantidadTotal() > 0) {
@@ -28,7 +54,7 @@
       @if (authService.isAuthenticatedSignal$()()) {
         @if (authService.isAdmin()) {
           <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link admin-link">
-            🔐 Panel Admin
+            🔐 Admin
           </a>
         } @else {
           <a routerLink="/mi-cuenta" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link cuenta-link">

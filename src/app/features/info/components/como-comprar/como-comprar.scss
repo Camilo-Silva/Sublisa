@@ -1,0 +1,295 @@
+.como-comprar-container {
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  .contenido {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .faq-section {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      .pregunta {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        border-left: 5px solid #667eea;
+        transition: all 0.3s ease;
+
+        &:hover {
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          transform: translateY(-2px);
+        }
+
+        h2 {
+          font-size: 1.5rem;
+          color: #333;
+          margin-bottom: 15px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          &::before {
+            content: '?';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: bold;
+          }
+        }
+
+        .respuesta {
+          margin-top: 15px;
+
+          ol {
+            padding-left: 20px;
+
+            li {
+              padding: 8px 0;
+              font-size: 1.05rem;
+              line-height: 1.6;
+              color: #555;
+
+              strong {
+                color: #667eea;
+              }
+            }
+          }
+
+          ul {
+            list-style: none;
+            padding-left: 20px;
+
+            li {
+              padding: 5px 0;
+              font-size: 1.05rem;
+              color: #555;
+              position: relative;
+
+              &::before {
+                content: '✓';
+                position: absolute;
+                left: -20px;
+                color: #667eea;
+                font-weight: bold;
+              }
+            }
+          }
+
+          p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 10px;
+          }
+
+          .nota {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            color: #856404;
+            font-weight: 500;
+          }
+
+          .destacado {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+
+            strong {
+              color: #667eea;
+              font-size: 1.2rem;
+            }
+          }
+
+          .medios-pago-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+
+            .medio-pago-card {
+              background: white;
+              border: 2px solid #e9ecef;
+              padding: 20px;
+              border-radius: 8px;
+              text-align: center;
+              transition: all 0.3s ease;
+
+              &:hover {
+                border-color: #667eea;
+                transform: translateY(-3px);
+                box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+              }
+
+              h3 {
+                font-size: 1.2rem;
+                color: #667eea;
+                margin-bottom: 10px;
+              }
+
+              p {
+                font-size: 0.95rem;
+                color: #666;
+                margin: 0;
+              }
+            }
+          }
+
+          .contacto-info {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 8px;
+
+            .whatsapp-link {
+              color: #25d366;
+              font-weight: 700;
+              font-size: 1.1rem;
+              text-decoration: none;
+              transition: color 0.3s ease;
+
+              &:hover {
+                color: #128c7e;
+                text-decoration: underline;
+              }
+            }
+          }
+
+          .empresas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+
+            .empresa-badge {
+              background: white;
+              border: 2px solid #667eea;
+              padding: 12px;
+              border-radius: 25px;
+              text-align: center;
+              font-weight: 600;
+              color: #667eea;
+              transition: all 0.3s ease;
+
+              &:hover {
+                background: #667eea;
+                color: white;
+                transform: scale(1.05);
+              }
+            }
+          }
+
+          .opcion-alternativa {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 8px;
+            font-size: 1.1rem;
+
+            strong {
+              color: #667eea;
+            }
+          }
+
+          .direccion-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            border: 2px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+
+            .icono-ubicacion {
+              font-size: 3rem;
+              flex-shrink: 0;
+            }
+
+            .info-direccion {
+              .direccion {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #333;
+                margin: 0 0 5px 0;
+              }
+
+              .localidad {
+                font-size: 1.1rem;
+                color: #666;
+                margin: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .como-comprar-container {
+    padding: 20px 10px;
+
+    .contenido {
+      padding: 20px;
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .faq-section {
+        .pregunta {
+          padding: 20px 15px;
+
+          h2 {
+            font-size: 1.3rem;
+          }
+
+          .respuesta {
+            .medios-pago-grid,
+            .empresas-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .direccion-card {
+              flex-direction: column;
+              text-align: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

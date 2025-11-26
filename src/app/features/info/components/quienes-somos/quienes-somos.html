@@ -1,0 +1,69 @@
+<div class="quienes-somos-container">
+  <div class="contenido">
+    <h1>Quiénes Somos</h1>
+
+    <section class="intro">
+      <p class="destacado">
+        En <strong>SUBLISA</strong>, creemos que la sublimación y el estampado son una combinación perfecta para personalizar una idea.
+        Somos una empresa familiar ubicada en González Catán, dedicada a la fabricación de artículos para personalizar
+        y realizamos impresiones en DTF.
+      </p>
+    </section>
+
+    <section class="mision">
+      <h2>Nuestra Misión</h2>
+      <p>
+        Nuestro compromiso es ayudarte a plasmar tus ideas y emociones en cada uno de nuestros productos.
+      </p>
+      <p>
+        Ya sea un regalo especial, una prenda para tu empresa, o artículos para tu club, trabajamos con pasión
+        para que cada detalle refleje lo que realmente importa: <strong>El deseo hecho realidad</strong>.
+      </p>
+    </section>
+
+    <section class="valores">
+      <p>
+        Nos gusta pensar que somos parte de esos momentos únicos, aportando calidad y dedicación en cada uno
+        de nuestros artículos.
+      </p>
+      <p class="invitacion">
+        Te invitamos a conocernos, a compartir tus proyectos, y a descubrir todo lo que podemos hacer juntos.
+      </p>
+    </section>
+
+    <section class="info-contacto">
+      <div class="info-card">
+        <h3>📍 Ubicación</h3>
+        <p>
+          {{ ubicacion.direccion }}<br>
+          {{ ubicacion.localidad }}, {{ ubicacion.provincia }}
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h3>📞 Contacto</h3>
+        <p>
+          <a [href]="'https://wa.me/' + contacto.whatsapp" target="_blank" class="whatsapp-link">
+            {{ contacto.telefono }}
+          </a>
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h3>💳 Medios de Pago</h3>
+        <ul>
+          <li *ngFor="let medio of mediosPago">{{ medio }}</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>🚚 Envíos</h3>
+        <p>Hacemos envíos a todo el país.</p>
+        <p class="small">Trabajamos con diferentes expresos:</p>
+        <ul>
+          <li *ngFor="let envio of envios">{{ envio }}</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</div>

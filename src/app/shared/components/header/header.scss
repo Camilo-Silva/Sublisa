@@ -16,23 +16,32 @@
 }
 
 .logo {
+  margin: -2.5rem 0;
+
   a {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
     transition: transform 0.3s;
 
     &:hover {
       transform: scale(1.05);
     }
+
+    img {
+      height: 170px;
+      width: auto;
+      object-fit: contain;
+    }
   }
 
   .logo-icon {
     font-size: 2rem;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
   }
 }
 
@@ -73,6 +82,67 @@
   display: flex;
   gap: 2rem;
   align-items: center;
+}
+
+.nav-item-dropdown {
+  position: relative;
+
+  .productos-link {
+    cursor: pointer;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 280px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    margin-top: 0.5rem;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      display: block;
+      padding: 0.75rem 1.25rem;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-weight: 500;
+
+      &:first-child {
+        border-radius: 8px 8px 0 0;
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.05), rgba(0, 188, 212, 0.05));
+        color: #e91e63;
+        font-weight: 600;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
+        padding-left: 1.5rem;
+      }
+
+      &:last-child {
+        border-radius: 0 0 8px 8px;
+      }
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: linear-gradient(to right, #e91e63, #00bcd4, #ffc107);
+      margin: 0.5rem 0;
+    }
+  }
 }
 
 .nav-link {
@@ -164,8 +234,44 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     &.open {
-      max-height: 400px;
+      max-height: 600px;
       padding: 1rem 0;
+    }
+  }
+
+  .nav-item-dropdown {
+    width: 100%;
+
+    .productos-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-menu {
+      position: static;
+      width: 100%;
+      box-shadow: none;
+      border-radius: 0;
+      margin-top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+
+      &.show {
+        display: block;
+        max-height: 400px;
+      }
+
+      .dropdown-item {
+        padding: 0.75rem 2.5rem;
+        border-left: 3px solid transparent;
+
+        &:hover {
+          border-left-color: #e91e63;
+        }
+      }
     }
   }
 

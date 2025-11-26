@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { Producto } from '../../../../core/models';
 import { ProductoCard } from '../producto-card/producto-card';
@@ -28,10 +29,22 @@ export class Catalogo implements OnInit {
   // Exponer Math para el template
   Math = Math;
 
-  constructor(private readonly productosService: ProductosService) {}
+  constructor(
+    private readonly productosService: ProductosService,
+    private readonly route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    this.cargarProductos();
+    // Suscribirse a cambios en los query params
+    this.route.queryParams.subscribe(params => {
+      const categoria = params['categoria'];
+      if (categoria) {
+        this.categoriaSeleccionada.set(categoria);
+      } else {
+        this.categoriaSeleccionada.set('TODAS');
+      }
+      this.cargarProductos();
+    });
   }
 
   async cargarProductos() {
@@ -40,14 +53,13 @@ export class Catalogo implements OnInit {
       this.error.set(null);
       const data = await this.productosService.getProductos();
       this.productos.set(data);
-      this.productosFiltrados.set(data);
 
       // Extraer categorías únicas
       const categoriasUnicas = ['TODAS', ...new Set(data.map(p => p.categoria).filter(Boolean))];
       this.categorias.set(categoriasUnicas as string[]);
 
-      // Calcular paginación inicial
-      this.calcularPaginacion();
+      // Aplicar filtros según la categoría seleccionada
+      this.aplicarFiltros();
     } catch (err) {
       console.error('Error al cargar productos:', err);
       this.error.set('Error al cargar los productos. Por favor, intenta de nuevo.');

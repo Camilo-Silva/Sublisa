@@ -1,0 +1,86 @@
+<div class="como-comprar-container">
+  <div class="contenido">
+    <h1>Cómo Comprar</h1>
+
+    <section class="faq-section">
+      <div class="pregunta">
+        <h2>¿Cómo puedo realizar un pedido?</h2>
+        <div class="respuesta">
+          <ol>
+            <li>Una vez elegido el producto, presioná el botón <strong>AGREGAR AL CARRITO</strong></li>
+            <li>Verás en tu carrito los artículos que tenés cargados</li>
+            <li>Podés modificar la cantidad o eliminar los que desees</li>
+            <li>Para continuar con la compra, deberás completar con los datos requeridos</li>
+            <li>Al seleccionar <strong>"Finalizar Compra"</strong> encontrarás los medios de pagos y promociones disponibles</li>
+          </ol>
+          <p class="nota">
+            ⚠️ A las 48 hs de haber realizado el pedido, si no se abona, el sistema cancela automáticamente la orden.
+          </p>
+        </div>
+      </div>
+
+      <div class="pregunta">
+        <h2>¿Cuál es la compra mínima?</h2>
+        <div class="respuesta">
+          <p class="destacado">
+            El costo mínimo total de compra para sublimar deberá ser de <strong>10 artículos</strong>.
+          </p>
+          <ul>
+            <li>Se pueden combinar entre otros productos para llegar a dicha cantidad</li>
+            <li>Podés comprar 1 solo artículo de cada uno si así lo deseas</li>
+            <li>Siempre que se llegue al mínimo de 10 artículos</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pregunta">
+        <h2>¿Cuáles son los medios de pago?</h2>
+        <div class="respuesta">
+          <div class="medios-pago-grid">
+            <div class="medio-pago-card" *ngFor="let medio of mediosPago">
+              <h3>{{ medio.nombre }}</h3>
+              <p>{{ medio.descripcion }}</p>
+            </div>
+          </div>
+          <p class="contacto-info">
+            📞 Ante cualquier duda, podés contactarnos por WhatsApp al
+            <a [href]="'https://wa.me/' + contacto.whatsapp" target="_blank" class="whatsapp-link">
+              {{ contacto.telefono }}
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div class="pregunta">
+        <h2>¿Realizan envíos?</h2>
+        <div class="respuesta">
+          <p class="destacado">
+            Sí. Hacemos envíos a todo el país a través de varios expresos:
+          </p>
+          <div class="empresas-grid">
+            <div class="empresa-badge" *ngFor="let empresa of empresasEnvio">
+              🚚 {{ empresa }}
+            </div>
+          </div>
+          <p class="opcion-alternativa">
+            También te ofrecemos la opción de <strong>RETIRO POR EL LOCAL</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="pregunta">
+        <h2>¿Se puede retirar en el local?</h2>
+        <div class="respuesta">
+          <p>Sí, podés retirar tu compra por nuestro local:</p>
+          <div class="direccion-card">
+            <div class="icono-ubicacion">📍</div>
+            <div class="info-direccion">
+              <p class="direccion">{{ ubicacion.direccion }}</p>
+              <p class="localidad">{{ ubicacion.localidad }}, {{ ubicacion.provincia }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

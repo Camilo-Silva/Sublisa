@@ -24,6 +24,16 @@ export const routes: Routes = [
     loadComponent: () => import('./features/tienda/components/confirmacion/confirmacion').then(m => m.Confirmacion)
   },
 
+  // Rutas de información
+  {
+    path: 'quienes-somos',
+    loadComponent: () => import('./features/info/components/quienes-somos/quienes-somos').then(m => m.QuienesSomosComponent)
+  },
+  {
+    path: 'como-comprar',
+    loadComponent: () => import('./features/info/components/como-comprar/como-comprar').then(m => m.ComoComprarComponent)
+  },
+
   // Rutas de autenticación
   {
     path: 'login',
