@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CarritoService } from '../../../../core/services/carrito.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { Cliente } from '../../../../core/models';
 
 @Component({
@@ -26,6 +27,7 @@ export class Checkout implements OnInit {
   constructor(
     public carritoService: CarritoService,
     private readonly pedidosService: PedidosService,
+    private readonly authService: AuthService,
     private readonly router: Router
   ) {}
 
@@ -33,6 +35,37 @@ export class Checkout implements OnInit {
     // Redirigir si el carrito está vacío
     if (this.carritoService.items().length === 0) {
       void this.router.navigate(['/']);
+    }
+
+    // Autocompletar datos si el usuario está autenticado
+    this.cargarDatosUsuario();
+  }
+
+  /**
+   * Carga los datos del usuario autenticado en el formulario
+   */
+  private cargarDatosUsuario() {
+    const user = this.authService.getCurrentUser();
+    const profile = this.authService.getUserProfile();
+
+    if (user && profile) {
+      // Autocompletar nombre completo
+      const nombreCompleto = `${profile.nombre} ${profile.apellido}`.trim();
+      if (nombreCompleto) {
+        this.cliente.nombre = nombreCompleto;
+      }
+
+      // Autocompletar teléfono
+      if (profile.telefono) {
+        this.cliente.telefono = profile.telefono;
+      }
+
+      // Autocompletar email
+      if (user.email) {
+        this.cliente.email = user.email;
+      }
+
+      console.log('✅ Datos de usuario autocompletos:', this.cliente);
     }
   }
 

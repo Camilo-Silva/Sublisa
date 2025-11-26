@@ -1,8 +1,9 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
-      <h1>🔐 Acceso Administrador</h1>
-      <p>Panel de control Sublisa</p>
+      <span class="logo-icon">🌈</span>
+      <h1>Iniciar Sesión</h1>
+      <p>Accede a tu cuenta de Sublisa</p>
     </div>
 
     <form (ngSubmit)="onSubmit()" class="login-form">
@@ -65,6 +66,10 @@
     </form>
 
     <div class="login-footer">
+      <p>
+        ¿No tienes cuenta?
+        <a routerLink="/registro">Regístrate aquí</a>
+      </p>
       <a href="/" class="link-volver">← Volver a la tienda</a>
     </div>
   </div>

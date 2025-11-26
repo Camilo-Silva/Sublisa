@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
+import { AuthService } from './auth.service';
 import { Pedido, DetallePedido, Cliente, ItemCarrito } from '../models';
 
 @Injectable({
@@ -7,7 +8,10 @@ import { Pedido, DetallePedido, Cliente, ItemCarrito } from '../models';
 })
 export class PedidosService {
 
-  constructor(private readonly supabase: SupabaseService) {}
+  constructor(
+    private readonly supabase: SupabaseService,
+    private readonly authService: AuthService
+  ) {}
 
   /**
    * Genera un número de pedido único
@@ -88,11 +92,16 @@ export class PedidosService {
       // 3. Crear el pedido
       const numeroPedido = this.generateNumeroPedido();
 
+      // Obtener user_id del usuario autenticado (si existe)
+      const currentUser = await this.authService.getCurrentUser();
+      const userId = currentUser?.id || null;
+
       const { data: pedidoData, error: pedidoError } = await this.supabase.getClient()
         .from('pedidos')
         .insert({
           numero_pedido: numeroPedido,
           cliente_id: clienteData.id,
+          user_id: userId,
           estado: 'PENDIENTE_CONTACTO',
           subtotal,
           total,

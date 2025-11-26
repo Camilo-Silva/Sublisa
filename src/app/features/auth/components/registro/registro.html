@@ -1,0 +1,134 @@
+<div class="registro-container">
+  <div class="registro-card">
+    <div class="logo-section">
+      <span class="logo-icon">🌈</span>
+      <h1>Crear Cuenta</h1>
+      <p>Regístrate para realizar tus pedidos</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="registro-form">
+      @if (error()) {
+        <div class="alert-error">
+          {{ error() }}
+        </div>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre *</label>
+          <input
+            type="text"
+            id="nombre"
+            [(ngModel)]="nombre"
+            name="nombre"
+            placeholder="Tu nombre"
+            required
+            [disabled]="loading()"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">Apellido *</label>
+          <input
+            type="text"
+            id="apellido"
+            [(ngModel)]="apellido"
+            name="apellido"
+            placeholder="Tu apellido"
+            required
+            [disabled]="loading()"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="tu@email.com"
+          required
+          [disabled]="loading()"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono / WhatsApp</label>
+        <input
+          type="tel"
+          id="telefono"
+          [(ngModel)]="telefono"
+          name="telefono"
+          placeholder="+54 9 11 1234-5678"
+          [disabled]="loading()"
+        />
+        <small>Opcional - Para contactarte sobre tus pedidos</small>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña *</label>
+        <div class="password-input">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Mínimo 6 caracteres"
+            required
+            [disabled]="loading()"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+          >
+            {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Contraseña *</label>
+        <div class="password-input">
+          <input
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            id="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            placeholder="Repite tu contraseña"
+            required
+            [disabled]="loading()"
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="toggleConfirmPasswordVisibility()"
+          >
+            {{ showConfirmPassword() ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          Creando cuenta...
+        } @else {
+          Crear Cuenta
+        }
+      </button>
+
+      <div class="login-link">
+        <p>
+          ¿Ya tienes cuenta?
+          <a routerLink="/login">Inicia sesión aquí</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

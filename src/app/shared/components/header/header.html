@@ -23,18 +23,24 @@
           <span class="badge">{{ carritoService.cantidadTotal() }}</span>
         }
       </a>
-      
-      <!-- Mostrar según estado de autenticación -->
+
+      <!-- Mostrar según estado de autenticación y rol -->
       @if (authService.isAuthenticatedSignal$()()) {
-        <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link admin-link">
-          🔐 Panel Admin
-        </a>
+        @if (authService.isAdmin()) {
+          <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link admin-link">
+            🔐 Panel Admin
+          </a>
+        } @else {
+          <a routerLink="/mi-cuenta" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link cuenta-link">
+            👤 Mi Cuenta
+          </a>
+        }
         <button (click)="logout()" class="nav-link logout-btn">
           🚪 Cerrar Sesión
         </button>
       } @else {
-        <a routerLink="/admin/login" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link admin-link">
-          🔑 Admin
+        <a routerLink="/login" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link login-link">
+          🔑 Iniciar Sesión
         </a>
       }
     </nav>

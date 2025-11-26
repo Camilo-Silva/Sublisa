@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth-guard';
+import { authGuard, adminGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   // Rutas públicas (Tienda)
@@ -24,43 +24,59 @@ export const routes: Routes = [
     loadComponent: () => import('./features/tienda/components/confirmacion/confirmacion').then(m => m.Confirmacion)
   },
 
-  // Rutas de administración
+  // Rutas de autenticación
+  {
+    path: 'login',
+    loadComponent: () => import('./features/admin/components/login/login').then(m => m.Login)
+  },
+  {
+    path: 'registro',
+    loadComponent: () => import('./features/auth/components/registro/registro').then(m => m.Registro)
+  },
+  {
+    path: 'mi-cuenta',
+    loadComponent: () => import('./features/auth/components/mi-cuenta/mi-cuenta').then(m => m.MiCuenta),
+    canActivate: [authGuard]
+  },
+
+  // Rutas de administración (protegidas con adminGuard)
   {
     path: 'admin',
     children: [
       {
         path: 'login',
-        loadComponent: () => import('./features/admin/components/login/login').then(m => m.Login)
+        redirectTo: '/login',
+        pathMatch: 'full'
       },
       {
         path: 'dashboard',
         loadComponent: () => import('./features/admin/components/dashboard/dashboard').then(m => m.Dashboard),
-        canActivate: [authGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'productos',
         loadComponent: () => import('./features/admin/components/productos-list/productos-list').then(m => m.ProductosList),
-        canActivate: [authGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'productos/nuevo',
         loadComponent: () => import('./features/admin/components/producto-form/producto-form').then(m => m.ProductoForm),
-        canActivate: [authGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'productos/editar/:id',
         loadComponent: () => import('./features/admin/components/producto-form/producto-form').then(m => m.ProductoForm),
-        canActivate: [authGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'pedidos',
         loadComponent: () => import('./features/admin/components/pedidos-list/pedidos-list').then(m => m.PedidosList),
-        canActivate: [authGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'pedidos/:id',
         loadComponent: () => import('./features/admin/components/pedido-detalle/pedido-detalle').then(m => m.PedidoDetalle),
-        canActivate: [authGuard]
+        canActivate: [adminGuard]
       },
       {
         path: '',
