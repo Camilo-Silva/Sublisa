@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { SupabaseService } from '../../../../core/services/supabase.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,11 +16,20 @@ export class Login {
   loading = signal(false);
   error = signal<string | null>(null);
   showPassword = signal(false);
+  returnUrl = signal('/admin/dashboard');
 
   constructor(
-    private readonly supabaseService: SupabaseService,
-    private readonly router: Router
-  ) {}
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {
+    // Obtener la URL de retorno si existe
+    this.route.queryParams.subscribe(params => {
+      if (params['returnUrl']) {
+        this.returnUrl.set(params['returnUrl']);
+      }
+    });
+  }
 
   async onSubmit() {
     if (!this.email() || !this.password()) {
@@ -32,13 +41,11 @@ export class Login {
       this.loading.set(true);
       this.error.set(null);
 
-      await this.supabaseService.signIn(
-        this.email(),
-        this.password()
-      );
+      await this.authService.login(this.email(), this.password());
 
-      // Redirigir al dashboard
-      this.router.navigate(['/admin/dashboard']);
+      // El AuthService ya maneja la redirección
+      // Pero podemos navegar a la URL de retorno si existe
+      await this.router.navigate([this.returnUrl()]);
     } catch (err: any) {
       console.error('Error en login:', err);
 

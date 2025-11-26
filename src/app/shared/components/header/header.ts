@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CarritoService } from '../../../core/services/carrito.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,11 @@ import { CarritoService } from '../../../core/services/carrito.service';
 export class Header {
   menuAbierto = false;
 
-  constructor(public carritoService: CarritoService) {}
+  constructor(
+    public carritoService: CarritoService,
+    public authService: AuthService,
+    private readonly router: Router
+  ) {}
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
@@ -20,5 +25,12 @@ export class Header {
 
   cerrarMenu() {
     this.menuAbierto = false;
+  }
+
+  async logout() {
+    if (confirm('¿Deseas cerrar sesión?')) {
+      await this.authService.logout();
+      this.cerrarMenu();
+    }
   }
 }

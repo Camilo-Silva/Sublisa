@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { ProductosService } from '../../../../core/services/productos.service';
-import { SupabaseService } from '../../../../core/services/supabase.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 interface Estadisticas {
   totalPedidos: number;
@@ -35,7 +35,7 @@ export class Dashboard implements OnInit {
   constructor(
     private readonly pedidosService: PedidosService,
     private readonly productosService: ProductosService,
-    private readonly supabaseService: SupabaseService,
+    private readonly authService: AuthService,
     private readonly router: Router
   ) {}
 
@@ -77,19 +77,20 @@ export class Dashboard implements OnInit {
   }
 
   async cargarDatosUsuario() {
-    const { data: { user } } = await this.supabaseService.getClient().auth.getUser();
+    const user = this.authService.getCurrentUser();
     if (user?.email) {
       this.adminEmail.set(user.email);
     }
   }
 
   async cerrarSesion() {
-    try {
-      await this.supabaseService.signOut();
-      this.router.navigate(['/admin/login']);
-    } catch (err) {
-      console.error('Error al cerrar sesión:', err);
-      alert('Error al cerrar sesión');
+    if (confirm('¿Deseas cerrar sesión?')) {
+      try {
+        await this.authService.logout();
+      } catch (err) {
+        console.error('Error al cerrar sesión:', err);
+        alert('Error al cerrar sesión');
+      }
     }
   }
 
