@@ -1,0 +1,60 @@
+<div class="side-cart-overlay" [class.active]="carritoService.carritoAbierto()" (click)="cerrar()"></div>
+
+<div class="side-cart" [class.active]="carritoService.carritoAbierto()">
+  <div class="side-cart-header">
+    <h2>Mi Carrito</h2>
+    <button class="btn-close" (click)="cerrar()">×</button>
+  </div>
+
+  <div class="side-cart-body">
+    @if (carritoService.items().length === 0) {
+      <div class="carrito-vacio">
+        <p>Tu carrito está vacío</p>
+        <a routerLink="/" (click)="cerrar()" class="btn-continuar">Ver Productos</a>
+      </div>
+    } @else {
+      <div class="items-lista">
+        @for (item of carritoService.items(); track item.producto.id) {
+          <div class="item-carrito">
+            <div class="item-imagen">
+              <img [src]="item.producto.imagenes?.[0]?.url || 'https://via.placeholder.com/80'" [alt]="item.producto.nombre" />
+            </div>
+
+            <div class="item-info">
+              <h3>{{ item.producto.nombre }}</h3>
+              <p class="item-precio">${{ item.producto.precio | number:'1.2-2' }} c/u</p>
+
+              <div class="item-actions">
+                <div class="item-cantidad">
+                  <button (click)="disminuirCantidad(item.producto.id, item.cantidad)" class="btn-cantidad" [disabled]="eliminandoId() === item.producto.id">-</button>
+                  <span class="cantidad">{{ item.cantidad }}</span>
+                  <button (click)="aumentarCantidad(item.producto.id, item.cantidad)" class="btn-cantidad" [disabled]="eliminandoId() === item.producto.id">+</button>
+                </div>
+                <span class="item-subtotal">${{ item.subtotal | number:'1.2-2' }}</span>
+                @if (eliminandoId() === item.producto.id) {
+                  <span class="eliminando">Eliminando...</span>
+                } @else {
+                  <button (click)="eliminarProducto(item.producto.id)" class="btn-eliminar">
+                    🗑️
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (carritoService.items().length > 0) {
+    <div class="side-cart-footer">
+      <div class="total-line">
+        <span>Subtotal:</span>
+        <span class="total-valor">${{ carritoService.subtotal() | number:'1.2-2' }}</span>
+      </div>
+      <button (click)="vaciarCarrito()" class="btn-vaciar">Vaciar Carrito</button>
+      <a routerLink="/" (click)="cerrar()" class="btn-continuar-comprando">Seguir Comprando</a>
+      <a routerLink="/checkout" (click)="cerrar()" class="btn-checkout">Finalizar Pedido</a>
+    </div>
+  }
+</div>

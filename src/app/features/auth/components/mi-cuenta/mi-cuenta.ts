@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
+import { ConfiguracionService } from '../../../../core/services/configuracion.service';
 import { UserProfile, Pedido } from '../../../../core/models';
 
 @Component({
@@ -20,13 +21,31 @@ export class MiCuenta implements OnInit {
   mostrarModal = signal(false);
   loadingDetalle = signal(false);
 
+  // Computed signals para configuración dinámica
+  whatsapp = computed(() => {
+    const config = this.configuracionService.getConfiguracionSignal()();
+    return config?.whatsapp_vendedor || '+5491138824544';
+  });
+
+  email = computed(() => {
+    const config = this.configuracionService.getConfiguracionSignal()();
+    return config?.email_contacto || 'contacto@sublisa.com';
+  });
+
   constructor(
     public readonly authService: AuthService,
-    private readonly pedidosService: PedidosService
+    private readonly pedidosService: PedidosService,
+    private readonly configuracionService: ConfiguracionService
   ) {}
 
   ngOnInit() {
+    this.configuracionService.inicializar();
     this.cargarDatos();
+  }
+
+  getWhatsAppUrl(): string {
+    const cleanNumber = this.whatsapp().replaceAll(/\D/g, '');
+    return `https://wa.me/${cleanNumber}`;
   }
 
   async cargarDatos() {

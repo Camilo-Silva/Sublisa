@@ -7,16 +7,18 @@
 }
 
 .header-container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .logo {
-  margin: -2.5rem 0;
+  margin: -2rem 0;
+  flex-shrink: 0;
 
   a {
     display: flex;
@@ -29,7 +31,7 @@
     }
 
     img {
-      height: 170px;
+      height: 140px;
       width: auto;
       object-fit: contain;
     }
@@ -80,8 +82,10 @@
 
 .nav {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .nav-item-dropdown {
@@ -89,11 +93,12 @@
 
   .productos-link {
     cursor: pointer;
+    padding-bottom: 0.75rem;
   }
 
   .dropdown-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% - 0.25rem);
     left: 0;
     background: white;
     min-width: 280px;
@@ -104,7 +109,7 @@
     transform: translateY(-10px);
     transition: all 0.3s ease;
     z-index: 1000;
-    margin-top: 0.5rem;
+    padding-top: 0.5rem;
 
     &.show {
       opacity: 1;
@@ -125,6 +130,7 @@
         background: linear-gradient(135deg, rgba(233, 30, 99, 0.05), rgba(0, 188, 212, 0.05));
         color: #e91e63;
         font-weight: 600;
+        margin-top: 0;
       }
 
       &:hover {
@@ -149,10 +155,11 @@
   color: white;
   text-decoration: none;
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 6px;
   transition: background-color 0.3s;
   position: relative;
+  white-space: nowrap;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -181,6 +188,22 @@
     }
   }
 
+  &.carrito-btn {
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    background: transparent;
+    border: none;
+    outline: none;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: transparent;
+      outline: none;
+    }
+  }
+
   &.admin-link,
   &.cuenta-link,
   &.login-link {
@@ -197,7 +220,7 @@
   background: rgba(220, 53, 69, 0.8);
   border: none;
   font-weight: 500;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
@@ -210,9 +233,58 @@
   }
 }
 
+.carrito-mobile {
+  display: none;
+  position: relative;
+  color: white;
+  font-size: 1.75rem;
+  text-decoration: none;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  transition: transform 0.3s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: transparent;
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .badge-mobile {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 2px solid white;
+  }
+}
+
 @media (max-width: 768px) {
   .header-container {
     padding: 1rem;
+  }
+
+  .carrito-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .menu-toggle {

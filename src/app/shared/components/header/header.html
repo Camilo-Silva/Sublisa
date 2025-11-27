@@ -6,6 +6,13 @@
       </a>
     </div>
 
+    <button (click)="carritoService.abrirCarrito()" class="carrito-mobile">
+      🛒
+      @if (carritoService.cantidadTotal() > 0) {
+        <span class="badge-mobile">{{ carritoService.cantidadTotal() }}</span>
+      }
+    </button>
+
     <button class="menu-toggle" (click)="toggleMenu()" [class.active]="menuAbierto">
       <span></span>
       <span></span>
@@ -43,12 +50,12 @@
         Cómo Comprar
       </a>
 
-      <a routerLink="/carrito" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link carrito-link">
+      <button (click)="carritoService.toggleCarrito(); cerrarMenu()" class="nav-link carrito-link carrito-btn">
         🛒 Carrito
         @if (carritoService.cantidadTotal() > 0) {
           <span class="badge">{{ carritoService.cantidadTotal() }}</span>
         }
-      </a>
+      </button>
 
       <!-- Mostrar según estado de autenticación y rol -->
       @if (authService.isAuthenticatedSignal$()()) {

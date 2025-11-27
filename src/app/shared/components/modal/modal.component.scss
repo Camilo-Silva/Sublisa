@@ -1,0 +1,250 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  padding: 2rem 2rem 1rem;
+  text-align: center;
+
+  .modal-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+}
+
+.modal-body {
+  padding: 1rem 2rem 2rem;
+  text-align: center;
+
+  p {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+}
+
+.modal-footer {
+  padding: 1.5rem 2rem;
+  background: #f8f9fa;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+
+  button {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 120px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .btn-cancel {
+    background: #6c757d;
+    color: white;
+
+    &:hover {
+      background: #5a6268;
+    }
+  }
+
+  .btn-confirm {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+// Estilos por tipo de modal
+.modal-success {
+  .modal-icon {
+    background: #d4edda;
+    color: #28a745;
+
+    .icon-success {
+      animation: scaleIn 0.4s ease-out;
+    }
+  }
+
+  .btn-confirm {
+    background: #28a745;
+
+    &:hover {
+      background: #218838;
+    }
+  }
+}
+
+.modal-error {
+  .modal-icon {
+    background: #f8d7da;
+    color: #dc3545;
+
+    .icon-error {
+      animation: scaleIn 0.4s ease-out;
+    }
+  }
+
+  .btn-confirm {
+    background: #dc3545;
+
+    &:hover {
+      background: #c82333;
+    }
+  }
+}
+
+.modal-warning {
+  .modal-icon {
+    background: #fff3cd;
+    color: #ffc107;
+
+    .icon-warning {
+      animation: scaleIn 0.4s ease-out;
+    }
+  }
+
+  .btn-confirm {
+    background: #ffc107;
+    color: #333;
+
+    &:hover {
+      background: #e0a800;
+    }
+  }
+}
+
+.modal-confirm {
+  .modal-icon {
+    background: #cfe2ff;
+    color: #0d6efd;
+
+    .icon-confirm {
+      animation: scaleIn 0.4s ease-out;
+    }
+  }
+}
+
+.modal-info {
+  .modal-icon {
+    background: #cfe2ff;
+    color: #0d6efd;
+
+    .icon-info {
+      animation: scaleIn 0.4s ease-out;
+    }
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-width: none;
+  }
+
+  .modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+
+    .modal-icon {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .modal-body {
+    padding: 1rem 1.5rem 1.5rem;
+
+    p {
+      font-size: 0.95rem;
+    }
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+
+    button {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+}

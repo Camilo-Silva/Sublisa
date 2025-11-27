@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CarritoService } from '../../../core/services/carrito.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductosService } from '../../../core/services/productos.service';
+import { ModalService } from '../../../core/services/modal.service';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +21,8 @@ export class Header implements OnInit {
     public carritoService: CarritoService,
     public authService: AuthService,
     private readonly router: Router,
-    private readonly productosService: ProductosService
+    private readonly productosService: ProductosService,
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -55,7 +57,11 @@ export class Header implements OnInit {
   }
 
   async logout() {
-    if (confirm('¿Deseas cerrar sesión?')) {
+    const result = await this.modalService.confirm(
+      'Cerrar Sesión',
+      '¿Estás seguro de que deseas cerrar sesión?'
+    );
+    if (result) {
       await this.authService.logout();
       this.cerrarMenu();
     }

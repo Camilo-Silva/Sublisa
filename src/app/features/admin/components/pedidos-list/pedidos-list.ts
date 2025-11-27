@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Pedido } from '../../../../core/models';
+import { ModalService } from '../../../../core/services/modal.service';
 
 type EstadoPedido = 'TODOS' | 'PENDIENTE_CONTACTO' | 'CONFIRMADO' | 'EN_PREPARACION' | 'LISTO_ENTREGA' | 'ENTREGADO' | 'CANCELADO';
 
@@ -46,7 +47,8 @@ export class PedidosList implements OnInit {
 
   constructor(
     private readonly pedidosService: PedidosService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -218,11 +220,11 @@ export class PedidosList implements OnInit {
     return this.pedidosFiltrados().reduce((sum, p) => sum + p.total, 0);
   }
 
-  exportarAExcel() {
+  async exportarAExcel() {
     const pedidos = this.pedidosFiltrados();
 
     if (pedidos.length === 0) {
-      alert('No hay pedidos para exportar');
+      await this.modalService.warning('No hay pedidos para exportar');
       return;
     }
 
@@ -258,11 +260,11 @@ export class PedidosList implements OnInit {
     link.remove();
   }
 
-  exportarAExcelDetallado() {
+  async exportarAExcelDetallado() {
     const pedidos = this.pedidosFiltrados();
 
     if (pedidos.length === 0) {
-      alert('No hay pedidos para exportar');
+      await this.modalService.warning('No hay pedidos para exportar');
       return;
     }
 

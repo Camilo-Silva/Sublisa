@@ -51,14 +51,67 @@
       margin-bottom: 0.5rem;
       color: rgba(255, 255, 255, 0.9);
 
-      a {
+      a,
+      .footer-link-btn {
         color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
         transition: color 0.3s;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-family: inherit;
+        font-size: inherit;
+        cursor: pointer;
+        text-align: left;
 
         &:hover {
           color: white;
         }
+      }
+
+      &.email-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        svg {
+          flex-shrink: 0;
+        }
+      }
+
+      &.location-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        max-width: 100%;
+
+        svg {
+          flex-shrink: 0;
+          margin-top: 0.1rem;
+        }
+      }
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      svg {
+        flex-shrink: 0;
+        transition: transform 0.3s;
+      }
+
+      &:hover svg {
+        transform: scale(1.1);
+      }
+
+      &.whatsapp-link:hover {
+        color: #25D366;
+      }
+
+      &.instagram-link:hover {
+        color: #E4405F;
       }
     }
   }

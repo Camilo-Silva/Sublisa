@@ -16,7 +16,7 @@ export class Login {
   loading = signal(false);
   error = signal<string | null>(null);
   showPassword = signal(false);
-  returnUrl = signal('/admin/dashboard');
+  returnUrl = signal('/');
 
   constructor(
     private readonly authService: AuthService,

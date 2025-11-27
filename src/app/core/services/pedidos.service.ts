@@ -209,7 +209,7 @@ Este es un correo automático del sistema Sublisa
       // Opción 1: Usar fetch para enviar a un webhook
       const webhookUrl = 'https://formsubmit.co/ajax/' + emailVendedor;
 
-      await fetch(webhookUrl, {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -223,7 +223,13 @@ Este es un correo automático del sistema Sublisa
         })
       });
 
-      console.log('✅ Email enviado a:', emailVendedor);
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('✅ Email enviado a:', emailVendedor, result);
+      } else {
+        console.error('❌ Error al enviar email:', response.status, result);
+      }
 
     } catch (error) {
       // No lanzar error para no bloquear la creación del pedido

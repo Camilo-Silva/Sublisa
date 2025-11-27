@@ -1,25 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { CarritoService } from '../../../../core/services/carrito.service';
-import { ModalService } from '../../../../core/services/modal.service';
+import { CarritoService } from '../../../core/services/carrito.service';
+import { ModalService } from '../../../core/services/modal.service';
 
 @Component({
-  selector: 'app-carrito',
+  selector: 'app-side-cart',
+  standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './carrito.html',
-  styleUrl: './carrito.scss',
+  templateUrl: './side-cart.component.html',
+  styleUrl: './side-cart.component.scss'
 })
-export class Carrito implements OnInit {
+export class SideCartComponent {
+  eliminandoId = signal<string | null>(null);
+
   constructor(
     public carritoService: CarritoService,
     private readonly modalService: ModalService
   ) {}
-
-  ngOnInit() {
-    // Scroll al principio de la página cuando se carga el carrito
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 
   aumentarCantidad(productoId: string, cantidadActual: number) {
     this.carritoService.actualizarCantidad(productoId, cantidadActual + 1);
@@ -32,13 +30,10 @@ export class Carrito implements OnInit {
   }
 
   async eliminarProducto(productoId: string) {
-    const result = await this.modalService.confirm(
-      'Eliminar Producto',
-      '¿Estás seguro de que deseas eliminar este producto del carrito?'
-    );
-    if (result) {
-      this.carritoService.eliminarProducto(productoId);
-    }
+    this.eliminandoId.set(productoId);
+    await new Promise(resolve => setTimeout(resolve, 400));
+    this.carritoService.eliminarProducto(productoId);
+    this.eliminandoId.set(null);
   }
 
   async vaciarCarrito() {
@@ -49,5 +44,9 @@ export class Carrito implements OnInit {
     if (result) {
       this.carritoService.vaciarCarrito();
     }
+  }
+
+  cerrar() {
+    this.carritoService.cerrarCarrito();
   }
 }

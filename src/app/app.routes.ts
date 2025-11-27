@@ -89,6 +89,11 @@ export const routes: Routes = [
         canActivate: [adminGuard]
       },
       {
+        path: 'ajustes',
+        loadComponent: () => import('./features/admin/components/ajustes/ajustes').then(m => m.Ajustes),
+        canActivate: [adminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

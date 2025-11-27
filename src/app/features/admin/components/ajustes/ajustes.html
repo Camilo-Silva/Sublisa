@@ -1,0 +1,182 @@
+<div class="ajustes-container">
+  <div class="ajustes-header">
+    <h1>⚙️ Ajustes del Negocio</h1>
+    <p class="subtitle">Configura la información general de tu tienda</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando configuración...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-state">
+      <p>{{ error() }}</p>
+      <button (click)="cargarConfiguracion()" class="btn-retry">
+        Reintentar
+      </button>
+    </div>
+  } @else {
+    <div class="ajustes-content">
+      <div class="config-form">
+
+        <!-- Nombre del Negocio -->
+        <div class="form-group">
+          <label for="nombre_negocio">
+            <span class="label-icon">🏪</span>
+            Nombre del Negocio
+          </label>
+          <input
+            type="text"
+            id="nombre_negocio"
+            [value]="configuracion().nombre_negocio"
+            (input)="actualizarCampo('nombre_negocio', $any($event.target).value)"
+            placeholder="Ej: Sublisa"
+            required
+          />
+          <small class="help-text">Este nombre aparecerá en tu tienda y comunicaciones</small>
+        </div>
+
+        <!-- Email de Contacto -->
+        <div class="form-group">
+          <label for="email_contacto">
+            <span class="label-icon">📧</span>
+            Email de Contacto
+          </label>
+          <input
+            type="email"
+            id="email_contacto"
+            [value]="configuracion().email_contacto"
+            (input)="actualizarCampo('email_contacto', $any($event.target).value)"
+            placeholder="contacto@tunegocio.com"
+            required
+          />
+          <small class="help-text">Email visible en el footer y para notificaciones</small>
+        </div>
+
+        <!-- WhatsApp Vendedor -->
+        <div class="form-group">
+          <label for="whatsapp_vendedor">
+            <span class="label-icon">📱</span>
+            WhatsApp del Vendedor
+          </label>
+          <input
+            type="tel"
+            id="whatsapp_vendedor"
+            [value]="configuracion().whatsapp_vendedor"
+            (input)="actualizarCampo('whatsapp_vendedor', $any($event.target).value)"
+            placeholder="+5491138824544"
+            required
+          />
+          <small class="help-text">Incluye código de país (ej: +54911XXXXXXXX)</small>
+        </div>
+
+        <!-- Mensaje de Bienvenida -->
+        <div class="form-group">
+          <label for="mensaje_bienvenida">
+            <span class="label-icon">💬</span>
+            Mensaje de Bienvenida
+          </label>
+          <textarea
+            id="mensaje_bienvenida"
+            [value]="configuracion().mensaje_bienvenida"
+            (input)="actualizarCampo('mensaje_bienvenida', $any($event.target).value)"
+            placeholder="¡Bienvenido a Sublisa! Tu tienda de productos de sublimación"
+            rows="4"
+          ></textarea>
+          <small class="help-text">Mensaje que se enviará automáticamente por WhatsApp a nuevos clientes</small>
+        </div>
+
+        <!-- Dirección -->
+        <div class="form-group">
+          <label for="direccion">
+            <span class="label-icon">📍</span>
+            Dirección
+          </label>
+          <input
+            type="text"
+            id="direccion"
+            [value]="configuracion().direccion"
+            (input)="actualizarCampo('direccion', $any($event.target).value)"
+            placeholder="Calle Balboa 6741"
+            required
+          />
+          <small class="help-text">Dirección completa de tu negocio</small>
+        </div>
+
+        <!-- Localidad -->
+        <div class="form-group">
+          <label for="localidad">
+            <span class="label-icon">🏛️</span>
+            Localidad
+          </label>
+          <input
+            type="text"
+            id="localidad"
+            [value]="configuracion().localidad"
+            (input)="actualizarCampo('localidad', $any($event.target).value)"
+            placeholder="González Catán"
+            required
+          />
+          <small class="help-text">Ciudad o localidad donde está ubicado tu negocio</small>
+        </div>
+
+        <!-- Provincia -->
+        <div class="form-group">
+          <label for="provincia">
+            <span class="label-icon">🗺️</span>
+            Provincia
+          </label>
+          <input
+            type="text"
+            id="provincia"
+            [value]="configuracion().provincia"
+            (input)="actualizarCampo('provincia', $any($event.target).value)"
+            placeholder="Buenos Aires"
+            required
+          />
+          <small class="help-text">Provincia o estado</small>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-guardar"
+            [disabled]="guardando()"
+            (click)="guardarConfiguracion()"
+          >
+            @if (guardando()) {
+              <span class="spinner"></span>
+              Guardando...
+            } @else {
+              💾 Guardar Cambios
+            }
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Panel de Información -->
+      <div class="info-panel">
+        <h3>ℹ️ Información Importante</h3>
+        <ul>
+          <li>
+            <strong>Nombre del Negocio:</strong> Se muestra en el título de la página y emails
+          </li>
+          <li>
+            <strong>Email de Contacto:</strong> Aparece en el footer y se usa para notificaciones
+          </li>
+          <li>
+            <strong>WhatsApp:</strong> Los clientes pueden contactarte directamente desde la tienda
+          </li>
+          <li>
+            <strong>Mensaje de Bienvenida:</strong> Se incluye automáticamente al enviar pedidos por WhatsApp
+          </li>
+          <li>
+            <strong>Ubicación:</strong> Se muestra en el footer y en las páginas de información
+          </li>
+        </ul>
+      </div>
+    </div>
+  }
+</div>

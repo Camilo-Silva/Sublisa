@@ -40,6 +40,8 @@ body {
   line-height: 1.6;
   color: var(--color-negro);
   background: var(--color-gris-claro);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Utilidades de colores vibrantes */

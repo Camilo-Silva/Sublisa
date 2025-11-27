@@ -1,0 +1,37 @@
+@if (modalService.modalState().isOpen) {
+  <div class="modal-overlay" (click)="onOverlayClick()">
+    <div class="modal-content" (click)="$event.stopPropagation()" [class]="'modal-' + modalService.modalState().type">
+      <div class="modal-header">
+        <div class="modal-icon">
+          @switch (modalService.modalState().type) {
+            @case ('success') { <span class="icon-success">✓</span> }
+            @case ('error') { <span class="icon-error">✕</span> }
+            @case ('warning') { <span class="icon-warning">⚠</span> }
+            @case ('confirm') { <span class="icon-confirm">?</span> }
+            @default { <span class="icon-info">i</span> }
+          }
+        </div>
+        <h2>{{ modalService.modalState().title }}</h2>
+      </div>
+
+      <div class="modal-body">
+        <p>{{ modalService.modalState().message }}</p>
+      </div>
+
+      <div class="modal-footer">
+        @if (modalService.modalState().type === 'confirm') {
+          <button class="btn-cancel" (click)="onCancel()">
+            {{ modalService.modalState().cancelText || 'Cancelar' }}
+          </button>
+          <button class="btn-confirm" (click)="onConfirm()">
+            {{ modalService.modalState().confirmText || 'Confirmar' }}
+          </button>
+        } @else {
+          <button class="btn-confirm" (click)="onConfirm()">
+            {{ modalService.modalState().confirmText || 'Aceptar' }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}

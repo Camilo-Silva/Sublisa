@@ -1,0 +1,22 @@
+<div class="toast-container">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast toast-{{ toast.type }}">
+      <div class="toast-header">
+        <span class="toast-icon">✓</span>
+        <strong>{{ toast.message }}</strong>
+        <button class="toast-close" (click)="toastService.remove(toast.id)">×</button>
+      </div>
+      <div class="toast-body">
+        <div class="product-info">
+          <img [src]="toast.productImage" [alt]="toast.productName" class="product-thumbnail">
+          <div class="product-text">
+            <div class="product-name">{{ toast.productName }}</div>
+            <div class="product-details">
+              {{ toast.cantidad }} x ${{ toast.precio | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

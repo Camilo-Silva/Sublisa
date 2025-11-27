@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ConfiguracionService } from '../../../../core/services/configuracion.service';
 
 @Component({
   selector: 'app-quienes-somos',
@@ -8,19 +9,34 @@ import { CommonModule } from '@angular/common';
   templateUrl: './quienes-somos.html',
   styleUrls: ['./quienes-somos.scss']
 })
-export class QuienesSomosComponent {
+export class QuienesSomosComponent implements OnInit {
   titulo = 'Quiénes Somos';
 
-  ubicacion = {
-    direccion: 'Calle Balboa 6741',
-    localidad: 'González Catán',
-    provincia: 'Buenos Aires'
-  };
+  // Computed signals que obtienen la configuración dinámicamente
+  whatsapp = computed(() => {
+    const config = this.configuracionService.getConfiguracionSignal()();
+    return config?.whatsapp_vendedor || '+5491138824544';
+  });
 
-  contacto = {
-    telefono: '1122355874',
-    whatsapp: '1122355874'
-  };
+  ubicacion = computed(() => {
+    const config = this.configuracionService.getConfiguracionSignal()();
+    return {
+      direccion: config?.direccion || 'Calle Balboa 6741',
+      localidad: config?.localidad || 'González Catán',
+      provincia: config?.provincia || 'Buenos Aires'
+    };
+  });
+
+  constructor(private readonly configuracionService: ConfiguracionService) {}
+
+  ngOnInit() {
+    this.configuracionService.inicializar();
+  }
+
+  getWhatsAppUrl(): string {
+    const cleanNumber = this.whatsapp().replaceAll(/\D/g, '');
+    return `https://wa.me/${cleanNumber}`;
+  }
 
   mediosPago = [
     'Mercado Pago',

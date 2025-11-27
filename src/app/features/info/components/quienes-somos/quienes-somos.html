@@ -35,16 +35,16 @@
       <div class="info-card">
         <h3>📍 Ubicación</h3>
         <p>
-          {{ ubicacion.direccion }}<br>
-          {{ ubicacion.localidad }}, {{ ubicacion.provincia }}
+          {{ ubicacion().direccion }}<br>
+          {{ ubicacion().localidad }}, {{ ubicacion().provincia }}
         </p>
       </div>
 
       <div class="info-card">
         <h3>📞 Contacto</h3>
         <p>
-          <a [href]="'https://wa.me/' + contacto.whatsapp" target="_blank" class="whatsapp-link">
-            {{ contacto.telefono }}
+          <a [href]="getWhatsAppUrl()" target="_blank" class="whatsapp-link">
+            {{ whatsapp() }}
           </a>
         </p>
       </div>

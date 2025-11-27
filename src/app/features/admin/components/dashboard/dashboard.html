@@ -82,9 +82,9 @@
           <span class="action-icon">📝</span>
           <span class="action-label">Ver Pedidos</span>
         </a>
-        <a href="/" target="_blank" class="action-card">
-          <span class="action-icon">🛍️</span>
-          <span class="action-label">Ver Tienda</span>
+        <a routerLink="/admin/ajustes" class="action-card">
+          <span class="action-icon">⚙️</span>
+          <span class="action-label">Ajustes</span>
         </a>
       </div>
     </div>
@@ -115,8 +115,8 @@
                   <td class="pedido-numero">#{{ pedido.numero_pedido }}</td>
                   <td>
                     <div class="cliente-info">
-                      <strong>{{ pedido.clientes?.nombre || 'N/A' }}</strong>
-                      <small>{{ pedido.clientes?.telefono || '' }}</small>
+                      <strong>{{ pedido.cliente?.nombre || 'N/A' }}</strong>
+                      <small>{{ pedido.cliente?.telefono || '' }}</small>
                     </div>
                   </td>
                   <td>{{ pedido.created_at | date:'dd/MM/yy HH:mm' }}</td>

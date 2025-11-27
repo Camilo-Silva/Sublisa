@@ -1,0 +1,139 @@
+.toast-container {
+  position: fixed;
+  top: 75px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 380px;
+}
+
+.toast {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-success {
+  border-left: 4px solid #28a745;
+}
+
+.toast-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  .toast-icon {
+    font-size: 1.25rem;
+    color: #28a745;
+  }
+
+  strong {
+    flex: 1;
+    color: #333;
+    font-size: 0.95rem;
+  }
+
+  .toast-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.toast-body {
+  padding: 0.75rem 1rem;
+
+  .product-info {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .product-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 2px solid rgba(233, 30, 99, 0.2);
+  }
+
+  .product-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .product-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-details {
+    color: #666;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .toast-container {
+    top: 65px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .toast {
+    margin: 0;
+  }
+
+  .toast-body {
+    .product-thumbnail {
+      width: 50px;
+      height: 50px;
+    }
+
+    .product-name {
+      font-size: 0.9rem;
+    }
+
+    .product-details {
+      font-size: 0.85rem;
+    }
+  }
+}

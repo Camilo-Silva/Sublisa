@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Pedido, EstadoPedido } from '../../../../core/models';
+import { ModalService } from '../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-pedido-detalle',
@@ -30,7 +31,8 @@ export class PedidoDetalle implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly pedidosService: PedidosService
+    private readonly pedidosService: PedidosService,
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -71,13 +73,16 @@ export class PedidoDetalle implements OnInit {
     const nuevoEstadoValor = this.nuevoEstado();
 
     // Mensaje especial si se va a confirmar el pedido
-    let mensajeConfirmacion = `¿Cambiar estado del pedido a ${this.getEstadoTexto(nuevoEstadoValor)}?`;
+    let titulo = 'Cambiar Estado';
+    let mensaje = `¿Cambiar estado del pedido a ${this.getEstadoTexto(nuevoEstadoValor)}?`;
 
     if (nuevoEstadoValor === 'CONFIRMADO' && estadoActual !== 'CONFIRMADO') {
-      mensajeConfirmacion = `⚠️ IMPORTANTE: Al confirmar este pedido se descontará automáticamente el stock de los productos.\n\n¿Desea confirmar el pedido #${pedido.numero_pedido}?`;
+      titulo = 'Confirmar Pedido';
+      mensaje = `⚠️ IMPORTANTE: Al confirmar este pedido se descontará automáticamente el stock de los productos.\n\n¿Desea confirmar el pedido #${pedido.numero_pedido}?`;
     }
 
-    if (!confirm(mensajeConfirmacion)) {
+    const confirmar = await this.modalService.confirm(titulo, mensaje);
+    if (!confirmar) {
       return;
     }
 
@@ -90,18 +95,18 @@ export class PedidoDetalle implements OnInit {
 
       // Mensaje específico según el cambio de estado
       if (nuevoEstadoValor === 'CONFIRMADO' && estadoActual !== 'CONFIRMADO') {
-        alert('✅ Pedido confirmado exitosamente\n\n📦 El stock de los productos ha sido descontado automáticamente.');
+        await this.modalService.success('Pedido confirmado exitosamente. El stock de los productos ha sido descontado automáticamente.');
       } else {
-        alert('✅ Estado actualizado exitosamente');
+        await this.modalService.success('Estado actualizado exitosamente');
       }
     } catch (err: unknown) {
       console.error('Error al cambiar estado:', err);
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
 
       if (errorMessage.includes('Stock insuficiente')) {
-        alert(`❌ Error: ${errorMessage}\n\nNo se puede confirmar el pedido porque no hay stock suficiente.`);
+        await this.modalService.error(`${errorMessage}. No se puede confirmar el pedido porque no hay stock suficiente.`);
       } else {
-        alert(`❌ Error al cambiar el estado: ${errorMessage}`);
+        await this.modalService.error(`Error al cambiar el estado: ${errorMessage}`);
       }
     } finally {
       this.actualizandoEstado.set(false);
@@ -132,10 +137,10 @@ export class PedidoDetalle implements OnInit {
     return textos[estado] || estado;
   }
 
-  abrirWhatsApp() {
+  async abrirWhatsApp() {
     const pedido = this.pedido();
     if (!pedido?.cliente?.telefono) {
-      alert('No hay teléfono de contacto');
+      await this.modalService.warning('No hay teléfono de contacto registrado para este pedido.');
       return;
     }
 

@@ -10,6 +10,10 @@ export class CarritoService {
   // Señal reactiva para los items del carrito
   private readonly itemsSignal = signal<ItemCarrito[]>(this.loadFromStorage());
 
+  // Signal para controlar el carrito lateral
+  private readonly carritoAbiertoSignal = signal(false);
+  carritoAbierto = this.carritoAbiertoSignal.asReadonly();
+
   // Computed signals para cálculos
   items = this.itemsSignal.asReadonly();
 
@@ -20,6 +24,18 @@ export class CarritoService {
   subtotal = computed(() =>
     this.itemsSignal().reduce((sum, item) => sum + item.subtotal, 0)
   );
+
+  toggleCarrito() {
+    this.carritoAbiertoSignal.update(value => !value);
+  }
+
+  abrirCarrito() {
+    this.carritoAbiertoSignal.set(true);
+  }
+
+  cerrarCarrito() {
+    this.carritoAbiertoSignal.set(false);
+  }
 
   /**
    * Añade un producto al carrito

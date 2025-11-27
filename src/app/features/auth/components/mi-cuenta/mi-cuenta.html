@@ -109,10 +109,10 @@
       <h2>❓ ¿Necesitas Ayuda?</h2>
       <p>Si tienes alguna consulta sobre tus pedidos, contáctanos:</p>
       <div class="contact-buttons">
-        <a href="https://wa.me/5491138824544" target="_blank" class="btn-contact">
+        <a [href]="getWhatsAppUrl()" target="_blank" class="btn-contact">
           💬 WhatsApp
         </a>
-        <a href="mailto:camilosilva.0301@gmail.com" class="btn-contact">
+        <a [href]="'mailto:' + email()" class="btn-contact">
           ✉️ Email
         </a>
       </div>

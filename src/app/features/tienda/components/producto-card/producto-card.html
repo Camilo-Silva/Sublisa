@@ -18,12 +18,12 @@
 
       <button
         (click)="agregarAlCarrito($event)"
-        [disabled]="producto.stock === 0"
+        [disabled]="producto.stock === 0 || agregando()"
         class="btn-agregar"
-        [class.en-carrito]="estaEnCarrito"
+        [class.agregando]="agregando()"
       >
-        @if (estaEnCarrito) {
-          ✓ En carrito
+        @if (agregando()) {
+          Agregando...
         } @else {
           Agregar
         }

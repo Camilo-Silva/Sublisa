@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CarritoService } from '../../../../core/services/carrito.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -9,7 +9,7 @@ import { Cliente } from '../../../../core/models';
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './checkout.html',
   styleUrl: './checkout.scss',
 })
@@ -30,6 +30,10 @@ export class Checkout implements OnInit {
     private readonly authService: AuthService,
     private readonly router: Router
   ) {}
+
+  abrirCarrito() {
+    this.carritoService.abrirCarrito();
+  }
 
   ngOnInit() {
     // Redirigir si el carrito está vacío

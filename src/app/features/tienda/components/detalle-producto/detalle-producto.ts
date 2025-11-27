@@ -19,6 +19,7 @@ export class DetalleProducto implements OnInit {
   cantidad = signal(1);
   lightboxAbierto = signal(false);
   indiceImagenActual = signal(0);
+  agregando = signal(false);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -79,12 +80,15 @@ export class DetalleProducto implements OnInit {
     }
   }
 
-  agregarAlCarrito() {
+  async agregarAlCarrito() {
     const prod = this.producto();
     if (prod) {
+      this.agregando.set(true);
+      await new Promise(resolve => setTimeout(resolve, 300));
       this.carritoService.agregarProducto(prod, this.cantidad());
-      // Opcional: redirigir al carrito o mostrar notificación
-      this.router.navigate(['/carrito']);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      this.agregando.set(false);
+      this.carritoService.abrirCarrito();
     }
   }
 

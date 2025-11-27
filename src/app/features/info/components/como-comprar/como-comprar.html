@@ -44,8 +44,8 @@
           </div>
           <p class="contacto-info">
             📞 Ante cualquier duda, podés contactarnos por WhatsApp al
-            <a [href]="'https://wa.me/' + contacto.whatsapp" target="_blank" class="whatsapp-link">
-              {{ contacto.telefono }}
+            <a [href]="getWhatsAppUrl()" target="_blank" class="whatsapp-link">
+              {{ whatsapp() }}
             </a>
           </p>
         </div>
@@ -75,8 +75,8 @@
           <div class="direccion-card">
             <div class="icono-ubicacion">📍</div>
             <div class="info-direccion">
-              <p class="direccion">{{ ubicacion.direccion }}</p>
-              <p class="localidad">{{ ubicacion.localidad }}, {{ ubicacion.provincia }}</p>
+              <p class="direccion">{{ ubicacion().direccion }}</p>
+              <p class="localidad">{{ ubicacion().localidad }}, {{ ubicacion().provincia }}</p>
             </div>
           </div>
         </div>

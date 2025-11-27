@@ -99,10 +99,16 @@
           <div class="acciones">
             <button
               (click)="agregarAlCarrito()"
-              [disabled]="!puedeAgregar"
+              [disabled]="!puedeAgregar || agregando()"
               class="btn-agregar-carrito"
+              [class.agregando]="agregando()"
             >
-              🛒 Agregar al Carrito
+              @if (agregando()) {
+                <span class="spinner"></span>
+                Agregando...
+              } @else {
+                🛒 Agregar al Carrito
+              }
             </button>
             <a routerLink="/" class="btn-seguir-comprando">Seguir Comprando</a>
           </div>
