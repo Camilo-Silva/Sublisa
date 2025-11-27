@@ -30,33 +30,6 @@
   }
 }
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-
-  a {
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s;
-
-    &:hover {
-      color: #0056b3;
-      text-decoration: underline;
-    }
-  }
-
-  .separator {
-    color: #999;
-  }
-
-  .current {
-    color: #666;
-  }
-}
-
 .producto-detalle {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -1,13 +1,16 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { Producto } from '../../../../core/models';
 import { ProductoCard } from '../producto-card/producto-card';
+import { getSubcategorias } from '../../../../core/config/categorias.config';
+import { Breadcrumbs, BreadcrumbItem } from '../../../../shared/components/breadcrumbs/breadcrumbs';
 
 @Component({
   selector: 'app-catalogo',
-  imports: [CommonModule, ProductoCard],
+  imports: [CommonModule, ProductoCard, Breadcrumbs],
   templateUrl: './catalogo.html',
   styleUrl: './catalogo.scss',
 })
@@ -18,7 +21,50 @@ export class Catalogo implements OnInit {
   error = signal<string | null>(null);
   busqueda = signal('');
   categoriaSeleccionada = signal<string>('TODAS');
+  subcategoriaSeleccionada = signal<string>('TODAS');
   categorias = signal<string[]>(['TODAS']);
+
+  // Subcategorías disponibles basadas en la categoría seleccionada
+  subcategoriasDisponibles = computed(() => {
+    const categoria = this.categoriaSeleccionada();
+    if (categoria === 'TODAS') return [];
+    return getSubcategorias(categoria);
+  });
+
+  // Mostrar sidebar solo cuando hay categoría seleccionada
+  mostrarSidebar = computed(() => {
+    return this.categoriaSeleccionada() !== 'TODAS' && this.subcategoriasDisponibles().length > 0;
+  });
+
+  // Breadcrumbs dinámicos
+  breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    const items: BreadcrumbItem[] = [
+      { label: 'Inicio', url: '/' }
+    ];
+
+    const categoria = this.categoriaSeleccionada();
+    const subcategoria = this.subcategoriaSeleccionada();
+
+    if (categoria && categoria !== 'TODAS') {
+      items.push({
+        label: categoria,
+        url: '/productos',
+        queryParams: { categoria }
+      });
+
+      if (subcategoria && subcategoria !== 'TODAS') {
+        items.push({
+          label: subcategoria
+        });
+      }
+    } else {
+      items.push({
+        label: 'Productos'
+      });
+    }
+
+    return items;
+  });
 
   // Paginación
   paginaActual = signal(1);
@@ -31,18 +77,48 @@ export class Catalogo implements OnInit {
 
   constructor(
     private readonly productosService: ProductosService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly titleService: Title
   ) {}
 
+  navegarASubcategoria(subcategoria: string) {
+    this.router.navigate(['/productos'], {
+      queryParams: {
+        categoria: this.categoriaSeleccionada(),
+        subcategoria: subcategoria
+      }
+    });
+  }
+
+  limpiarSubcategoria() {
+    this.router.navigate(['/productos'], {
+      queryParams: {
+        categoria: this.categoriaSeleccionada()
+      }
+    });
+  }
+
   ngOnInit() {
+    this.titleService.setTitle('Tienda Online de Sublisa');
+
     // Suscribirse a cambios en los query params
     this.route.queryParams.subscribe(params => {
       const categoria = params['categoria'];
+      const subcategoria = params['subcategoria'];
+
       if (categoria) {
         this.categoriaSeleccionada.set(categoria);
       } else {
         this.categoriaSeleccionada.set('TODAS');
       }
+
+      if (subcategoria) {
+        this.subcategoriaSeleccionada.set(subcategoria);
+      } else {
+        this.subcategoriaSeleccionada.set('TODAS');
+      }
+
       this.cargarProductos();
     });
   }
@@ -92,8 +168,14 @@ export class Catalogo implements OnInit {
   }
 
   filtrarPorCategoria(categoria: string) {
-    this.categoriaSeleccionada.set(categoria);
-    this.aplicarFiltros();
+    // Navegar con la nueva categoría y limpiar subcategoría
+    if (categoria === 'TODAS') {
+      this.router.navigate(['/productos']);
+    } else {
+      this.router.navigate(['/productos'], {
+        queryParams: { categoria: categoria }
+      });
+    }
   }
 
   private aplicarFiltros() {
@@ -102,6 +184,11 @@ export class Catalogo implements OnInit {
     // Filtrar por categoría
     if (this.categoriaSeleccionada() !== 'TODAS') {
       filtrados = filtrados.filter(p => p.categoria === this.categoriaSeleccionada());
+    }
+
+    // Filtrar por subcategoría
+    if (this.subcategoriaSeleccionada() !== 'TODAS') {
+      filtrados = filtrados.filter(p => p.subcategoria === this.subcategoriaSeleccionada());
     }
 
     this.productosFiltrados.set(filtrados);

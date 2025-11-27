@@ -6,7 +6,7 @@
 
 .catalogo-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 
   h1 {
     font-size: 2.5rem;
@@ -17,13 +17,23 @@
   .subtitle {
     color: #666;
     font-size: 1.1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 }
 
+// Fila horizontal para búsqueda y filtros
+.search-filters-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
 .search-bar {
-  max-width: 500px;
-  margin: 0 auto 1.5rem;
+  flex: 0 1 400px;
+  min-width: 280px;
 
   .search-input {
     width: 100%;
@@ -41,7 +51,9 @@
 }
 
 .filtros-container {
-  margin-top: 1.5rem;
+  flex: 1;
+  display: flex;
+  justify-content: center;
 
   .filtros-chips {
     display: flex;
@@ -79,11 +91,132 @@
   }
 }
 
+// Layout con sidebar
+.catalogo-content {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+
+  &.with-sidebar {
+    .catalogo-main {
+      flex: 1;
+    }
+  }
+
+  &:not(.with-sidebar) {
+    .catalogo-main {
+      width: 100%;
+    }
+  }
+}
+
+// Sidebar de subcategorías
+.sidebar-categorias {
+  width: 280px;
+  flex-shrink: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+
+  .sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid;
+    border-image: linear-gradient(90deg, #E91E63, #00BCD4) 1;
+    text-transform: uppercase;
+  }
+
+  .subcategorias-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .subcategoria-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 8px;
+    color: #555;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+
+    .subcategoria-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .subcategoria-nombre {
+      flex: 1;
+    }
+
+    .subcategoria-arrow {
+      opacity: 0;
+      transform: translateX(-5px);
+      transition: all 0.3s ease;
+      color: #E91E63;
+      font-weight: 700;
+    }
+
+    &:hover {
+      border-color: #E91E63;
+      background: linear-gradient(135deg, rgba(233, 30, 99, 0.05), rgba(0, 188, 212, 0.05));
+      color: #E91E63;
+      transform: translateX(5px);
+
+      .subcategoria-arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    &.active {
+      background: linear-gradient(135deg, #E91E63, #00BCD4);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+
+      .subcategoria-arrow {
+        opacity: 1;
+        transform: translateX(0);
+        color: white;
+      }
+    }
+  }
+}
+
+.catalogo-main {
+  flex: 1;
+  min-width: 0; // Importante para que el flex funcione correctamente
+}
+
 .productos-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .loading-state,
@@ -187,6 +320,31 @@
   }
 }
 
+// Responsive para tablets
+@media (max-width: 992px) {
+  .catalogo-content {
+    &.with-sidebar {
+      flex-direction: column;
+    }
+  }
+
+  .sidebar-categorias {
+    width: 100%;
+    position: static;
+    margin-bottom: 2rem;
+
+    .subcategorias-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+  }
+
+  .productos-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .catalogo-container {
     padding: 0.75rem;
@@ -208,6 +366,24 @@
 
   .filtros-container {
     padding: 0 0.25rem;
+  }
+
+  .sidebar-categorias {
+    padding: 1rem;
+
+    .sidebar-title {
+      font-size: 1.1rem;
+    }
+
+    .subcategorias-list {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .subcategoria-item {
+      padding: 0.625rem 0.75rem;
+      font-size: 0.875rem;
+    }
   }
 
   .productos-grid {

@@ -9,11 +9,8 @@
       <a routerLink="/" class="btn-volver">Volver al catálogo</a>
     </div>
   } @else if (producto(); as prod) {
-    <div class="breadcrumb">
-      <a routerLink="/">Inicio</a>
-      <span class="separator">/</span>
-      <span class="current">{{ prod.nombre }}</span>
-    </div>
+    <!-- Breadcrumbs -->
+    <app-breadcrumbs [items]="breadcrumbs()" />
 
     <div class="producto-detalle">
       <div class="galeria-section">

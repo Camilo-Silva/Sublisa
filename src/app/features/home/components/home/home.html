@@ -1,0 +1,69 @@
+<div class="home-container">
+  <!-- Carrousel de Imágenes -->
+  <div
+    class="carrousel-container"
+    (mouseenter)="pausarCarrousel()"
+    (mouseleave)="reanudarCarrousel()"
+  >
+    <div class="carrousel-wrapper">
+      @for (imagen of imagenes; track $index) {
+        <div
+          class="carrousel-slide"
+          [class.active]="imagenActual() === $index"
+        >
+          <img [src]="imagen" [alt]="'Banner ' + ($index + 1)">
+        </div>
+      }
+    </div>
+
+    <!-- Controles del Carrousel -->
+    <button class="carrousel-control prev" (click)="anterior()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </button>
+
+    <button class="carrousel-control next" (click)="siguiente()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+      </svg>
+    </button>
+
+    <!-- Indicadores -->
+    <div class="carrousel-indicators">
+      @for (imagen of imagenes; track $index) {
+        <button
+          class="indicator"
+          [class.active]="imagenActual() === $index"
+          (click)="irAImagen($index)"
+          [attr.aria-label]="'Ir a imagen ' + ($index + 1)"
+        ></button>
+      }
+    </div>
+  </div>
+
+  <!-- Categorías Destacadas -->
+  <div class="categorias-destacadas">
+    <h2 class="section-title">Nuestras Categorías</h2>
+
+    <div class="categorias-grid">
+      @for (categoria of categorias; track categoria.nombre) {
+        <a [href]="categoria.ruta" class="categoria-card">
+          <div class="categoria-imagen">
+            <img [src]="categoria.imagen" [alt]="categoria.nombre">
+            <div class="categoria-overlay">
+              <h3>{{ categoria.nombre }}</h3>
+              <p>{{ categoria.descripcion }}</p>
+              <span class="btn-ver-categoria">Ver Productos →</span>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Catálogo de Productos -->
+  <div class="catalogo-section">
+    <app-catalogo />
+  </div>
+</div>

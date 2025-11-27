@@ -2,9 +2,14 @@ import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
-  // Rutas públicas (Tienda)
+  // Página de inicio
   {
     path: '',
+    loadComponent: () => import('./features/home/components/home/home').then(m => m.Home)
+  },
+  // Rutas públicas (Tienda)
+  {
+    path: 'productos',
     loadComponent: () => import('./features/tienda/components/catalogo/catalogo').then(m => m.Catalogo)
   },
   {

@@ -1,29 +1,34 @@
 <div class="catalogo-container">
+  <!-- Breadcrumbs -->
+  <app-breadcrumbs [items]="breadcrumbs()" />
+
   <div class="catalogo-header">
     <h1>Nuestros Productos</h1>
     <p class="subtitle">Productos de sublimación de alta calidad, para sublimar y personalizados</p>
 
-    <div class="search-bar">
-      <input
-        type="text"
-        placeholder="Buscar productos..."
-        (input)="buscarProductos($event)"
-        class="search-input"
-      />
-    </div>
+    <!-- Barra de búsqueda y filtros en la misma línea -->
+    <div class="search-filters-row">
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Buscar productos..."
+          (input)="buscarProductos($event)"
+          class="search-input"
+        />
+      </div>
 
-    <!-- Filtros por categoría -->
-    <div class="filtros-container">
-      <div class="filtros-chips">
-        @for (categoria of categorias(); track categoria) {
-          <button
-            class="chip-categoria"
-            [class.active]="categoriaSeleccionada() === categoria"
-            (click)="filtrarPorCategoria(categoria)"
-          >
-            {{ categoria }}
-          </button>
-        }
+      <div class="filtros-container">
+        <div class="filtros-chips">
+          @for (categoria of categorias(); track categoria) {
+            <button
+              class="chip-categoria"
+              [class.active]="categoriaSeleccionada() === categoria"
+              (click)="filtrarPorCategoria(categoria)"
+            >
+              {{ categoria }}
+            </button>
+          }
+        </div>
       </div>
     </div>
   </div>
@@ -45,56 +50,96 @@
       }
     </div>
   } @else {
-    <!-- Info de resultados -->
-    <div class="resultados-info">
-      <p>
-        Mostrando {{ (paginaActual() - 1) * itemsPorPagina() + 1 }} -
-        {{ Math.min(paginaActual() * itemsPorPagina(), productosFiltrados().length) }}
-        de {{ productosFiltrados().length }} productos
-      </p>
-    </div>
+    <!-- Layout con sidebar o sin sidebar -->
+    <div class="catalogo-content" [class.with-sidebar]="mostrarSidebar()">
 
-    <div class="productos-grid">
-      @for (producto of productosPaginados(); track producto.id) {
-        <app-producto-card [producto]="producto" />
-      }
-    </div>
+      <!-- Sidebar de subcategorías -->
+      @if (mostrarSidebar()) {
+        <aside class="sidebar-categorias">
+          <h3 class="sidebar-title">{{ categoriaSeleccionada() }}</h3>
 
-    <!-- Controles de paginación -->
-    @if (totalPaginas() > 1) {
-      <div class="paginacion-container">
-        <button
-          class="btn-paginacion"
-          [disabled]="paginaActual() === 1"
-          (click)="paginaAnterior()"
-        >
-          ← Anterior
-        </button>
-
-        <div class="paginas-numeros">
-          @for (pagina of getPaginasVisibles(); track $index) {
-            @if (pagina === -1) {
-              <span class="pagina-separador">...</span>
-            } @else {
+          <ul class="subcategorias-list">
+            <li>
               <button
-                class="btn-pagina"
-                [class.active]="pagina === paginaActual()"
-                (click)="irAPagina(pagina)"
-              >
-                {{ pagina }}
+                class="subcategoria-item"
+                [class.active]="subcategoriaSeleccionada() === 'TODAS'"
+                (click)="limpiarSubcategoria()">
+                <span class="subcategoria-icon">📋</span>
+                <span class="subcategoria-nombre">Todas</span>
+                <span class="subcategoria-arrow">→</span>
               </button>
+            </li>
+
+            @for (subcategoria of subcategoriasDisponibles(); track subcategoria) {
+              <li>
+                <button
+                  class="subcategoria-item"
+                  [class.active]="subcategoriaSeleccionada() === subcategoria"
+                  (click)="navegarASubcategoria(subcategoria)">
+                  <span class="subcategoria-icon">🏷️</span>
+                  <span class="subcategoria-nombre">{{ subcategoria }}</span>
+                  <span class="subcategoria-arrow">→</span>
+                </button>
+              </li>
             }
+          </ul>
+        </aside>
+      }
+
+      <!-- Contenido principal -->
+      <div class="catalogo-main">
+        <!-- Info de resultados -->
+        <div class="resultados-info">
+          <p>
+            Mostrando {{ (paginaActual() - 1) * itemsPorPagina() + 1 }} -
+            {{ Math.min(paginaActual() * itemsPorPagina(), productosFiltrados().length) }}
+            de {{ productosFiltrados().length }} productos
+          </p>
+        </div>
+
+        <div class="productos-grid">
+          @for (producto of productosPaginados(); track producto.id) {
+            <app-producto-card [producto]="producto" />
           }
         </div>
 
-        <button
-          class="btn-paginacion"
-          [disabled]="paginaActual() === totalPaginas()"
-          (click)="paginaSiguiente()"
-        >
-          Siguiente →
-        </button>
+        <!-- Controles de paginación -->
+        @if (totalPaginas() > 1) {
+          <div class="paginacion-container">
+            <button
+              class="btn-paginacion"
+              [disabled]="paginaActual() === 1"
+              (click)="paginaAnterior()"
+            >
+              ← Anterior
+            </button>
+
+            <div class="paginas-numeros">
+              @for (pagina of getPaginasVisibles(); track $index) {
+                @if (pagina === -1) {
+                  <span class="pagina-separador">...</span>
+                } @else {
+                  <button
+                    class="btn-pagina"
+                    [class.active]="pagina === paginaActual()"
+                    (click)="irAPagina(pagina)"
+                  >
+                    {{ pagina }}
+                  </button>
+                }
+              }
+            </div>
+
+            <button
+              class="btn-paginacion"
+              [disabled]="paginaActual() === totalPaginas()"
+              (click)="paginaSiguiente()"
+            >
+              Siguiente →
+            </button>
+          </div>
+        }
       </div>
-    }
+    </div>
   }
 </div>

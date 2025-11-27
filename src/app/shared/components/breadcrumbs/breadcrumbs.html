@@ -1,0 +1,23 @@
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="breadcrumbs-list">
+    @for (item of items; track $index) {
+      <li class="breadcrumb-item" [class.active]="$index === items.length - 1">
+        @if ($index === items.length - 1) {
+          <span class="breadcrumb-current">{{ item.label }}</span>
+        } @else {
+          @if (item.url) {
+            <a [routerLink]="item.url" [queryParams]="item.queryParams" class="breadcrumb-link">
+              {{ item.label }}
+            </a>
+          } @else {
+            <span class="breadcrumb-text">{{ item.label }}</span>
+          }
+        }
+
+        @if ($index < items.length - 1) {
+          <span class="breadcrumb-separator">/</span>
+        }
+      </li>
+    }
+  </ol>
+</nav>

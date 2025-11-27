@@ -1,17 +1,19 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { CarritoService } from '../../../../core/services/carrito.service';
 import { Producto } from '../../../../core/models';
+import { Breadcrumbs, BreadcrumbItem } from '../../../../shared/components/breadcrumbs/breadcrumbs';
 
 @Component({
   selector: 'app-detalle-producto',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, Breadcrumbs],
   templateUrl: './detalle-producto.html',
   styleUrl: './detalle-producto.scss',
 })
-export class DetalleProducto implements OnInit {
+export class DetalleProducto implements OnInit, OnDestroy {
   producto = signal<Producto | null>(null);
   imagenSeleccionada = signal<string>('');
   loading = signal(true);
@@ -21,11 +23,48 @@ export class DetalleProducto implements OnInit {
   indiceImagenActual = signal(0);
   agregando = signal(false);
 
+  // Breadcrumbs dinámicos
+  breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    const items: BreadcrumbItem[] = [
+      { label: 'Inicio', url: '/' }
+    ];
+
+    const prod = this.producto();
+    if (prod) {
+      if (prod.categoria) {
+        items.push({
+          label: prod.categoria,
+          url: '/productos',
+          queryParams: { categoria: prod.categoria }
+        });
+
+        if (prod.subcategoria) {
+          items.push({
+            label: prod.subcategoria,
+            url: '/productos',
+            queryParams: { categoria: prod.categoria, subcategoria: prod.subcategoria }
+          });
+        }
+      }
+
+      items.push({
+        label: prod.nombre
+      });
+    } else {
+      items.push({
+        label: 'Producto'
+      });
+    }
+
+    return items;
+  });
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly productosService: ProductosService,
-    public carritoService: CarritoService
+    public carritoService: CarritoService,
+    private readonly titleService: Title
   ) {}
 
   ngOnInit() {
@@ -37,6 +76,11 @@ export class DetalleProducto implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    // Restaurar título original al salir
+    this.titleService.setTitle('Tienda Online de Sublisa');
+  }
+
   async cargarProducto(id: string) {
     try {
       this.loading.set(true);
@@ -45,8 +89,12 @@ export class DetalleProducto implements OnInit {
 
       if (!data) {
         this.error.set('Producto no encontrado');
+        this.titleService.setTitle('Producto no encontrado | Sublisa');
         return;
       }
+
+      // Actualizar título de la página
+      this.titleService.setTitle(`${data.nombre} | Sublisa`);
 
       this.producto.set(data);
 

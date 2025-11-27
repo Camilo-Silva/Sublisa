@@ -23,21 +23,38 @@
       <div class="nav-item-dropdown"
            (mouseenter)="menuProductosAbierto.set(true)"
            (mouseleave)="cerrarMenuProductos()">
-        <a routerLink="/"
+        <a routerLink="/productos"
            routerLinkActive="active"
-           [routerLinkActiveOptions]="{exact: true}"
            (click)="toggleMenuProductos(); $event.preventDefault()"
            class="nav-link productos-link">
           Productos ▾
         </a>
         <div class="dropdown-menu" [class.show]="menuProductosAbierto()">
-          @for (categoria of categorias(); track categoria) {
-            <a [routerLink]="['/']"
-               [queryParams]="{categoria: categoria}"
-               (click)="cerrarMenu()"
-               class="dropdown-item">
-              {{ categoria }}
-            </a>
+          @for (categoria of categorias(); track categoria.nombre) {
+            <div class="dropdown-item-with-submenu"
+                 (mouseenter)="onCategoriaHover(categoria.nombre)"
+                 (mouseleave)="onCategoriaHover(null)">
+              <a [routerLink]="['/productos']"
+                 [queryParams]="{categoria: categoria.nombre}"
+                 (click)="cerrarMenu()"
+                 class="dropdown-item">
+                {{ categoria.nombre }} →
+              </a>
+
+              <!-- Submenu de subcategorías -->
+              @if (categoriaHover() === categoria.nombre) {
+                <div class="dropdown-submenu">
+                  @for (subcategoria of categoria.subcategorias; track subcategoria.nombre) {
+                    <a [routerLink]="['/productos']"
+                       [queryParams]="{categoria: categoria.nombre, subcategoria: subcategoria.nombre}"
+                       (click)="cerrarMenu()"
+                       class="dropdown-subitem">
+                      {{ subcategoria.nombre }}
+                    </a>
+                  }
+                </div>
+              }
+            </div>
           }
         </div>
       </div>

@@ -1,5 +1,5 @@
 .header {
-  background: linear-gradient(135deg, #E91E63 0%, #00BCD4 50%, #FFC107 100%);
+  background: linear-gradient(135deg, #057dee 0%, #057dee 50%, #057dee 100%);
   box-shadow: 0 4px 20px rgba(233, 30, 99, 0.3);
   position: sticky;
   top: 0;
@@ -117,6 +117,65 @@
       transform: translateY(0);
     }
 
+    .dropdown-item-with-submenu {
+      position: relative;
+
+      .dropdown-item {
+        display: block;
+        padding: 0.75rem 1.25rem;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-weight: 500;
+
+        &:first-child {
+          border-radius: 8px 8px 0 0;
+        }
+
+        &:hover {
+          background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
+          padding-left: 1.5rem;
+        }
+      }
+
+      .dropdown-submenu {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background: white;
+        min-width: 220px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 0.5rem 0;
+        margin-left: 0.5rem;
+        z-index: 1001;
+
+        .dropdown-subitem {
+          display: block;
+          padding: 0.625rem 1rem;
+          color: #555;
+          text-decoration: none;
+          transition: all 0.2s;
+          font-weight: 400;
+          font-size: 0.95rem;
+
+          &:hover {
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.08), rgba(0, 188, 212, 0.08));
+            padding-left: 1.25rem;
+            color: #e91e63;
+          }
+
+          &:first-child {
+            border-radius: 8px 8px 0 0;
+          }
+
+          &:last-child {
+            border-radius: 0 0 8px 8px;
+          }
+        }
+      }
+    }
+
     .dropdown-item {
       display: block;
       padding: 0.75rem 1.25rem;
@@ -125,21 +184,9 @@
       transition: all 0.2s;
       font-weight: 500;
 
-      &:first-child {
-        border-radius: 8px 8px 0 0;
-        background: linear-gradient(135deg, rgba(233, 30, 99, 0.05), rgba(0, 188, 212, 0.05));
-        color: #e91e63;
-        font-weight: 600;
-        margin-top: 0;
-      }
-
       &:hover {
         background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
         padding-left: 1.5rem;
-      }
-
-      &:last-child {
-        border-radius: 0 0 8px 8px;
       }
     }
 

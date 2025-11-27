@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { CarritoService } from '../../../../core/services/carrito.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Cliente } from '../../../../core/models';
+import { Cliente, UserProfile } from '../../../../core/models';
 
 @Component({
   selector: 'app-checkout',
@@ -28,7 +29,8 @@ export class Checkout implements OnInit {
     public carritoService: CarritoService,
     private readonly pedidosService: PedidosService,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly titleService: Title
   ) {}
 
   abrirCarrito() {
@@ -36,6 +38,8 @@ export class Checkout implements OnInit {
   }
 
   ngOnInit() {
+    this.titleService.setTitle('Finalizar Compra | Sublisa');
+    
     // Redirigir si el carrito está vacío
     if (this.carritoService.items().length === 0) {
       void this.router.navigate(['/']);

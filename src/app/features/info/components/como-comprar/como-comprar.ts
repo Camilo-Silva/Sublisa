@@ -1,5 +1,6 @@
 import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { ConfiguracionService } from '../../../../core/services/configuracion.service';
 
 @Component({
@@ -27,9 +28,13 @@ export class ComoComprarComponent implements OnInit {
     };
   });
 
-  constructor(private readonly configuracionService: ConfiguracionService) {}
+  constructor(
+    private readonly configuracionService: ConfiguracionService,
+    private readonly titleService: Title
+  ) {}
 
   ngOnInit() {
+    this.titleService.setTitle('Cómo Comprar | Sublisa');
     this.configuracionService.inicializar();
   }
 

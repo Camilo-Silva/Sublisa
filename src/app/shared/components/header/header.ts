@@ -5,6 +5,8 @@ import { CarritoService } from '../../../core/services/carrito.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductosService } from '../../../core/services/productos.service';
 import { ModalService } from '../../../core/services/modal.service';
+import { CATEGORIAS_JERARQUICAS, getSubcategorias } from '../../../core/config/categorias.config';
+import { CategoriaJerarquica } from '../../../core/models/producto.interface';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +17,8 @@ import { ModalService } from '../../../core/services/modal.service';
 export class Header implements OnInit {
   menuAbierto = false;
   menuProductosAbierto = signal(false);
-  categorias = signal<string[]>([]);
+  categorias = signal<CategoriaJerarquica[]>([]);
+  categoriaHover = signal<string | null>(null);
 
   constructor(
     public carritoService: CarritoService,
@@ -30,13 +33,16 @@ export class Header implements OnInit {
   }
 
   async cargarCategorias() {
-    try {
-      const productos = await this.productosService.getProductos();
-      const categoriasUnicas = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
-      this.categorias.set(categoriasUnicas as string[]);
-    } catch (error) {
-      console.error('Error al cargar categorías:', error);
-    }
+    // Usar las categorías jerárquicas predefinidas
+    this.categorias.set(CATEGORIAS_JERARQUICAS);
+  }
+
+  getSubcategorias(categoriaPrincipal: string): string[] {
+    return getSubcategorias(categoriaPrincipal);
+  }
+
+  onCategoriaHover(categoria: string | null) {
+    this.categoriaHover.set(categoria);
   }
 
   toggleMenu() {

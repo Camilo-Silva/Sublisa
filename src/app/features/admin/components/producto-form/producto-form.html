@@ -63,14 +63,37 @@
           </div>
 
           <div class="form-group">
-            <label for="categoria">Categoría</label>
-            <input
-              type="text"
+            <label for="categoria">Categoría *</label>
+            <select
               id="categoria"
               name="categoria"
               [(ngModel)]="formData().categoria"
-              placeholder="Ej: Textiles, Tazas, etc."
-            />
+              (change)="onCategoriaChange($any($event.target).value)"
+              required
+            >
+              <option value="">Seleccionar categoría...</option>
+              @for (cat of categorias; track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="subcategoria">Subcategoría *</label>
+            <select
+              id="subcategoria"
+              name="subcategoria"
+              [(ngModel)]="formData().subcategoria"
+              required
+              [disabled]="!formData().categoria || subcategoriasDisponibles().length === 0"
+            >
+              <option value="">Seleccionar subcategoría...</option>
+              @for (subcat of subcategoriasDisponibles(); track subcat) {
+                <option [value]="subcat">{{ subcat }}</option>
+              }
+            </select>
           </div>
         </div>
       </div>

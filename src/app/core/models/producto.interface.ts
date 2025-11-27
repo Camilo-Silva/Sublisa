@@ -6,6 +6,7 @@ export interface Producto {
   stock: number;
   activo: boolean;
   categoria?: string;
+  subcategoria?: string;
   sku?: string;
   imagenes?: ImagenProducto[];
   created_at?: string;
@@ -18,4 +19,14 @@ export interface ImagenProducto {
   url: string;
   orden: number;
   es_principal: boolean;
+}
+
+export interface Subcategoria {
+  nombre: string;
+  icono?: string;
+}
+
+export interface CategoriaJerarquica {
+  nombre: string;
+  subcategorias: Subcategoria[];
 }

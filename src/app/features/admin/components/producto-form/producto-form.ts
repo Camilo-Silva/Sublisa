@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { SupabaseService } from '../../../../core/services/supabase.service';
+import { ModalService } from '../../../../core/services/modal.service';
+import { getCategoriasNivel1, getSubcategorias } from '../../../../core/config/categorias.config';
 
 interface FormData {
   nombre: string;
@@ -12,6 +14,7 @@ interface FormData {
   stock: number;
   sku: string;
   categoria: string;
+  subcategoria: string;
 }
 
 @Component({
@@ -33,8 +36,12 @@ export class ProductoForm implements OnInit {
     precio: 0,
     stock: 0,
     sku: '',
-    categoria: ''
+    categoria: '',
+    subcategoria: ''
   });
+
+  categorias = getCategoriasNivel1();
+  subcategoriasDisponibles = signal<string[]>([]);
 
   imagenes = signal<{id: string, url: string, es_principal: boolean}[]>([]);
   selectedFiles = signal<File[]>([]);
@@ -44,7 +51,8 @@ export class ProductoForm implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly productosService: ProductosService,
-    private readonly supabaseService: SupabaseService
+    private readonly supabaseService: SupabaseService,
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -74,8 +82,14 @@ export class ProductoForm implements OnInit {
         precio: producto.precio,
         stock: producto.stock,
         sku: producto.sku || '',
-        categoria: producto.categoria || ''
+        categoria: producto.categoria || '',
+        subcategoria: producto.subcategoria || ''
       });
+
+      // Cargar subcategorías si hay categoría
+      if (producto.categoria) {
+        this.onCategoriaChange(producto.categoria);
+      }
 
       this.imagenes.set(producto.imagenes || []);
     } catch (err) {
@@ -119,15 +133,19 @@ export class ProductoForm implements OnInit {
   }
 
   async removeExistingImage(imagenId: string, url: string) {
-    if (!confirm('¿Eliminar esta imagen?')) return;
+    const confirmar = await this.modalService.confirm(
+      '¿Eliminar esta imagen?',
+      'Esta acción no se puede deshacer'
+    );
+    if (!confirmar) return;
 
     try {
       await this.productosService.deleteImagenProducto(imagenId, url);
       this.imagenes.set(this.imagenes().filter(img => img.id !== imagenId));
-      alert('✅ Imagen eliminada');
+      await this.modalService.success('Imagen eliminada exitosamente');
     } catch (err) {
       console.error('Error al eliminar imagen:', err);
-      alert('❌ Error al eliminar la imagen');
+      await this.modalService.error('Error al eliminar la imagen');
     }
   }
 
@@ -152,11 +170,24 @@ export class ProductoForm implements OnInit {
         }))
       );
 
-      alert('✅ Imagen principal actualizada');
+      await this.modalService.success('Imagen principal actualizada');
     } catch (err) {
       console.error('Error al cambiar imagen principal:', err);
-      alert('❌ Error al cambiar imagen principal');
+      await this.modalService.error('Error al cambiar imagen principal');
     }
+  }
+
+  onCategoriaChange(categoria: string) {
+    const subcategorias = getSubcategorias(categoria);
+    this.subcategoriasDisponibles.set(subcategorias);
+
+    // Resetear subcategoría si cambió la categoría
+    const currentData = this.formData();
+    this.formData.set({
+      ...currentData,
+      categoria: categoria,
+      subcategoria: ''
+    });
   }
 
   async onSubmit() {
@@ -164,17 +195,17 @@ export class ProductoForm implements OnInit {
 
     // Validación
     if (!data.nombre.trim()) {
-      alert('❌ El nombre es obligatorio');
+      await this.modalService.warning('El nombre es obligatorio');
       return;
     }
 
     if (data.precio < 0) {
-      alert('❌ El precio debe ser mayor o igual a 0');
+      await this.modalService.warning('El precio debe ser mayor o igual a 0');
       return;
     }
 
     if (data.stock < 0) {
-      alert('❌ El stock debe ser mayor o igual a 0');
+      await this.modalService.warning('El stock debe ser mayor o igual a 0');
       return;
     }
 
@@ -192,7 +223,8 @@ export class ProductoForm implements OnInit {
           precio: data.precio,
           stock: data.stock,
           sku: data.sku || undefined,
-          categoria: data.categoria || undefined
+          categoria: data.categoria || undefined,
+          subcategoria: data.subcategoria || undefined
         });
       } else {
         // Crear nuevo producto
@@ -203,6 +235,7 @@ export class ProductoForm implements OnInit {
           stock: data.stock,
           sku: data.sku || undefined,
           categoria: data.categoria || undefined,
+          subcategoria: data.subcategoria || undefined,
           activo: true
         });
         productoId = nuevoProducto.id;
@@ -225,12 +258,14 @@ export class ProductoForm implements OnInit {
         this.uploadingImages.set(false);
       }
 
-      alert(`✅ Producto ${this.isEditMode() ? 'actualizado' : 'creado'} exitosamente`);
+      await this.modalService.success(
+        `Producto ${this.isEditMode() ? 'actualizado' : 'creado'} exitosamente`
+      );
       this.router.navigate(['/admin/productos']);
     } catch (err) {
       console.error('Error al guardar producto:', err);
       this.error.set('Error al guardar el producto');
-      alert('❌ Error al guardar el producto');
+      await this.modalService.error('Error al guardar el producto');
     } finally {
       this.loading.set(false);
     }
