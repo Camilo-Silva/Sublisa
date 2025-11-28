@@ -5,8 +5,8 @@ import { CarritoService } from '../../../core/services/carrito.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductosService } from '../../../core/services/productos.service';
 import { ModalService } from '../../../core/services/modal.service';
-import { CATEGORIAS_JERARQUICAS, getSubcategorias } from '../../../core/config/categorias.config';
-import { CategoriaJerarquica } from '../../../core/models/producto.interface';
+import { CategoriasService } from '../../../core/services/categorias.service';
+import { CategoriaConSubcategorias } from '../../../core/models/categoria.interface';
 
 @Component({
   selector: 'app-header',
@@ -17,15 +17,19 @@ import { CategoriaJerarquica } from '../../../core/models/producto.interface';
 export class Header implements OnInit {
   menuAbierto = false;
   menuProductosAbierto = signal(false);
-  categorias = signal<CategoriaJerarquica[]>([]);
+  menuProductosMovilAbierto = signal(false);
+  categorias = signal<CategoriaConSubcategorias[]>([]);
   categoriaHover = signal<string | null>(null);
+  categoriaExpandidaMobile = signal<string | null>(null);
+  loading = signal(false);
 
   constructor(
     public carritoService: CarritoService,
     public authService: AuthService,
     private readonly router: Router,
     private readonly productosService: ProductosService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly categoriasService: CategoriasService
   ) {}
 
   ngOnInit() {
@@ -33,12 +37,20 @@ export class Header implements OnInit {
   }
 
   async cargarCategorias() {
-    // Usar las categorías jerárquicas predefinidas
-    this.categorias.set(CATEGORIAS_JERARQUICAS);
+    try {
+      this.loading.set(true);
+      const categorias = await this.categoriasService.getCategoriasConSubcategorias();
+      this.categorias.set(categorias);
+    } catch (error) {
+      console.error('Error al cargar categorías:', error);
+    } finally {
+      this.loading.set(false);
+    }
   }
 
-  getSubcategorias(categoriaPrincipal: string): string[] {
-    return getSubcategorias(categoriaPrincipal);
+  getSubcategorias(categoriaId: string): any[] {
+    const categoria = this.categorias().find(c => c.nombre === categoriaId);
+    return categoria?.subcategorias || [];
   }
 
   onCategoriaHover(categoria: string | null) {
@@ -52,6 +64,27 @@ export class Header implements OnInit {
   cerrarMenu() {
     this.menuAbierto = false;
     this.menuProductosAbierto.set(false);
+    this.categoriaExpandidaMobile.set(null);
+  }
+
+  toggleProductosMobile(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.menuProductosMovilAbierto.update(v => !v);
+    // Si se cierra Productos, cerrar también las categorías expandidas
+    if (!this.menuProductosMovilAbierto()) {
+      this.categoriaExpandidaMobile.set(null);
+    }
+  }
+
+  toggleCategoriaMobile(categoriaNombre: string, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.categoriaExpandidaMobile() === categoriaNombre) {
+      this.categoriaExpandidaMobile.set(null);
+    } else {
+      this.categoriaExpandidaMobile.set(categoriaNombre);
+    }
   }
 
   toggleMenuProductos() {

@@ -320,6 +320,31 @@
   }
 }
 
+// ============================================
+// BOTÓN FILTRAR MOBILE
+// ============================================
+.btn-filtrar-mobile {
+  display: none; // Oculto por defecto en desktop
+}
+
+// ============================================
+// OVERLAY Y SIDEBAR MOBILE
+// ============================================
+.sidebar-overlay {
+  display: none; // Oculto por defecto
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .btn-cerrar-sidebar {
+    display: none; // Oculto en desktop
+  }
+}
+
 // Responsive para tablets
 @media (max-width: 992px) {
   .catalogo-content {
@@ -368,21 +393,104 @@
     padding: 0 0.25rem;
   }
 
+  .search-filters-row {
+    gap: 0.75rem;
+  }
+
+  // Mostrar botón filtrar en mobile
+  .btn-filtrar-mobile {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #E91E63 0%, #00BCD4 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // Overlay para cerrar sidebar
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+
+  // Sidebar como panel deslizante desde la derecha
   .sidebar-categorias {
-    padding: 1rem;
+    position: fixed;
+    top: 0;
+    right: -100%; // Oculto por defecto
+    width: 85%;
+    max-width: 350px;
+    height: 100vh;
+    background: white;
+    z-index: 1000;
+    padding: 1.5rem;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+
+    &.mobile-abierto {
+      right: 0; // Deslizar hacia la vista
+    }
+
+    .sidebar-header {
+      .btn-cerrar-sidebar {
+        display: flex; // Mostrar en mobile
+        background: #f0f0f0;
+        border: none;
+        font-size: 1.5rem;
+        color: #666;
+        cursor: pointer;
+        padding: 0.25rem;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+
+        &:active {
+          background: #E91E63;
+          color: white;
+        }
+      }
+    }
 
     .sidebar-title {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
     }
 
     .subcategorias-list {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 0.5rem;
     }
 
     .subcategoria-item {
-      padding: 0.625rem 0.75rem;
-      font-size: 0.875rem;
+      padding: 0.875rem 1rem;
+      font-size: 0.95rem;
     }
   }
 

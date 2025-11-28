@@ -1,0 +1,279 @@
+<div class="categorias-admin-container">
+  <div class="page-header">
+    <div>
+      <h1>📁 Gestión de Categorías</h1>
+      <p class="subtitle">Administra las categorías y subcategorías de productos</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" (click)="abrirModalNuevaCategoria()">
+        ➕ Nueva Categoría
+      </button>
+      <a routerLink="/admin/dashboard" class="btn-volver">
+        ← Volver
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Cargando categorías...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-message">
+      {{ error() }}
+    </div>
+  } @else {
+    <div class="categorias-list">
+      @for (categoria of categorias(); track categoria.id) {
+        <div class="categoria-card" [class.inactiva]="!categoria.activo">
+          <div class="categoria-header">
+            <div class="categoria-info">
+              <div class="categoria-nombre">
+                @if (categoria.icono) {
+                  <span class="categoria-icono">{{ categoria.icono }}</span>
+                }
+                <h3>{{ categoria.nombre }}</h3>
+                @if (!categoria.activo) {
+                  <span class="badge-inactivo">Inactivo</span>
+                }
+              </div>
+              @if (categoria.descripcion) {
+                <p class="categoria-descripcion">{{ categoria.descripcion }}</p>
+              }
+              <div class="categoria-meta">
+                <span class="badge-orden">Orden: {{ categoria.orden }}</span>
+              </div>
+            </div>
+
+            <div class="categoria-actions">
+              <button class="btn-icon" (click)="toggleSubcategorias(categoria)" title="Ver subcategorías">
+                {{ categoriaSeleccionada()?.id === categoria.id ? '▼' : '▶' }}
+              </button>
+              <button class="btn-icon" (click)="abrirModalNuevaSubcategoria(categoria)" title="Agregar subcategoría">
+                ➕
+              </button>
+              <button class="btn-icon btn-edit" (click)="abrirModalEditarCategoria(categoria)" title="Editar">
+                ✏️
+              </button>
+              <button class="btn-icon btn-delete" (click)="eliminarCategoria(categoria)" title="Eliminar">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <!-- Subcategorías -->
+          @if (categoriaSeleccionada()?.id === categoria.id) {
+            <div class="subcategorias-container">
+              <h4 class="subcategorias-title">Subcategorías</h4>
+
+              @if (subcategorias().length === 0) {
+                <p class="empty-message">No hay subcategorías. Haz click en ➕ para agregar una.</p>
+              } @else {
+                <div class="subcategorias-grid">
+                  @for (sub of subcategorias(); track sub.id) {
+                    <div class="subcategoria-item" [class.inactiva]="!sub.activo">
+                      <div class="subcategoria-content">
+                        @if (sub.icono) {
+                          <span class="sub-icono">{{ sub.icono }}</span>
+                        }
+                        <div class="sub-info">
+                          <span class="sub-nombre">{{ sub.nombre }}</span>
+                          @if (!sub.activo) {
+                            <span class="badge-inactivo-small">Inactivo</span>
+                          }
+                        </div>
+                      </div>
+                      <div class="subcategoria-actions">
+                        <button class="btn-icon-small btn-edit" (click)="abrirModalEditarSubcategoria(sub)" title="Editar">
+                          ✏️
+                        </button>
+                        <button class="btn-icon-small btn-delete" (click)="eliminarSubcategoria(sub)" title="Eliminar">
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <p>No hay categorías creadas</p>
+          <button class="btn-primary" (click)="abrirModalNuevaCategoria()">
+            Crear primera categoría
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal Categoría -->
+  @if (mostrarModalCategoria()) {
+    <div class="modal-overlay" (click)="cerrarModalCategoria()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ categoriaEditando() ? '✏️ Editar Categoría' : '➕ Nueva Categoría' }}</h2>
+          <button class="btn-close" (click)="cerrarModalCategoria()">✕</button>
+        </div>
+
+        <form (ngSubmit)="guardarCategoria()" class="modal-form">
+          <div class="form-group">
+            <label for="cat-nombre">Nombre *</label>
+            <input
+              type="text"
+              id="cat-nombre"
+              [(ngModel)]="formCategoria().nombre"
+              name="nombre"
+              required
+              placeholder="Ej: Para Sublimar"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="cat-descripcion">Descripción</label>
+            <textarea
+              id="cat-descripcion"
+              [(ngModel)]="formCategoria().descripcion"
+              name="descripcion"
+              rows="3"
+              placeholder="Breve descripción de la categoría"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cat-icono">Icono (emoji)</label>
+              <input
+                type="text"
+                id="cat-icono"
+                [(ngModel)]="formCategoria().icono"
+                name="icono"
+                placeholder="📦"
+                maxlength="2"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="cat-orden">Orden</label>
+              <input
+                type="number"
+                id="cat-orden"
+                [(ngModel)]="formCategoria().orden"
+                name="orden"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                [(ngModel)]="formCategoria().activo"
+                name="activo"
+              />
+              <span>Activo</span>
+            </label>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="cerrarModalCategoria()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="loading()">
+              {{ loading() ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Subcategoría -->
+  @if (mostrarModalSubcategoria()) {
+    <div class="modal-overlay" (click)="cerrarModalSubcategoria()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ subcategoriaEditando() ? '✏️ Editar Subcategoría' : '➕ Nueva Subcategoría' }}</h2>
+          <button class="btn-close" (click)="cerrarModalSubcategoria()">✕</button>
+        </div>
+
+        <form (ngSubmit)="guardarSubcategoria()" class="modal-form">
+          <div class="form-info">
+            <strong>Categoría:</strong> {{ categoriaSeleccionada()?.nombre }}
+          </div>
+
+          <div class="form-group">
+            <label for="sub-nombre">Nombre *</label>
+            <input
+              type="text"
+              id="sub-nombre"
+              [(ngModel)]="formSubcategoria().nombre"
+              name="nombre"
+              required
+              placeholder="Ej: Tazas"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="sub-descripcion">Descripción</label>
+            <textarea
+              id="sub-descripcion"
+              [(ngModel)]="formSubcategoria().descripcion"
+              name="descripcion"
+              rows="2"
+              placeholder="Breve descripción de la subcategoría"
+            ></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sub-icono">Icono (emoji)</label>
+              <input
+                type="text"
+                id="sub-icono"
+                [(ngModel)]="formSubcategoria().icono"
+                name="icono"
+                placeholder="🏷️"
+                maxlength="2"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="sub-orden">Orden</label>
+              <input
+                type="number"
+                id="sub-orden"
+                [(ngModel)]="formSubcategoria().orden"
+                name="orden"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                [(ngModel)]="formSubcategoria().activo"
+                name="activo"
+              />
+              <span>Activo</span>
+            </label>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="cerrarModalSubcategoria()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="loading()">
+              {{ loading() ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

@@ -72,7 +72,7 @@
               required
             >
               <option value="">Seleccionar categoría...</option>
-              @for (cat of categorias; track cat) {
+              @for (cat of categorias(); track cat) {
                 <option [value]="cat">{{ cat }}</option>
               }
             </select>

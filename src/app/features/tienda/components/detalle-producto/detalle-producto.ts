@@ -68,6 +68,9 @@ export class DetalleProducto implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Scroll al inicio cuando se carga el componente
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {

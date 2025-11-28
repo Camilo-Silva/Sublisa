@@ -1,8 +1,16 @@
 # Sistema de Categorías Jerárquicas - Implementación
 
-## 📋 Resumen
+## ⚠️ DEPRECADO - Esta documentación es histórica
 
-Se ha implementado un sistema de categorías de dos niveles para mejorar la organización de productos en la tienda online.
+**Este sistema hardcodeado fue reemplazado por un sistema basado en base de datos.**
+
+📄 **Ver documentación actualizada:** [MIGRACION_CATEGORIAS_BD.md](./MIGRACION_CATEGORIAS_BD.md)
+
+---
+
+## 📋 Resumen (Versión Antigua)
+
+Se había implementado un sistema de categorías de dos niveles hardcodeado para mejorar la organización de productos en la tienda online.
 
 ## 🎯 Características Implementadas
 

@@ -6,7 +6,7 @@
   } @else if (error()) {
     <div class="error-state">
       <p>{{ error() }}</p>
-      <a routerLink="/" class="btn-volver">Volver al catálogo</a>
+      <a routerLink="/productos" class="btn-volver">Volver al catálogo</a>
     </div>
   } @else if (producto(); as prod) {
     <!-- Breadcrumbs -->
@@ -107,11 +107,11 @@
                 🛒 Agregar al Carrito
               }
             </button>
-            <a routerLink="/" class="btn-seguir-comprando">Seguir Comprando</a>
+            <a routerLink="/productos" class="btn-seguir-comprando">Seguir Comprando</a>
           </div>
         } @else {
           <div class="acciones">
-            <a routerLink="/" class="btn-volver-completo">Volver al Catálogo</a>
+            <a routerLink="/productos" class="btn-volver-completo">Volver al Catálogo</a>
           </div>
         }
       </div>

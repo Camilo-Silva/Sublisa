@@ -99,6 +99,11 @@ export const routes: Routes = [
         canActivate: [adminGuard]
       },
       {
+        path: 'categorias',
+        loadComponent: () => import('./features/admin/components/categorias-admin/categorias-admin').then(m => m.CategoriasAdmin),
+        canActivate: [adminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

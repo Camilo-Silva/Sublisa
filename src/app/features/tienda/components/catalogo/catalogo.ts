@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { ProductosService } from '../../../../core/services/productos.service';
+import { CategoriasService } from '../../../../core/services/categorias.service';
 import { Producto } from '../../../../core/models';
 import { ProductoCard } from '../producto-card/producto-card';
-import { getSubcategorias } from '../../../../core/config/categorias.config';
 import { Breadcrumbs, BreadcrumbItem } from '../../../../shared/components/breadcrumbs/breadcrumbs';
 
 @Component({
@@ -23,18 +23,22 @@ export class Catalogo implements OnInit {
   categoriaSeleccionada = signal<string>('TODAS');
   subcategoriaSeleccionada = signal<string>('TODAS');
   categorias = signal<string[]>(['TODAS']);
+  subcategoriasMap = signal<Map<string, string[]>>(new Map());
 
   // Subcategorías disponibles basadas en la categoría seleccionada
   subcategoriasDisponibles = computed(() => {
     const categoria = this.categoriaSeleccionada();
     if (categoria === 'TODAS') return [];
-    return getSubcategorias(categoria);
+    return this.subcategoriasMap().get(categoria) || [];
   });
 
   // Mostrar sidebar solo cuando hay categoría seleccionada
   mostrarSidebar = computed(() => {
     return this.categoriaSeleccionada() !== 'TODAS' && this.subcategoriasDisponibles().length > 0;
   });
+
+  // Control del sidebar mobile
+  sidebarMobileAbierto = signal(false);
 
   // Breadcrumbs dinámicos
   breadcrumbs = computed<BreadcrumbItem[]>(() => {
@@ -77,6 +81,7 @@ export class Catalogo implements OnInit {
 
   constructor(
     private readonly productosService: ProductosService,
+    private readonly categoriasService: CategoriasService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly titleService: Title
@@ -97,10 +102,25 @@ export class Catalogo implements OnInit {
         categoria: this.categoriaSeleccionada()
       }
     });
+    this.cerrarSidebarMobile();
+  }
+
+  abrirSidebarMobile() {
+    this.sidebarMobileAbierto.set(true);
+  }
+
+  cerrarSidebarMobile() {
+    this.sidebarMobileAbierto.set(false);
+  }
+
+  navegarASubcategoriaYCerrar(subcategoria: string) {
+    this.navegarASubcategoria(subcategoria);
+    this.cerrarSidebarMobile();
   }
 
   ngOnInit() {
     this.titleService.setTitle('Tienda Online de Sublisa');
+    this.cargarCategorias();
 
     // Suscribirse a cambios en los query params
     this.route.queryParams.subscribe(params => {
@@ -119,8 +139,28 @@ export class Catalogo implements OnInit {
         this.subcategoriaSeleccionada.set('TODAS');
       }
 
+      // Scroll al inicio cuando cambian los filtros
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       this.cargarProductos();
     });
+  }
+
+  async cargarCategorias() {
+    try {
+      const categorias = await this.categoriasService.getCategoriasConSubcategorias();
+      const categoriasNombres = ['TODAS', ...categorias.map(c => c.nombre)];
+      this.categorias.set(categoriasNombres);
+
+      // Crear mapa de subcategorías
+      const map = new Map<string, string[]>();
+      for (const cat of categorias) {
+        map.set(cat.nombre, cat.subcategorias.map(sub => sub.nombre));
+      }
+      this.subcategoriasMap.set(map);
+    } catch (error) {
+      console.error('Error al cargar categorías:', error);
+    }
   }
 
   async cargarProductos() {

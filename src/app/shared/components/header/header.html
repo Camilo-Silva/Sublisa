@@ -19,7 +19,12 @@
       <span></span>
     </button>
 
-    <nav class="nav" [class.open]="menuAbierto">
+    <!-- Nav Desktop: hover lateral -->
+    <nav class="nav nav-desktop">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="cerrarMenu()" class="nav-link">
+        Inicio
+      </a>
+
       <div class="nav-item-dropdown"
            (mouseenter)="menuProductosAbierto.set(true)"
            (mouseleave)="cerrarMenuProductos()">
@@ -38,11 +43,14 @@
                  [queryParams]="{categoria: categoria.nombre}"
                  (click)="cerrarMenu()"
                  class="dropdown-item">
-                {{ categoria.nombre }} →
+                <span>{{ categoria.nombre }}</span>
+                @if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                  <span class="arrow">→</span>
+                }
               </a>
 
-              <!-- Submenu de subcategorías -->
-              @if (categoriaHover() === categoria.nombre) {
+              <!-- Submenu lateral desktop -->
+              @if (categoriaHover() === categoria.nombre && categoria.subcategorias && categoria.subcategorias.length > 0) {
                 <div class="dropdown-submenu">
                   @for (subcategoria of categoria.subcategorias; track subcategoria.nombre) {
                     <a [routerLink]="['/productos']"
@@ -60,6 +68,95 @@
       </div>
 
       <a routerLink="/quienes-somos" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link">
+        Quiénes Somos
+      </a>
+
+      <a routerLink="/como-comprar" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link">
+        Cómo Comprar
+      </a>
+
+      <button (click)="carritoService.toggleCarrito(); cerrarMenu()" class="nav-link carrito-link carrito-btn">
+        🛒 Carrito
+        @if (carritoService.cantidadTotal() > 0) {
+          <span class="badge">{{ carritoService.cantidadTotal() }}</span>
+        }
+      </button>
+
+      @if (authService.isAuthenticatedSignal$()()) {
+        @if (authService.isAdmin()) {
+          <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link admin-link">
+            🔐 Admin
+          </a>
+        } @else {
+          <a routerLink="/mi-cuenta" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link cuenta-link">
+            👤 Mi Cuenta
+          </a>
+        }
+        <button (click)="logout()" class="nav-link logout-btn">
+          🚪 Cerrar Sesión
+        </button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link login-link">
+          🔑 Iniciar Sesión
+        </a>
+      }
+    </nav>
+
+    <!-- Nav Mobile: expansión vertical -->
+    <nav class="nav nav-mobile" [class.open]="menuAbierto">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="cerrarMenu()" class="nav-link">
+        Inicio
+      </a>
+
+      <!-- Menú Productos que agrupa categorías -->
+      <div class="mobile-productos-wrapper">
+        <button (click)="toggleProductosMobile($event)"
+                class="mobile-productos"
+                [class.expandida]="menuProductosMovilAbierto()">
+          Productos
+          <span class="chevron">▼</span>
+        </button>
+
+        <!-- Categorías expandibles dentro de Productos -->
+        <div class="mobile-categorias-container" [class.show]="menuProductosMovilAbierto()">
+          @for (categoria of categorias(); track categoria.nombre) {
+            <div class="mobile-categoria-item">
+              <a [routerLink]="['/productos']"
+                 [queryParams]="{categoria: categoria.nombre}"
+                 (click)="categoria.subcategorias && categoria.subcategorias.length > 0 ? toggleCategoriaMobile(categoria.nombre, $event) : cerrarMenu()"
+                 class="mobile-categoria"
+                 [class.expandida]="categoriaExpandidaMobile() === categoria.nombre">
+                {{ categoria.nombre }}
+                @if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                  <span class="chevron">▼</span>
+                }
+              </a>
+
+              <!-- Subcategorías debajo de la categoría -->
+              @if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                <div class="mobile-subcategorias" [class.show]="categoriaExpandidaMobile() === categoria.nombre">
+                  <!-- Ver todo -->
+                  <a [routerLink]="['/productos']"
+                     [queryParams]="{categoria: categoria.nombre}"
+                     (click)="cerrarMenu()"
+                     class="mobile-subcategoria ver-todo">
+                    Ver toda {{ categoria.nombre }}
+                  </a>
+                  <!-- Subcategorías -->
+                  @for (subcategoria of categoria.subcategorias; track subcategoria.nombre) {
+                    <a [routerLink]="['/productos']"
+                       [queryParams]="{categoria: categoria.nombre, subcategoria: subcategoria.nombre}"
+                       (click)="cerrarMenu()"
+                       class="mobile-subcategoria">
+                      {{ subcategoria.nombre }}
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>      <a routerLink="/quienes-somos" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link">
         Quiénes Somos
       </a>
 

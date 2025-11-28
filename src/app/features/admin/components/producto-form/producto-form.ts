@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { SupabaseService } from '../../../../core/services/supabase.service';
 import { ModalService } from '../../../../core/services/modal.service';
-import { getCategoriasNivel1, getSubcategorias } from '../../../../core/config/categorias.config';
+import { CategoriasService } from '../../../../core/services/categorias.service';
 
 interface FormData {
   nombre: string;
@@ -40,8 +40,9 @@ export class ProductoForm implements OnInit {
     subcategoria: ''
   });
 
-  categorias = getCategoriasNivel1();
+  categorias = signal<string[]>([]);
   subcategoriasDisponibles = signal<string[]>([]);
+  subcategoriasMap = signal<Map<string, string[]>>(new Map());
 
   imagenes = signal<{id: string, url: string, es_principal: boolean}[]>([]);
   selectedFiles = signal<File[]>([]);
@@ -52,10 +53,15 @@ export class ProductoForm implements OnInit {
     private readonly router: Router,
     private readonly productosService: ProductosService,
     private readonly supabaseService: SupabaseService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly categoriasService: CategoriasService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Cargar categorías PRIMERO (para tener el mapa disponible)
+    await this.cargarCategorias();
+
+    // Luego cargar el producto si es modo edición
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {
@@ -64,6 +70,22 @@ export class ProductoForm implements OnInit {
         this.cargarProducto(id);
       }
     });
+  }
+
+  async cargarCategorias() {
+    try {
+      const categorias = await this.categoriasService.getCategoriasConSubcategorias();
+      this.categorias.set(categorias.map(c => c.nombre));
+
+      // Crear mapa de subcategorías
+      const map = new Map<string, string[]>();
+      for (const cat of categorias) {
+        map.set(cat.nombre, cat.subcategorias.map(sub => sub.nombre));
+      }
+      this.subcategoriasMap.set(map);
+    } catch (error) {
+      console.error('Error al cargar categorías:', error);
+    }
   }
 
   async cargarProducto(id: string) {
@@ -86,9 +108,10 @@ export class ProductoForm implements OnInit {
         subcategoria: producto.subcategoria || ''
       });
 
-      // Cargar subcategorías si hay categoría
+      // Cargar subcategorías si hay categoría (sin resetear la subcategoría actual)
       if (producto.categoria) {
-        this.onCategoriaChange(producto.categoria);
+        const subcategorias = this.subcategoriasMap().get(producto.categoria) || [];
+        this.subcategoriasDisponibles.set(subcategorias);
       }
 
       this.imagenes.set(producto.imagenes || []);
@@ -178,7 +201,7 @@ export class ProductoForm implements OnInit {
   }
 
   onCategoriaChange(categoria: string) {
-    const subcategorias = getSubcategorias(categoria);
+    const subcategorias = this.subcategoriasMap().get(categoria) || [];
     this.subcategoriasDisponibles.set(subcategorias);
 
     // Resetear subcategoría si cambió la categoría

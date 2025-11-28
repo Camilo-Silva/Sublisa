@@ -42,12 +42,20 @@ export class Home implements OnInit, OnDestroy {
       descripcion: 'Diseños de transferencia directa a tela',
       ruta: '/productos?categoria=DTF'
     }
+    // {
+    //   nombre: 'Otros',
+    //   imagen: '/images/otros.png', // Reemplazar con la imagen real
+    //   descripcion: 'Productos variados y especiales',
+    //   ruta: '/productos?categoria=Otros'
+    // }
   ];
 
   constructor(private readonly titleService: Title) {}
 
   ngOnInit() {
     this.titleService.setTitle('Tienda Online de Sublisa');
+    // Scroll al inicio de la página
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.iniciarCarrousel();
   }
 

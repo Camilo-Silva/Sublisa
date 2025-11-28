@@ -10,7 +10,7 @@
     @if (carritoService.items().length === 0) {
       <div class="carrito-vacio">
         <p>Tu carrito está vacío</p>
-        <a routerLink="/" (click)="cerrar()" class="btn-continuar">Ver Productos</a>
+        <a routerLink="/productos" (click)="cerrar()" class="btn-continuar">Ver Productos</a>
       </div>
     } @else {
       <div class="items-lista">
@@ -53,7 +53,7 @@
         <span class="total-valor">${{ carritoService.subtotal() | number:'1.2-2' }}</span>
       </div>
       <button (click)="vaciarCarrito()" class="btn-vaciar">Vaciar Carrito</button>
-      <a routerLink="/" (click)="cerrar()" class="btn-continuar-comprando">Seguir Comprando</a>
+      <a routerLink="/productos" (click)="cerrar()" class="btn-continuar-comprando">Seguir Comprando</a>
       <a routerLink="/checkout" (click)="cerrar()" class="btn-checkout">Finalizar Pedido</a>
     </div>
   }
