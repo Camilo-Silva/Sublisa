@@ -63,16 +63,17 @@
 
   .btn-retry {
     padding: 0.75rem 2rem;
-    background: #007bff;
+    background: #5C1D73;
     color: white;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
+      transform: translateY(-2px);
     }
   }
 }
@@ -120,7 +121,7 @@
   }
 
   &.stat-pedidos {
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #5C1D73;
   }
 
   &.stat-pendientes {
@@ -132,7 +133,7 @@
   }
 
   &.stat-productos {
-    border-left: 4px solid #17a2b8;
+    border-left: 4px solid #E6338B;
   }
 
   &.stat-alerta {
@@ -167,12 +168,12 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #5C1D73;
   color: white;
   text-decoration: none;
   border-radius: 10px;
   transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(92, 29, 115, 0.3);
 
   .action-icon {
     font-size: 2.5rem;
@@ -184,8 +185,9 @@
   }
 
   &:hover {
+    background: #E6338B;
     transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 16px rgba(230, 51, 139, 0.4);
   }
 }
 
@@ -208,13 +210,13 @@
     }
 
     .link-ver-todos {
-      color: #007bff;
+      color: #5C1D73;
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
 
       &:hover {
-        color: #0056b3;
+        color: #E6338B;
         text-decoration: underline;
       }
     }
@@ -238,6 +240,7 @@
       font-weight: 600;
       color: #333;
       border-bottom: 2px solid #dee2e6;
+      white-space: nowrap;
     }
   }
 
@@ -252,14 +255,15 @@
 
       td {
         padding: 1rem;
-        color: #666;
+        vertical-align: middle;
       }
     }
   }
 
   .pedido-numero {
-    font-weight: 600;
-    color: #007bff;
+    font-weight: 700;
+    color: #E6338B;
+    font-size: 1.1rem;
   }
 
   .cliente-info {
@@ -273,22 +277,23 @@
 
     small {
       color: #999;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
     }
   }
 
   .pedido-total {
     font-weight: 700;
     color: #28a745;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   .estado-badge {
     display: inline-block;
-    padding: 0.375rem 0.75rem;
+    padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     font-weight: 600;
+    white-space: nowrap;
   }
 
   .estado-pendiente {
@@ -323,17 +328,22 @@
 
   .btn-ver-detalle {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    background: #007bff;
+    padding: 0.625rem 1.25rem;
+    background: #5C1D73;
     color: white;
     text-decoration: none;
+    border: none;
     border-radius: 6px;
     font-size: 0.875rem;
     font-weight: 600;
-    transition: background 0.3s;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230, 51, 139, 0.3);
     }
   }
 }

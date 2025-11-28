@@ -24,15 +24,17 @@
 
   .btn-volver {
     padding: 0.75rem 1.5rem;
-    background: #6c757d;
-    color: white;
+    background: white;
+    color: #5C1D73;
     text-decoration: none;
+    border: 2px solid #5C1D73;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s;
 
     &:hover {
-      background: #5a6268;
+      background: #5C1D73;
+      color: white;
       transform: translateY(-2px);
     }
   }
@@ -127,8 +129,8 @@
 
     &:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      border-color: #E6338B;
+      box-shadow: 0 0 0 3px rgba(230, 51, 139, 0.1);
     }
 
     &::placeholder {
@@ -166,8 +168,8 @@
   transition: all 0.3s;
 
   &:hover {
-    border-color: #007bff;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    border-color: #E6338B;
+    box-shadow: 0 4px 12px rgba(230, 51, 139, 0.2);
 
     .imagen-acciones {
       opacity: 1;
@@ -267,7 +269,7 @@
 }
 
 .upload-box {
-  border: 2px dashed #007bff;
+  border: 2px dashed #5C1D73;
   border-radius: 12px;
   padding: 3rem 2rem;
   text-align: center;
@@ -275,8 +277,8 @@
   background: #f8f9fa;
 
   &:hover {
-    border-color: #0056b3;
-    background: #e7f3ff;
+    border-color: #E6338B;
+    background: rgba(230, 51, 139, 0.05);
     transform: translateY(-2px);
   }
 

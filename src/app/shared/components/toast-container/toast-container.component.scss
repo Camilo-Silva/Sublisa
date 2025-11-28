@@ -37,7 +37,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
+  background: rgba(92, 29, 115, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   .toast-icon {
@@ -86,7 +86,7 @@
     object-fit: cover;
     border-radius: 6px;
     flex-shrink: 0;
-    border: 2px solid rgba(233, 30, 99, 0.2);
+    border: 2px solid rgba(230, 51, 139, 0.2);
   }
 
   .product-text {

@@ -1,6 +1,6 @@
 .header {
-  background: linear-gradient(135deg, #057dee 0%, #057dee 50%, #057dee 100%);
-  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.3);
+  background: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(92, 29, 115, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -55,17 +55,26 @@
   border: none;
   cursor: pointer;
   padding: 0.5rem;
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 
   span {
     display: block;
     width: 25px;
     height: 3px;
-    background-color: white;
+    background-color: #5C1D73;
     transition: all 0.3s;
     border-radius: 2px;
   }
 
   &.active {
+    span {
+      background-color: #E6338B;
+    }
+
     span:nth-child(1) {
       transform: rotate(45deg) translate(8px, 8px);
     }
@@ -125,7 +134,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem 1.25rem;
-        color: #333;
+        color: #5C1D73;
         text-decoration: none;
         transition: all 0.2s;
         font-weight: 500;
@@ -137,7 +146,8 @@
         }
 
         &:hover {
-          background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
+          background: rgba(230, 51, 139, 0.1);
+          color: #E6338B;
           padding-left: 1.5rem;
         }
 
@@ -163,16 +173,16 @@
         .dropdown-subitem {
           display: block;
           padding: 0.625rem 1rem;
-          color: #555;
+          color: #5C1D73;
           text-decoration: none;
           transition: all 0.2s;
           font-weight: 400;
           font-size: 0.95rem;
 
           &:hover {
-            background: linear-gradient(135deg, rgba(233, 30, 99, 0.08), rgba(0, 188, 212, 0.08));
+            background: rgba(230, 51, 139, 0.08);
             padding-left: 1.25rem;
-            color: #e91e63;
+            color: #E6338B;
           }
 
           &:first-child {
@@ -189,41 +199,44 @@
     .dropdown-item {
       display: block;
       padding: 0.75rem 1.25rem;
-      color: #333;
+      color: #5C1D73;
       text-decoration: none;
       transition: all 0.2s;
       font-weight: 500;
 
       &:hover {
-        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(0, 188, 212, 0.1));
+        background: rgba(230, 51, 139, 0.1);
+        color: #E6338B;
         padding-left: 1.5rem;
       }
     }
 
     .dropdown-divider {
       height: 1px;
-      background: linear-gradient(to right, #e91e63, #00bcd4, #ffc107);
+      background: #E6338B;
       margin: 0.5rem 0;
     }
   }
 }
 
 .nav-link {
-  color: white;
+  color: #5C1D73;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
   position: relative;
   white-space: nowrap;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(230, 51, 139, 0.1);
+    color: #E6338B;
   }
 
   &.active {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(230, 51, 139, 0.15);
+    color: #E6338B;
   }
 
   &.carrito-link {
@@ -274,7 +287,7 @@
 
 .logout-btn {
   color: white;
-  background: rgba(220, 53, 69, 0.8);
+  background: #F44336;
   border: none;
   font-weight: 500;
   padding: 0.5rem 0.75rem;
@@ -285,7 +298,7 @@
   font-family: inherit;
 
   &:hover {
-    background: rgba(220, 53, 69, 1);
+    background: #D32F2F;
     transform: translateY(-2px);
   }
 }
@@ -360,7 +373,7 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: linear-gradient(135deg, #E91E63 0%, #00BCD4 50%, #FFC107 100%);
+    background: #5C1D73;
     flex-direction: column;
     gap: 0;
     padding: 0;
@@ -368,7 +381,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     transition: max-height 0.3s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(92, 29, 115, 0.3);
 
     &.open {
       max-height: calc(100vh - 80px);
@@ -468,21 +481,21 @@
       .mobile-subcategoria {
         display: block;
         padding: 0.75rem 2.5rem 0.75rem 3.5rem;
-        color: #333;
+        color: #5C1D73;
         text-decoration: none;
         border-left: 3px solid transparent;
         transition: all 0.2s;
 
         &:hover {
-          background: rgba(233, 30, 99, 0.05);
-          border-left-color: #00bcd4;
+          background: rgba(230, 51, 139, 0.08);
+          border-left-color: #E6338B;
           padding-left: 4rem;
         }
 
         &.ver-todo {
           font-weight: 600;
-          background: rgba(233, 30, 99, 0.08);
-          border-left-color: #e91e63;
+          background: rgba(230, 51, 139, 0.1);
+          border-left-color: #E6338B;
         }
       }
     }

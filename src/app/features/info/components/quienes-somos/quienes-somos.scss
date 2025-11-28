@@ -1,7 +1,7 @@
 .quienes-somos-container {
   min-height: calc(100vh - 200px);
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #5C1D73 0%, #E6338B 100%);
 
   .contenido {
     max-width: 1000px;
@@ -9,13 +9,13 @@
     background: white;
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 
     h1 {
       text-align: center;
       font-size: 2.5rem;
-      margin-bottom: 30px;
-      background: linear-gradient(135deg, #e91e63, #00bcd4, #ffc107);
+      margin-bottom: 40px;
+      background: linear-gradient(135deg, #5C1D73, #E6338B, #F56A69);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -28,7 +28,7 @@
         font-size: 1.8rem;
         color: #333;
         margin-bottom: 15px;
-        border-left: 4px solid #e91e63;
+        border-left: 4px solid #5C1D73;
         padding-left: 15px;
       }
 
@@ -46,16 +46,16 @@
         padding: 20px;
         background: #f8f9fa;
         border-radius: 8px;
-        border-left: 4px solid #00bcd4;
+        border-left: 4px solid #E6338B;
       }
 
       .invitacion {
         font-size: 1.15rem;
         font-weight: 600;
-        color: #e91e63;
+        color: #5C1D73;
         text-align: center;
         padding: 20px;
-        background: linear-gradient(135deg, rgba(233, 30, 99, 0.05), rgba(0, 188, 212, 0.05));
+        background: linear-gradient(135deg, rgba(92, 29, 115, 0.05), rgba(230, 51, 139, 0.05));
         border-radius: 8px;
       }
     }
@@ -115,7 +115,7 @@
               content: '✓';
               position: absolute;
               left: 0;
-              color: #00bcd4;
+              color: #E6338B;
               font-weight: bold;
             }
           }

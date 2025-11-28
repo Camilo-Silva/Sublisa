@@ -41,12 +41,13 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #E91E63, #00BCD4);
+  background: #5C1D73;
   color: white;
 
   &:hover:not(:disabled) {
+    background: #E6338B;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+    box-shadow: 0 4px 12px rgba(230, 51, 139, 0.4);
   }
 
   &:disabled {
@@ -70,8 +71,8 @@
   color: #666;
 
   &:hover {
-    border-color: #E91E63;
-    color: #E91E63;
+    border-color: #E6338B;
+    color: #E6338B;
   }
 }
 
@@ -248,8 +249,8 @@
   transition: all 0.2s;
 
   &:hover {
-    border-color: #E91E63;
-    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.2);
+    border-color: #E6338B;
+    box-shadow: 0 2px 8px rgba(230, 51, 139, 0.2);
   }
 
   &.inactiva {
@@ -390,7 +391,8 @@
 
     &:focus {
       outline: none;
-      border-color: #E91E63;
+      border-color: #E6338B;
+      box-shadow: 0 0 0 3px rgba(230, 51, 139, 0.1);
     }
   }
 }

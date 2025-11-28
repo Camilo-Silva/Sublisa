@@ -75,15 +75,16 @@
   .btn-volver-lista {
     display: inline-block;
     padding: 0.875rem 2rem;
-    background: #007bff;
+    background: #5C1D73;
     color: white;
     text-decoration: none;
     border-radius: 8px;
     font-weight: 600;
-    transition: background 0.3s;
+    transition: all 0.3s;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
+      transform: translateY(-2px);
     }
   }
 }
@@ -138,7 +139,7 @@
     font-weight: 500;
 
     &.numero {
-      color: #007bff;
+      color: #E6338B;
       font-weight: 700;
       font-size: 1.3rem;
     }
@@ -193,7 +194,7 @@
 .btn-whatsapp {
   width: 100%;
   padding: 1rem;
-  background: #25d366;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -203,9 +204,9 @@
   font-size: 1rem;
 
   &:hover:not(:disabled) {
-    background: #20ba5a;
+    background: linear-gradient(135deg, #128c7e 0%, #25d366 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
   }
 
   &:disabled {
@@ -319,7 +320,7 @@
   background: #f8f9fa;
   padding: 1.5rem;
   border-radius: 8px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid #5C1D73;
 
   p {
     margin: 0;
@@ -355,7 +356,8 @@
 
       &:focus {
         outline: none;
-        border-color: #007bff;
+        border-color: #E6338B;
+        box-shadow: 0 0 0 3px rgba(230, 51, 139, 0.1);
       }
     }
   }

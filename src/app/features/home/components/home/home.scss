@@ -130,7 +130,7 @@
       display: block;
       width: 80px;
       height: 4px;
-      background: linear-gradient(135deg, #E91E63 0%, #00BCD4 100%);
+      background: linear-gradient(135deg, #5C1D73 0%, #E6338B 100%);
       margin: 1rem auto 0;
       border-radius: 2px;
     }
@@ -160,8 +160,8 @@
     .categoria-overlay {
       background: linear-gradient(
         to bottom,
-        rgba(233, 30, 99, 0.85) 0%,
-        rgba(0, 188, 212, 0.85) 100%
+        rgba(92, 29, 115, 0.85) 0%,
+        rgba(230, 51, 139, 0.85) 100%
       );
 
       h3 {
@@ -241,7 +241,7 @@
     display: inline-block;
     padding: 0.75rem 2rem;
     background: white;
-    color: #E91E63;
+    color: #5C1D73;
     font-weight: 600;
     border-radius: 25px;
     opacity: 0;

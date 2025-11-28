@@ -23,17 +23,17 @@
   animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
 
   &:nth-child(1) {
-    border-top-color: #E91E63;
+    border-top-color: #5C1D73;
     animation-delay: 0s;
   }
 
   &:nth-child(2) {
-    border-right-color: #00BCD4;
+    border-right-color: #E6338B;
     animation-delay: 0.3s;
   }
 
   &:nth-child(3) {
-    border-bottom-color: #FFC107;
+    border-bottom-color: #F56A69;
     animation-delay: 0.6s;
   }
 }

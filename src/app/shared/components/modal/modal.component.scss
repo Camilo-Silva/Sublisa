@@ -101,20 +101,22 @@
   }
 
   .btn-cancel {
-    background: #6c757d;
-    color: white;
+    background: white;
+    color: #5C1D73;
+    border: 2px solid #5C1D73;
 
     &:hover {
-      background: #5a6268;
+      background: #5C1D73;
+      color: white;
     }
   }
 
   .btn-confirm {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #5C1D73;
     color: white;
 
     &:hover {
-      opacity: 0.9;
+      background: #E6338B;
     }
   }
 }

@@ -80,12 +80,12 @@
 .producto-precio {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #007bff;
+  color: #5C1D73;
 }
 
 .btn-agregar {
   padding: 0.5rem 1rem;
-  background-color: #28a745;
+  background-color: #5C1D73;
   color: white;
   border: none;
   border-radius: 6px;
@@ -95,9 +95,9 @@
   transition: all 0.3s;
 
   &:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #E6338B;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 8px rgba(230, 51, 139, 0.3);
   }
 
   &:disabled {
@@ -106,7 +106,7 @@
   }
 
   &.agregando {
-    background: linear-gradient(135deg, #28a745, #20c997);
+    background: linear-gradient(135deg, #5C1D73, #E6338B);
     position: relative;
     pointer-events: none;
 

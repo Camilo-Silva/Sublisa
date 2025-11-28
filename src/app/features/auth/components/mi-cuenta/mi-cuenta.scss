@@ -88,7 +88,7 @@
   .btn-ir-catalogo {
     display: inline-block;
     padding: 0.875rem 2rem;
-    background: linear-gradient(135deg, #E91E63, #00BCD4);
+    background: #5C1D73;
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -96,8 +96,9 @@
     transition: all 0.3s;
 
     &:hover {
+      background: #E6338B;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+      box-shadow: 0 4px 12px rgba(230, 51, 139, 0.4);
     }
   }
 }
@@ -142,7 +143,7 @@
 
 .pedido-numero {
   font-weight: 700;
-  color: #E91E63;
+  color: #E6338B;
 }
 
 .pedido-fecha {
@@ -247,7 +248,11 @@
     }
 
     &:last-child {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: #5C1D73;
+
+      &:hover {
+        background: #E6338B;
+      }
     }
   }
 }
@@ -268,16 +273,17 @@
 
   .btn-retry {
     padding: 0.875rem 2rem;
-    background: #007bff;
+    background: #5C1D73;
     color: white;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
+      transform: translateY(-2px);
     }
   }
 }
@@ -330,7 +336,7 @@
 
 .btn-ver-detalle {
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: #5C1D73;
   color: white;
   border: none;
   border-radius: 6px;
@@ -340,8 +346,9 @@
   transition: all 0.3s;
 
   &:hover:not(:disabled) {
+    background: #E6338B;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(230, 51, 139, 0.4);
   }
 
   &:disabled {
@@ -442,7 +449,7 @@
   margin-bottom: 1.5rem;
 
   thead {
-    background: linear-gradient(135deg, #e91e63, #00bcd4);
+    background: #5C1D73;
     color: white;
 
     th {
@@ -497,7 +504,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #e91e63, #00bcd4);
+  background: #5C1D73;
   border-radius: 8px;
   color: white;
 

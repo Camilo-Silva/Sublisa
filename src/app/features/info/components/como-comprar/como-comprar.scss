@@ -1,7 +1,7 @@
 .como-comprar-container {
   min-height: calc(100vh - 200px);
   padding: 40px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #5C1D73 0%, #E6338B 100%);
 
   .contenido {
     max-width: 1000px;
@@ -15,7 +15,7 @@
       text-align: center;
       font-size: 2.5rem;
       margin-bottom: 40px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #5C1D73, #E6338B, #F56A69);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -30,7 +30,7 @@
         background: #f8f9fa;
         padding: 25px;
         border-radius: 10px;
-        border-left: 5px solid #667eea;
+        border-left: 5px solid #5C1D73;
         transition: all 0.3s ease;
 
         &:hover {
@@ -53,7 +53,7 @@
             justify-content: center;
             width: 30px;
             height: 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #5C1D73, #E6338B);
             color: white;
             border-radius: 50%;
             font-size: 1.2rem;
@@ -74,7 +74,7 @@
               color: #555;
 
               strong {
-                color: #667eea;
+                color: #5C1D73;
               }
             }
           }
@@ -93,7 +93,7 @@
                 content: '✓';
                 position: absolute;
                 left: -20px;
-                color: #667eea;
+                color: #5C1D73;
                 font-weight: bold;
               }
             }
@@ -117,7 +117,7 @@
           }
 
           .destacado {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            background: linear-gradient(135deg, rgba(92, 29, 115, 0.1), rgba(230, 51, 139, 0.1));
             padding: 15px;
             border-radius: 8px;
             font-weight: 600;
@@ -125,7 +125,7 @@
             margin-bottom: 15px;
 
             strong {
-              color: #667eea;
+              color: #5C1D73;
               font-size: 1.2rem;
             }
           }
@@ -145,14 +145,14 @@
               transition: all 0.3s ease;
 
               &:hover {
-                border-color: #667eea;
+                border-color: #5C1D73;
                 transform: translateY(-3px);
-                box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+                box-shadow: 0 4px 10px rgba(92, 29, 115, 0.2);
               }
 
               h3 {
                 font-size: 1.2rem;
-                color: #667eea;
+                color: #5C1D73;
                 margin-bottom: 10px;
               }
 
@@ -193,16 +193,16 @@
 
             .empresa-badge {
               background: white;
-              border: 2px solid #667eea;
+              border: 2px solid #5C1D73;
               padding: 12px;
               border-radius: 25px;
               text-align: center;
               font-weight: 600;
-              color: #667eea;
+              color: #5C1D73;
               transition: all 0.3s ease;
 
               &:hover {
-                background: #667eea;
+                background: #5C1D73;
                 color: white;
                 transform: scale(1.05);
               }
@@ -213,12 +213,12 @@
             text-align: center;
             margin-top: 20px;
             padding: 15px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            background: linear-gradient(135deg, rgba(92, 29, 115, 0.1), rgba(230, 51, 139, 0.1));
             border-radius: 8px;
             font-size: 1.1rem;
 
             strong {
-              color: #667eea;
+              color: #5C1D73;
             }
           }
 
@@ -227,7 +227,7 @@
             align-items: center;
             gap: 20px;
             background: white;
-            border: 2px solid #667eea;
+            border: 2px solid #5C1D73;
             padding: 20px;
             border-radius: 10px;
             margin-top: 15px;
@@ -293,3 +293,4 @@
     }
   }
 }
+

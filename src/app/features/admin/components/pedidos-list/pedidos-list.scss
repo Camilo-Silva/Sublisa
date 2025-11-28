@@ -30,15 +30,17 @@
 
   .btn-volver {
     padding: 0.875rem 1.75rem;
-    background: #6c757d;
-    color: white;
+    background: white;
+    color: #5C1D73;
     text-decoration: none;
+    border: 2px solid #5C1D73;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s;
 
     &:hover {
-      background: #5a6268;
+      background: #5C1D73;
+      color: white;
       transform: translateY(-2px);
     }
   }
@@ -86,60 +88,51 @@
 
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #E6338B;
     }
   }
 
   &.filtro-actions {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
+    align-items: stretch;
 
-    .btn-limpiar {
+    button {
       padding: 0.875rem 1rem;
-      background: #ffc107;
-      color: #333;
       border: none;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
-      width: 100%;
+      color: white;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-limpiar {
+      background: #6c757d;
+      color: white;
 
       &:hover {
-        background: #e0a800;
+        background: #5a6268;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
       }
     }
 
     .btn-exportar,
     .btn-exportar-detallado {
-      padding: 0.875rem 1rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      width: 100%;
-      color: white;
-      font-size: 0.95rem;
-    }
-
-    .btn-exportar {
-      background: linear-gradient(135deg, var(--color-cyan), var(--color-magenta));
+      background: linear-gradient(135deg, #5C1D73 0%, #E6338B 100%);
 
       &:hover {
+        background: linear-gradient(135deg, #E6338B 0%, #F56A69 100%);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
-      }
-    }
-
-    .btn-exportar-detallado {
-      background: linear-gradient(135deg, var(--color-magenta), var(--color-amarillo));
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        box-shadow: 0 4px 12px rgba(230, 51, 139, 0.4);
       }
     }
   }
@@ -162,16 +155,17 @@
 
   button {
     padding: 0.875rem 2rem;
-    background: #007bff;
+    background: #5C1D73;
     color: white;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
+      transform: translateY(-2px);
     }
   }
 
@@ -260,7 +254,7 @@
 
   .pedido-numero {
     font-weight: 700;
-    color: #007bff;
+    color: #E6338B;
     font-size: 1.1rem;
   }
 
@@ -342,7 +336,7 @@
 
   .btn-ver-detalle {
     padding: 0.625rem 1.25rem;
-    background: #007bff;
+    background: #5C1D73;
     color: white;
     border: none;
     border-radius: 6px;
@@ -352,9 +346,9 @@
     white-space: nowrap;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(230, 51, 139, 0.3);
     }
   }
 }
@@ -436,7 +430,7 @@
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+      box-shadow: 0 4px 12px rgba(230, 51, 139, 0.3);
     }
 
     &:disabled {

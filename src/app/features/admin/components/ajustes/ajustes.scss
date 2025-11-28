@@ -42,16 +42,17 @@
 
   .btn-retry {
     padding: 0.75rem 2rem;
-    background: #007bff;
+    background: #5C1D73;
     color: white;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
 
     &:hover {
-      background: #0056b3;
+      background: #E6338B;
+      transform: translateY(-2px);
     }
   }
 }
@@ -97,7 +98,7 @@
 
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #E6338B;
       box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     }
 

@@ -41,12 +41,12 @@
   align-items: center;
   padding: 1.5rem;
   border-bottom: 2px solid #f0f0f0;
-  background: linear-gradient(135deg, rgba(233, 30, 99, 0.05), rgba(0, 188, 212, 0.05));
+  background: rgba(92, 29, 115, 0.05);
 
   h2 {
     margin: 0;
     font-size: 1.5rem;
-    color: #333;
+    color: #5C1D73;
   }
 
   .btn-close {
@@ -64,8 +64,8 @@
     transition: all 0.3s;
 
     &:hover {
-      background: rgba(233, 30, 99, 0.1);
-      color: #E91E63;
+      background: rgba(230, 51, 139, 0.1);
+      color: #E6338B;
     }
   }
 }
@@ -88,14 +88,15 @@
     .btn-continuar {
       display: inline-block;
       padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, #E91E63, #00BCD4);
+      background: #5C1D73;
       color: white;
       text-decoration: none;
       border-radius: 6px;
       font-weight: 600;
-      transition: transform 0.3s;
+      transition: all 0.3s;
 
       &:hover {
+        background: #E6338B;
         transform: translateY(-2px);
       }
     }
@@ -170,7 +171,7 @@
 .item-subtotal {
   font-size: 1rem;
   font-weight: 700;
-  color: #007bff;
+  color: #5C1D73;
   margin-left: auto;
 }
 
@@ -194,7 +195,7 @@
 
     &:hover {
       background: #f5f5f5;
-      border-color: #E91E63;
+      border-color: #E6338B;
     }
   }
 
@@ -273,7 +274,7 @@
 
   .total-valor {
     font-size: 1.3rem;
-    color: #007bff;
+    color: #5C1D73;
   }
 }
 
@@ -310,22 +311,25 @@
 }
 
 .btn-continuar-comprando {
-  background: #6c757d;
-  color: white;
+  background: white;
+  color: #5C1D73;
+  border: 2px solid #5C1D73;
 
   &:hover {
-    background: #5a6268;
+    background: #5C1D73;
+    color: white;
     transform: translateY(-2px);
   }
 }
 
 .btn-checkout {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: #5C1D73;
   color: white;
 
   &:hover {
+    background: #E6338B;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 12px rgba(230, 51, 139, 0.3);
   }
 }
 

@@ -62,7 +62,7 @@
 
     &:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: #E6338B;
     }
 
     &:disabled {
@@ -104,21 +104,22 @@
   }
 
   .btn-volver {
-    background-color: #6c757d;
-    color: white;
-    border: none;
+    background-color: white;
+    color: #5C1D73;
+    border: 2px solid #5C1D73;
 
     &:hover {
-      background-color: #5a6268;
+      background-color: #5C1D73;
+      color: white;
     }
   }
 
   .btn-confirmar {
-    background-color: #28a745;
+    background-color: #5C1D73;
     color: white;
 
     &:hover:not(:disabled) {
-      background-color: #218838;
+      background-color: #E6338B;
     }
 
     &:disabled {
@@ -168,7 +169,7 @@
 
   .item-precio {
     font-weight: 600;
-    color: #007bff;
+    color: #5C1D73;
   }
 }
 
@@ -194,27 +195,27 @@
     color: #333;
 
     span:last-child {
-      color: #007bff;
+      color: #5C1D73;
     }
   }
 }
 
 .info-box {
-  background-color: #e7f3ff;
-  border: 1px solid #b3d9ff;
+  background-color: rgba(92, 29, 115, 0.05);
+  border: 1px solid rgba(92, 29, 115, 0.2);
   border-radius: 6px;
   padding: 1rem;
 
   h3 {
     font-size: 1rem;
     margin: 0 0 0.5rem 0;
-    color: #004085;
+    color: #5C1D73;
   }
 
   p {
     font-size: 0.875rem;
     margin: 0;
-    color: #004085;
+    color: #5C1D73;
     line-height: 1.5;
   }
 }

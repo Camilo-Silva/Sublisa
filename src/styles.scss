@@ -1,31 +1,29 @@
 /* Variables de colores - Tema Sublimación */
 :root {
-  /* Colores CMYK vibrantes */
-  --color-magenta: #E91E63;
-  --color-cyan: #00BCD4;
-  --color-amarillo: #FFC107;
-  --color-negro: #212121;
+  /* Paleta principal */
+  --color-morado-oscuro: #5C1D73;
+  --color-rosa-brillante: #E6338B;
+  --color-coral: #F56A69;
 
-  /* Variantes */
-  --color-magenta-dark: #C2185B;
-  --color-cyan-dark: #0097A7;
-  --color-amarillo-dark: #FFA000;
-
-  /* Gradientes vibrantes */
-  --gradient-principal: linear-gradient(135deg, var(--color-magenta) 0%, var(--color-cyan) 100%);
-  --gradient-secundario: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-amarillo) 100%);
-  --gradient-accent: linear-gradient(135deg, var(--color-amarillo) 0%, var(--color-magenta) 100%);
-
-  /* Colores neutrales */
-  --color-gris-claro: #F5F5F5;
-  --color-gris-medio: #9E9E9E;
-  --color-gris-oscuro: #424242;
+  /* Colores base */
   --color-blanco: #FFFFFF;
+  --color-gris-claro: #F7F7F7;
+  --color-gris-oscuro: #333333;
 
-  /* Sombras vibrantes */
-  --shadow-magenta: 0 4px 20px rgba(233, 30, 99, 0.3);
-  --shadow-cyan: 0 4px 20px rgba(0, 188, 212, 0.3);
-  --shadow-amarillo: 0 4px 20px rgba(255, 193, 7, 0.3);
+  /* Colores de feedback */
+  --color-success: #4CAF50;
+  --color-error: #F44336;
+  --color-warning: #FF9800;
+
+  /* Gradientes con nueva paleta */
+  --gradient-principal: linear-gradient(135deg, var(--color-morado-oscuro) 0%, var(--color-rosa-brillante) 100%);
+  --gradient-secundario: linear-gradient(135deg, var(--color-rosa-brillante) 0%, var(--color-coral) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-coral) 0%, var(--color-rosa-brillante) 100%);
+
+  /* Sombras con nueva paleta */
+  --shadow-morado: 0 4px 20px rgba(92, 29, 115, 0.3);
+  --shadow-rosa: 0 4px 20px rgba(230, 51, 139, 0.3);
+  --shadow-coral: 0 4px 20px rgba(245, 106, 105, 0.3);
 }
 
 /* Reset y estilos globales */
@@ -38,8 +36,8 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  color: var(--color-negro);
-  background: var(--color-gris-claro);
+  color: var(--color-gris-oscuro);
+  background: var(--color-blanco);
   overflow-x: hidden;
   overflow-y: auto;
 }
