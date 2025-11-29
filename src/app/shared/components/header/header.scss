@@ -346,7 +346,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1180px) {
   .header-container {
     padding: 1rem;
   }
@@ -521,7 +521,7 @@
 }
 
 // Desktop: mostrar nav-desktop, ocultar nav-mobile
-@media (min-width: 769px) {
+@media (min-width: 1181px) {
   .nav-desktop {
     display: flex;
   }

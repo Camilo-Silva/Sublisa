@@ -160,3 +160,23 @@
     padding: 0.2rem 0.5rem;
   }
 }
+
+@media (max-width: 400px) {
+  .producto-info {
+    padding: 0.5rem;
+  }
+
+  .producto-nombre {
+    font-size: 0.75rem;
+    min-height: 2em;
+  }
+
+  .producto-precio {
+    font-size: 0.95rem;
+  }
+
+  .btn-agregar {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
