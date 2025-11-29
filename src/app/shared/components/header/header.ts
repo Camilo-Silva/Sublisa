@@ -1,16 +1,18 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CarritoService } from '../../../core/services/carrito.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductosService } from '../../../core/services/productos.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { CategoriasService } from '../../../core/services/categorias.service';
 import { CategoriaConSubcategorias } from '../../../core/models/categoria.interface';
+import { Producto } from '../../../core/models';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
@@ -22,6 +24,14 @@ export class Header implements OnInit {
   categoriaHover = signal<string | null>(null);
   categoriaExpandidaMobile = signal<string | null>(null);
   loading = signal(false);
+
+  // Búsqueda
+  searchActivo = signal(false);
+  searchQuery = signal('');
+  sugerencias = signal<Producto[]>([]);
+  mostrarSugerencias = signal(false);
+  loadingSearch = signal(false);
+  selectedSuggestionIndex = signal(-1);
 
   constructor(
     public carritoService: CarritoService,
@@ -103,6 +113,98 @@ export class Header implements OnInit {
     if (result) {
       await this.authService.logout();
       this.cerrarMenu();
+    }
+  }
+
+  // ========== MÉTODOS DE BÚSQUEDA ==========
+
+  activarBusqueda() {
+    this.searchActivo.set(true);
+    setTimeout(() => {
+      const input = document.querySelector('.search-input-header') as HTMLInputElement;
+      if (input) input.focus();
+    }, 100);
+  }
+
+  cerrarBusqueda() {
+    this.searchActivo.set(false);
+    this.searchQuery.set('');
+    this.sugerencias.set([]);
+    this.mostrarSugerencias.set(false);
+    this.selectedSuggestionIndex.set(-1);
+  }
+
+  async onSearchInput(query: string) {
+    this.searchQuery.set(query);
+
+    if (!query || query.trim().length < 2) {
+      this.sugerencias.set([]);
+      this.mostrarSugerencias.set(false);
+      return;
+    }
+
+    try {
+      this.loadingSearch.set(true);
+      const resultados = await this.productosService.searchProductos(query.trim());
+      this.sugerencias.set(resultados.slice(0, 5)); // Máximo 5 sugerencias
+      this.mostrarSugerencias.set(resultados.length > 0);
+      this.selectedSuggestionIndex.set(-1); // Resetear selección
+    } catch (error) {
+      console.error('Error al buscar productos:', error);
+      this.sugerencias.set([]);
+      this.mostrarSugerencias.set(false);
+    } finally {
+      this.loadingSearch.set(false);
+    }
+  }
+
+  irAProducto(productoId: string, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.cerrarBusqueda();
+    this.router.navigate(['/producto', productoId]);
+  }
+
+  onSearchEnter() {
+    const query = this.searchQuery().trim();
+    if (query) {
+      this.cerrarBusqueda();
+      this.router.navigate(['/productos'], {
+        queryParams: { q: query },
+        fragment: 'filtros-categorias'
+      });
+    }
+  }
+
+  onSearchKeydown(event: KeyboardEvent) {
+    const suggestions = this.sugerencias();
+    const currentIndex = this.selectedSuggestionIndex();
+
+    if (event.key === 'Escape') {
+      this.cerrarBusqueda();
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (suggestions.length > 0) {
+        const newIndex = currentIndex < suggestions.length - 1 ? currentIndex + 1 : 0;
+        this.selectedSuggestionIndex.set(newIndex);
+      }
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (suggestions.length > 0) {
+        const newIndex = currentIndex > 0 ? currentIndex - 1 : suggestions.length - 1;
+        this.selectedSuggestionIndex.set(newIndex);
+      }
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (currentIndex >= 0 && currentIndex < suggestions.length) {
+        // Navegar al producto seleccionado
+        this.irAProducto(suggestions[currentIndex].id);
+      } else {
+        // Buscar todos los resultados
+        this.onSearchEnter();
+      }
     }
   }
 }

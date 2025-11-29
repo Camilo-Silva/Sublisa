@@ -123,9 +123,10 @@ export class Catalogo implements OnInit {
     this.cargarCategorias();
 
     // Suscribirse a cambios en los query params
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(async params => {
       const categoria = params['categoria'];
       const subcategoria = params['subcategoria'];
+      const searchQuery = params['q'];
 
       if (categoria) {
         this.categoriaSeleccionada.set(categoria);
@@ -139,10 +140,35 @@ export class Catalogo implements OnInit {
         this.subcategoriaSeleccionada.set('TODAS');
       }
 
+      // Si viene una búsqueda desde el header
+      if (searchQuery) {
+        this.busqueda.set(searchQuery);
+        await this.buscarDesdeHeader(searchQuery);
+      } else {
+        this.busqueda.set('');
+        await this.cargarProductos();
+      }
+
       // Scroll al inicio cuando cambian los filtros
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-      this.cargarProductos();
+    // Suscribirse al fragment para hacer scroll a los filtros
+    this.route.fragment.subscribe(fragment => {
+      if (fragment === 'filtros-categorias') {
+        setTimeout(() => {
+          const element = document.getElementById('filtros-categorias');
+          if (element) {
+            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - 120; // Offset para dejar espacio arriba
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        }, 300);
+      }
     });
   }
 
@@ -194,6 +220,20 @@ export class Catalogo implements OnInit {
       return;
     }
 
+    try {
+      this.loading.set(true);
+      const data = await this.productosService.searchProductos(query);
+      this.productos.set(data);
+      this.aplicarFiltros();
+    } catch (err) {
+      console.error('Error al buscar productos:', err);
+      this.error.set('Error al buscar productos.');
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async buscarDesdeHeader(query: string) {
     try {
       this.loading.set(true);
       const data = await this.productosService.searchProductos(query);

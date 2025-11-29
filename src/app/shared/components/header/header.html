@@ -6,6 +6,70 @@
       </a>
     </div>
 
+    <!-- Buscador Mobile -->
+    <div class="search-container search-mobile" [class.active]="searchActivo()">
+      @if (!searchActivo()) {
+        <button class="search-icon-btn" (click)="activarBusqueda()" aria-label="Buscar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      } @else {
+        <div class="search-box">
+          <input
+            type="text"
+            class="search-input-header"
+            placeholder="Buscar productos..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchInput($event)"
+            (keydown)="onSearchKeydown($event)"
+            autocomplete="off"
+          />
+          <button class="search-close-btn" (click)="cerrarBusqueda()" aria-label="Cerrar búsqueda">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+
+          @if (mostrarSugerencias() && sugerencias().length > 0) {
+            <div class="search-suggestions">
+              @for (producto of sugerencias(); track producto.id; let i = $index) {
+                <button
+                  type="button"
+                  class="suggestion-item"
+                  [class.selected]="selectedSuggestionIndex() === i"
+                  (click)="irAProducto(producto.id, $event)"
+                  (mouseenter)="selectedSuggestionIndex.set(i)">
+                  <div class="suggestion-image">
+                    @if (producto.imagenes && producto.imagenes.length > 0) {
+                      <img [src]="producto.imagenes[0].url" [alt]="producto.nombre" />
+                    } @else {
+                      <div class="no-image">📦</div>
+                    }
+                  </div>
+                  <div class="suggestion-info">
+                    <span class="suggestion-name">{{ producto.nombre }}</span>
+                    <span class="suggestion-price">${{ producto.precio.toLocaleString('es-AR') }}</span>
+                  </div>
+                </button>
+              }
+              <button type="button" class="suggestion-view-all" (click)="onSearchEnter()">
+                Ver todos los resultados →
+              </button>
+            </div>
+          }
+
+          @if (loadingSearch()) {
+            <div class="search-loading">
+              <span>Buscando...</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
     <button (click)="carritoService.abrirCarrito()" class="carrito-mobile">
       🛒
       @if (carritoService.cantidadTotal() > 0) {
@@ -74,6 +138,70 @@
       <a routerLink="/como-comprar" routerLinkActive="active" (click)="cerrarMenu()" class="nav-link">
         Cómo Comprar
       </a>
+
+      <!-- Buscador Desktop -->
+      <div class="search-container" [class.active]="searchActivo()">
+        @if (!searchActivo()) {
+          <button class="search-icon-btn" (click)="activarBusqueda()" aria-label="Buscar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        } @else {
+          <div class="search-box">
+            <input
+              type="text"
+              class="search-input-header"
+              placeholder="Buscar productos..."
+              [(ngModel)]="searchQuery"
+              (ngModelChange)="onSearchInput($event)"
+              (keydown)="onSearchKeydown($event)"
+              autocomplete="off"
+            />
+            <button class="search-close-btn" (click)="cerrarBusqueda()" aria-label="Cerrar búsqueda">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            @if (mostrarSugerencias() && sugerencias().length > 0) {
+              <div class="search-suggestions">
+                @for (producto of sugerencias(); track producto.id; let i = $index) {
+                  <button
+                    type="button"
+                    class="suggestion-item"
+                    [class.selected]="selectedSuggestionIndex() === i"
+                    (click)="irAProducto(producto.id, $event)"
+                    (mouseenter)="selectedSuggestionIndex.set(i)">
+                    <div class="suggestion-image">
+                      @if (producto.imagenes && producto.imagenes.length > 0) {
+                        <img [src]="producto.imagenes[0].url" [alt]="producto.nombre" />
+                      } @else {
+                        <div class="no-image">📦</div>
+                      }
+                    </div>
+                    <div class="suggestion-info">
+                      <span class="suggestion-name">{{ producto.nombre }}</span>
+                      <span class="suggestion-price">${{ producto.precio.toLocaleString('es-AR') }}</span>
+                    </div>
+                  </button>
+                }
+                <button type="button" class="suggestion-view-all" (click)="onSearchEnter()">
+                  Ver todos los resultados →
+                </button>
+              </div>
+            }
+
+            @if (loadingSearch()) {
+              <div class="search-loading">
+                <span>Buscando...</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
 
       <button (click)="carritoService.toggleCarrito(); cerrarMenu()" class="nav-link carrito-link carrito-btn">
         🛒 Carrito

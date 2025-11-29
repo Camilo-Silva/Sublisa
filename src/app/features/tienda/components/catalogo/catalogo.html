@@ -7,15 +7,15 @@
     <p class="subtitle">Productos de sublimación de alta calidad, para sublimar y personalizados</p>
 
     <!-- Barra de búsqueda y filtros en la misma línea -->
-    <div class="search-filters-row">
-      <div class="search-bar">
+    <div class="search-filters-row" id="filtros-categorias">
+      <!-- <div class="search-bar">
         <input
           type="text"
           placeholder="Buscar productos..."
           (input)="buscarProductos($event)"
           class="search-input"
         />
-      </div>
+      </div> -->
 
       <div class="filtros-container">
         <div class="filtros-chips">
@@ -123,7 +123,7 @@
           </p>
         </div>
 
-        <div class="productos-grid">
+        <div class="productos-grid" id="productos-grid">
           @for (producto of productosPaginados(); track producto.id) {
             <app-producto-card [producto]="producto" />
           }
