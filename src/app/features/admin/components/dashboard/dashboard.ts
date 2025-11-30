@@ -11,6 +11,7 @@ interface Estadisticas {
   pedidosConfirmados: number;
   totalProductos: number;
   productosStockBajo: number;
+  productosSinStock: number;
 }
 
 @Component({
@@ -25,7 +26,8 @@ export class Dashboard implements OnInit {
     pedidosPendientes: 0,
     pedidosConfirmados: 0,
     totalProductos: 0,
-    productosStockBajo: 0
+    productosStockBajo: 0,
+    productosSinStock: 0
   });
   loading = signal(true);
   error = signal<string | null>(null);
@@ -52,16 +54,18 @@ export class Dashboard implements OnInit {
       // Cargar estadísticas
       const estadisticas = await this.pedidosService.getEstadisticas();
 
-      // Cargar productos para calcular stock bajo
+      // Cargar productos para calcular stock bajo y sin stock
       const productos = await this.productosService.getProductos();
       const productosStockBajo = productos.filter(p => p.stock > 0 && p.stock < 10).length;
+      const productosSinStock = productos.filter(p => p.stock === 0).length;
 
       this.stats.set({
         totalPedidos: estadisticas.total_pedidos || 0,
         pedidosPendientes: estadisticas.pendientes || 0,
         pedidosConfirmados: estadisticas.confirmados || 0,
         totalProductos: productos.length,
-        productosStockBajo: productosStockBajo
+        productosStockBajo: productosStockBajo,
+        productosSinStock: productosSinStock
       });
 
       // Cargar pedidos recientes

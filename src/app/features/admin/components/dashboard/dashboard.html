@@ -64,6 +64,16 @@
           </div>
         </div>
       }
+
+      @if (stats().productosSinStock > 0) {
+        <div class="stat-card stat-critico">
+          <div class="stat-icon">🚫</div>
+          <div class="stat-info">
+            <h3>{{ stats().productosSinStock }}</h3>
+            <p>Productos Sin Stock</p>
+          </div>
+        </div>
+      }
     </div>
 
     <!-- Acciones Rápidas -->

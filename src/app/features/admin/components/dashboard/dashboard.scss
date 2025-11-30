@@ -137,8 +137,21 @@
   }
 
   &.stat-alerta {
+    border-left: 4px solid #ff9800;
+    background: #fff8e1;
+  }
+
+  &.stat-critico {
     border-left: 4px solid #dc3545;
     background: #fff5f5;
+    
+    .stat-icon {
+      font-size: 2rem;
+    }
+
+    .stat-info h3 {
+      color: #dc3545;
+    }
   }
 }
 
