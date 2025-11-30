@@ -94,7 +94,7 @@
 
   &.filtro-actions {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 0.75rem;
     align-items: stretch;
 
@@ -126,7 +126,8 @@
     }
 
     .btn-exportar,
-    .btn-exportar-detallado {
+    .btn-exportar-detallado,
+    .btn-exportar-clientes {
       background: linear-gradient(135deg, #5C1D73 0%, #E6338B 100%);
 
       &:hover {

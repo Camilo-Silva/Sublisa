@@ -106,6 +106,73 @@
   }
 }
 
+.telefono-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+
+  .codigo-area-wrapper,
+  .numero-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .codigo-area-wrapper {
+    flex: 0 0 110px;
+  }
+
+  .numero-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .small-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 0.1rem;
+  }
+
+  .codigo-area-select,
+  .numero-input {
+    padding: 0.7rem 0.875rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: #E6338B;
+      box-shadow: 0 0 0 3px rgba(230, 51, 139, 0.1);
+    }
+
+    &:disabled {
+      background: #f5f5f5;
+      cursor: not-allowed;
+    }
+  }
+
+  .codigo-area-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  .digitos-info {
+    position: absolute;
+    right: 0.75rem;
+    top: 2rem;
+    font-size: 0.65rem;
+    color: #999;
+    pointer-events: none;
+  }
+}
+
 .password-input {
   position: relative;
 
@@ -206,6 +273,20 @@
 
     h1 {
       font-size: 1.25rem;
+    }
+  }
+
+  .telefono-input-group {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .codigo-area-wrapper {
+      flex: 1;
+      width: 100%;
+    }
+
+    .numero-wrapper {
+      width: 100%;
     }
   }
 }

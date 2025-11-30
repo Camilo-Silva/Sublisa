@@ -55,16 +55,47 @@
       </div>
 
       <div class="form-group">
-        <label for="telefono">Teléfono / WhatsApp</label>
+        <label for="telefono">Teléfono / WhatsApp *</label>
+        <div class="telefono-input-group">
+          <div class="codigo-area-wrapper">
+            <label class="small-label" for="codigoArea">Cód. de área</label>
+            <select
+              [(ngModel)]="codigoArea"
+              name="codigoArea"
+              id="codigoArea"
+              (change)="onCodigoAreaChange()"
+              class="codigo-area-select"
+              [disabled]="loading()"
+            >
+              @for (area of codigosArea; track area.codigo) {
+                <option [value]="area.codigo">{{ area.codigo }}</option>
+              }
+            </select>
+          </div>
+          <div class="numero-wrapper">
+            <label class="small-label" for="numeroTelefono">Número</label>
+            <input
+              type="tel"
+              id="numeroTelefono"
+              name="numeroTelefono"
+              [value]="numeroTelefono()"
+              (input)="onNumeroChange($event)"
+              [attr.maxlength]="digitosPermitidos"
+              [placeholder]="digitosPermitidos === 8 ? '12345678' : digitosPermitidos === 7 ? '1234567' : '123456'"
+              class="numero-input"
+              [disabled]="loading()"
+            />
+            <small class="digitos-info">{{ numeroTelefono().length }}/{{ digitosPermitidos }}</small>
+          </div>
+        </div>
+        <!-- Input oculto para validación del teléfono completo -->
         <input
-          type="tel"
-          id="telefono"
+          type="hidden"
+          name="telefonoCompleto"
           [(ngModel)]="telefono"
-          name="telefono"
-          placeholder="+54 9 11 1234-5678"
-          [disabled]="loading()"
+          required
         />
-        <small>Opcional - Para contactarte sobre tus pedidos</small>
+        <small>Completar sin el 15 - Para contactarte sobre tus pedidos. WhatsApp: {{ telefonoCompleto || '+549...' }}</small>
       </div>
 
       <div class="form-group">

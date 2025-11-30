@@ -65,6 +65,89 @@ export class PedidosService {
   }
 
   /**
+   * Busca o crea un cliente según el contexto de autenticación
+   */
+  private async obtenerOCrearCliente(
+    clienteForm: Omit<Cliente, 'id'>,
+    userId?: string
+  ): Promise<Cliente> {
+    // CASO 1: Usuario autenticado
+    if (userId) {
+      // Buscar cliente asociado a este user_id
+      const { data: clienteExistente } = await this.supabase.getClient()
+        .from('clientes')
+        .select('*')
+        .eq('telefono', clienteForm.telefono)
+        .limit(1);
+
+      if (clienteExistente && clienteExistente.length > 0) {
+        console.log('✅ Cliente existente encontrado para usuario autenticado');
+        console.log('📝 Actualizando cliente con datos:', {
+          nombre: clienteForm.nombre,
+          email: clienteForm.email,
+          clienteId: clienteExistente[0].id
+        });
+
+        // Actualizar datos si cambiaron
+        const { data: actualizado, error: errorUpdate } = await this.supabase.getClient()
+          .from('clientes')
+          .update({
+            nombre: clienteForm.nombre,
+            email: clienteForm.email
+          })
+          .eq('id', clienteExistente[0].id)
+          .select()
+          .single();
+
+        if (errorUpdate) {
+          console.error('❌ Error actualizando cliente:', errorUpdate);
+          throw errorUpdate;
+        }
+
+        console.log('✅ Cliente actualizado:', actualizado);
+        return actualizado!;
+      }
+    }
+
+    // CASO 2: Usuario NO autenticado - buscar por teléfono o email (solo reusar, no actualizar)
+    const { data: clientePorTelefono } = await this.supabase.getClient()
+      .from('clientes')
+      .select('*')
+      .eq('telefono', clienteForm.telefono)
+      .limit(1);
+
+    if (clientePorTelefono && clientePorTelefono.length > 0) {
+      console.log('📞 Cliente encontrado por teléfono (no autenticado) - reusando sin actualizar');
+      return clientePorTelefono[0];
+    }
+
+    // Si hay email, intentar buscar por email
+    if (clienteForm.email) {
+      const { data: clientePorEmail } = await this.supabase.getClient()
+        .from('clientes')
+        .select('*')
+        .eq('email', clienteForm.email)
+        .limit(1);
+
+      if (clientePorEmail && clientePorEmail.length > 0) {
+        console.log('📧 Cliente encontrado por email (no autenticado) - reusando sin actualizar');
+        return clientePorEmail[0];
+      }
+    }
+
+    // CASO 3: No existe - crear nuevo cliente
+    console.log('🆕 Creando nuevo cliente');
+    const { data: nuevoCliente, error } = await this.supabase.getClient()
+      .from('clientes')
+      .insert(clienteForm)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return nuevoCliente;
+  }
+
+  /**
    * Crea un nuevo pedido con todos los detalles
    */
   async crearPedido(
@@ -76,25 +159,19 @@ export class PedidosService {
       // 1. Validar stock disponible
       await this.validarStock(items);
 
-      // 2. Crear el cliente
-      const { data: clienteData, error: clienteError } = await this.supabase.getClient()
-        .from('clientes')
-        .insert(cliente)
-        .select()
-        .single();
+      // 2. Obtener user_id si está autenticado
+      const currentUser = await this.authService.getCurrentUser();
+      const userId = currentUser?.id || null;
 
-      if (clienteError) throw clienteError;
+      // 3. Obtener o crear el cliente
+      const clienteData = await this.obtenerOCrearCliente(cliente, userId);
 
-      // 3. Calcular totales
+      // 4. Calcular totales
       const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0);
       const total = subtotal; // Aquí podrías agregar impuestos o descuentos
 
-      // 3. Crear el pedido
+      // 5. Crear el pedido
       const numeroPedido = this.generateNumeroPedido();
-
-      // Obtener user_id del usuario autenticado (si existe)
-      const currentUser = await this.authService.getCurrentUser();
-      const userId = currentUser?.id || null;
 
       const { data: pedidoData, error: pedidoError } = await this.supabase.getClient()
         .from('pedidos')
@@ -112,7 +189,7 @@ export class PedidosService {
 
       if (pedidoError) throw pedidoError;
 
-      // 4. Crear los detalles del pedido
+      // 6. Crear los detalles del pedido
       const detalles: Omit<DetallePedido, 'id' | 'created_at'>[] = items.map(item => ({
         pedido_id: pedidoData.id!,
         producto_id: item.producto.id,

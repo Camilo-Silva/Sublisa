@@ -29,20 +29,50 @@
 
         <div class="form-group">
           <label for="telefono">Teléfono / WhatsApp *</label>
+          <div class="telefono-input-group">
+            <div class="codigo-area-wrapper">
+              <label class="small-label" for="codigoArea">Cód. de área</label>
+              <select
+                [(ngModel)]="codigoArea"
+                name="codigoArea"
+                id="codigoArea"
+                (change)="onCodigoAreaChange()"
+                class="form-control codigo-area-select"
+                required
+              >
+                @for (area of codigosArea; track area.codigo) {
+                  <option [value]="area.codigo">{{ area.codigo }}</option>
+                }
+              </select>
+            </div>
+            <div class="numero-wrapper">
+              <label class="small-label" for="numeroTelefono">Número</label>
+              <input
+                type="tel"
+                id="numeroTelefono"
+                name="numeroTelefono"
+                [value]="numeroTelefono()"
+                (input)="onNumeroChange($event)"
+                [attr.maxlength]="digitosPermitidos"
+                [placeholder]="digitosPermitidos === 8 ? '12345678' : digitosPermitidos === 7 ? '1234567' : '123456'"
+                class="form-control numero-input"
+                required
+              />
+              <small class="digitos-info">{{ numeroTelefono().length }}/{{ digitosPermitidos }}</small>
+            </div>
+          </div>
+          <!-- Input oculto para validación del teléfono completo -->
           <input
-            type="tel"
-            id="telefono"
-            name="telefono"
+            type="hidden"
+            name="telefonoCompleto"
             [(ngModel)]="cliente.telefono"
             required
-            placeholder="+5491138824544"
-            class="form-control"
           />
-          <small class="form-hint">📱 Formato: +54 9 11 XXXX XXXX (Buenos Aires) o +54 9 XXX XXX XXXX (Interior)</small>
+          <small class="form-hint">📱 Completar sin el 15. WhatsApp: {{ telefonoCompleto || '+549...' }}</small>
         </div>
 
         <div class="form-group">
-          <label for="email">Email (opcional)</label>
+          <label for="email">Email</label>
           <input
             type="email"
             id="email"

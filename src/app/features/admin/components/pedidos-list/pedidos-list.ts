@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Pedido } from '../../../../core/models';
 import { ModalService } from '../../../../core/services/modal.service';
+import { SupabaseService } from '../../../../core/services/supabase.service';
 
 type EstadoPedido = 'TODOS' | 'PENDIENTE_CONTACTO' | 'CONFIRMADO' | 'EN_PREPARACION' | 'LISTO_ENTREGA' | 'ENTREGADO' | 'CANCELADO';
 
@@ -48,7 +49,8 @@ export class PedidosList implements OnInit {
   constructor(
     private readonly pedidosService: PedidosService,
     private readonly router: Router,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly supabase: SupabaseService
   ) {}
 
   ngOnInit() {
@@ -243,7 +245,13 @@ export class PedidosList implements OnInit {
     // Construir CSV
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ...rows.map(row => row.map((cell, index) => {
+        // Para la columna del teléfono (índice 3), agregar comilla simple al inicio
+        if (index === 3 && cell) {
+          return `"'${cell}"`;
+        }
+        return `"${cell}"`;
+      }).join(','))
     ].join('\n');
 
     // Crear y descargar archivo
@@ -290,7 +298,13 @@ export class PedidosList implements OnInit {
         p.total.toFixed(2),
         (p.notas || '').replaceAll(',', ';')
       ];
-      csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
+      csvContent += row.map((cell, index) => {
+        // Para la columna del teléfono (índice 3), agregar comilla simple al inicio
+        if (index === 3 && cell) {
+          return `"'${cell}"`;
+        }
+        return `"${cell}"`;
+      }).join(',') + '\n';
     }
 
     // Descargar
@@ -306,5 +320,115 @@ export class PedidosList implements OnInit {
     document.body.appendChild(link);
     link.click();
     link.remove();
+  }
+
+  async exportarClientes() {
+    try {
+      // Obtener todos los clientes
+      const { data: clientes, error: errorClientes } = await this.supabase.getClient()
+        .from('clientes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (errorClientes) {
+        console.error('Error al obtener clientes:', errorClientes);
+        await this.modalService.warning('Error al obtener clientes');
+        return;
+      }
+
+      if (!clientes || clientes.length === 0) {
+        await this.modalService.warning('No hay clientes para exportar');
+        return;
+      }
+
+      // Obtener todos los user_profiles con información de usuarios registrados
+      const { data: profiles, error: errorProfiles } = await this.supabase.getClient()
+        .from('user_profiles')
+        .select('user_id, nombre, apellido, email, telefono, rol');
+
+      if (errorProfiles) {
+        console.error('Error al obtener profiles:', errorProfiles);
+      }
+
+      // Crear mapeo por teléfono y email para búsqueda rápida
+      const profilesByPhone = new Map();
+      const profilesByEmail = new Map();
+
+      if (profiles) {
+        profiles.forEach(profile => {
+          const profileData = {
+            nombre: profile.nombre || '',
+            apellido: profile.apellido || '',
+            email: profile.email || '',
+            telefono: profile.telefono || ''
+          };
+
+          if (profile.telefono) {
+            profilesByPhone.set(profile.telefono, profileData);
+          }
+          if (profile.email) {
+            profilesByEmail.set(profile.email.toLowerCase(), profileData);
+          }
+        });
+      }
+
+      // CSV con formato
+      let csvContent = '\ufeff'; // BOM para Excel
+      csvContent += 'REPORTE DE CLIENTES - SUBLISA\n';
+      csvContent += `Fecha de exportación: ${new Date().toLocaleString('es-AR')}\n`;
+      csvContent += `Total de clientes: ${clientes.length}\n\n`;
+
+      csvContent += 'ID Cliente,Nombre Registro,Email Registro,Nombre Último Pedido,Email Último Pedido,Teléfono,Fecha Creación\n';
+
+      for (const cliente of clientes) {
+        // Buscar si hay un user_profile asociado a este cliente
+        // Intentamos buscar por teléfono primero, luego por email
+        let profile = null;
+
+        if (cliente.telefono) {
+          profile = profilesByPhone.get(cliente.telefono);
+        }
+
+        if (!profile && cliente.email) {
+          profile = profilesByEmail.get(cliente.email.toLowerCase());
+        }
+
+        // Combinar nombre y apellido de registro
+        const nombreRegistro = profile ? `${profile.nombre} ${profile.apellido}`.trim() : '';
+
+        const row = [
+          cliente.id || '',
+          nombreRegistro,
+          profile?.email || '',
+          cliente.nombre || '',
+          cliente.email || '',
+          cliente.telefono || '', // Mantener el formato completo con +
+          cliente.created_at ? new Date(cliente.created_at).toLocaleString('es-AR') : ''
+        ];
+
+        csvContent += row.map((cell, index) => {
+          // Para la columna del teléfono (índice 5), agregar comilla simple al inicio para formato texto
+          if (index === 5 && cell) {
+            return `"'${cell}"`;
+          }
+          return `"${cell}"`;
+        }).join(',') + '\n';
+      }      // Descargar
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      const fechaHoy = new Date().toISOString().split('T')[0];
+      link.setAttribute('href', url);
+      link.setAttribute('download', `clientes_${fechaHoy}.csv`);
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error al exportar clientes:', error);
+      await this.modalService.warning('Error al exportar clientes');
+    }
   }
 }

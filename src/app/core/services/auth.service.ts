@@ -88,6 +88,7 @@ export class AuthService {
             user_id: authData.user.id,
             nombre: data.nombre,
             apellido: data.apellido,
+            email: data.email,
             telefono: data.telefono || null,
             rol: 'cliente'
           });
@@ -141,6 +142,7 @@ export class AuthService {
               user_id: user.id,
               nombre: metadata['nombre'] || user.email?.split('@')[0] || 'Usuario',
               apellido: metadata['apellido'] || '',
+              email: user.email || '',
               telefono: metadata['telefono'] || null,
               rol: 'cliente'
             });

@@ -68,6 +68,9 @@
         <button (click)="exportarAExcelDetallado()" class="btn-exportar-detallado" title="Exportar informe detallado con totales">
           📊 Exportar Detallado
         </button>
+        <button (click)="exportarClientes()" class="btn-exportar-clientes" title="Exportar listado de clientes con datos de registro">
+          👥 Exportar Clientes
+        </button>
       </div>
     </div>
   </div>
@@ -104,8 +107,8 @@
     <!-- Info de paginación -->
     <div class="resultados-info">
       <p>
-        Mostrando {{ (paginaActual() - 1) * itemsPorPagina() + 1 }} - 
-        {{ Math.min(paginaActual() * itemsPorPagina(), pedidosFiltrados().length) }} 
+        Mostrando {{ (paginaActual() - 1) * itemsPorPagina() + 1 }} -
+        {{ Math.min(paginaActual() * itemsPorPagina(), pedidosFiltrados().length) }}
         de {{ pedidosFiltrados().length }} pedidos
       </p>
     </div>
