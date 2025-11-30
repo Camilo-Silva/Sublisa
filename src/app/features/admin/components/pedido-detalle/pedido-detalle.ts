@@ -36,6 +36,7 @@ export class PedidoDetalle implements OnInit {
   ) {}
 
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {

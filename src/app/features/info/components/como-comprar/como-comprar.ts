@@ -34,6 +34,7 @@ export class ComoComprarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.titleService.setTitle('Cómo Comprar | Sublisa');
     this.configuracionService.inicializar();
   }

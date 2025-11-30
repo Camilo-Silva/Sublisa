@@ -362,23 +362,138 @@
     flex-direction: column;
     gap: 1rem;
     text-align: center;
+    padding: 1.5rem 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+
+    .btn-volver {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+      width: 100%;
+    }
+  }
+
+  .filtros-section {
+    padding: 1rem 0.75rem;
+
+    h2 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
   }
 
   .filtros-grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .filtro-item {
+    label {
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    input,
+    select {
+      padding: 0.6rem 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    &.filtro-actions {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+      margin-top: 0.25rem;
+
+      button {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.85rem;
+        width: 100%;
+      }
+    }
+  }
+
+  .resumen-pedidos {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .resumen-item {
+    padding: 1rem 0.75rem;
+
+    .resumen-label {
+      font-size: 0.85rem;
+    }
+
+    .resumen-valor {
+      font-size: 1.5rem;
+    }
   }
 
   .pedidos-table-container {
     overflow-x: auto;
+    margin: 0 -0.5rem;
   }
 
   .pedidos-table {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
 
-    th,
-    td {
-      padding: 0.75rem 0.5rem;
+    thead th {
+      padding: 0.5rem 0.35rem;
+      font-size: 0.75rem;
     }
+
+    tbody td {
+      padding: 0.5rem 0.35rem;
+    }
+
+    .pedido-numero {
+      font-size: 0.9rem;
+    }
+
+    .pedido-fecha {
+      strong {
+        font-size: 0.8rem;
+      }
+      small {
+        font-size: 0.7rem;
+      }
+    }
+
+    .contacto-info {
+      span {
+        font-size: 0.8rem;
+      }
+      small {
+        font-size: 0.7rem;
+      }
+    }
+
+    .pedido-total {
+      font-size: 0.95rem;
+    }
+
+    .estado-badge {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.7rem;
+      border-radius: 4px;
+    }
+
+    .btn-ver-detalle {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  .resultados-info {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    margin: 0.75rem 0;
   }
 
   .paginacion-container {

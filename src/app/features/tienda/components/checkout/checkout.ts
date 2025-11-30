@@ -34,12 +34,14 @@ export class Checkout implements OnInit {
   ) {}
 
   abrirCarrito() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.carritoService.abrirCarrito();
   }
 
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.titleService.setTitle('Finalizar Compra | Sublisa');
-    
+
     // Redirigir si el carrito está vacío
     if (this.carritoService.items().length === 0) {
       void this.router.navigate(['/']);

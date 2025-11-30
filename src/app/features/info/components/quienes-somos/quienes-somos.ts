@@ -34,6 +34,7 @@ export class QuienesSomosComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.titleService.setTitle('Quiénes Somos | Sublisa');
     this.configuracionService.inicializar();
   }
