@@ -22,6 +22,12 @@ export class Home implements OnInit, OnDestroy {
   imagenActual = signal(0);
   private intervalId?: number;
 
+  // Variables para drag/swipe
+  private isDragging = false;
+  private startX = 0;
+  private currentX = 0;
+  private threshold = 50; // Píxeles mínimos para cambiar de slide
+
   // Categorías destacadas - Usar las imágenes proporcionadas
   categorias = [
     {
@@ -98,5 +104,58 @@ export class Home implements OnInit, OnDestroy {
     if (!this.intervalId) {
       this.iniciarCarrousel();
     }
+  }
+
+  // Métodos para arrastrar con mouse
+  onDragStart(event: MouseEvent) {
+    this.isDragging = true;
+    this.startX = event.clientX;
+    this.pausarCarrousel();
+  }
+
+  onDragMove(event: MouseEvent) {
+    if (!this.isDragging) return;
+    this.currentX = event.clientX;
+  }
+
+  onDragEnd() {
+    if (!this.isDragging) return;
+
+    const diff = this.startX - this.currentX;
+
+    if (Math.abs(diff) > this.threshold) {
+      if (diff > 0) {
+        this.siguiente();
+      } else {
+        this.anterior();
+      }
+    }
+
+    this.isDragging = false;
+    this.reanudarCarrousel();
+  }
+
+  // Métodos para arrastrar con touch (móvil)
+  onTouchStart(event: TouchEvent) {
+    this.startX = event.touches[0].clientX;
+    this.pausarCarrousel();
+  }
+
+  onTouchMove(event: TouchEvent) {
+    this.currentX = event.touches[0].clientX;
+  }
+
+  onTouchEnd() {
+    const diff = this.startX - this.currentX;
+
+    if (Math.abs(diff) > this.threshold) {
+      if (diff > 0) {
+        this.siguiente();
+      } else {
+        this.anterior();
+      }
+    }
+
+    this.reanudarCarrousel();
   }
 }

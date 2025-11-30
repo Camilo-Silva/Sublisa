@@ -17,6 +17,16 @@
   position: relative;
   width: 100%;
   height: 100%;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  touch-action: pan-y pinch-zoom;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .carrousel-slide {
@@ -37,6 +47,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none; // Evita que la imagen interfiera con el drag
+    user-select: none;
   }
 }
 
@@ -46,36 +58,38 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.3);
   border: none;
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  opacity: 0.6;
 
   svg {
-    width: 28px;
-    height: 28px;
-    color: #333;
+    width: 20px;
+    height: 20px;
+    color: #fff;
   }
 
   &:hover {
-    background: white;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    opacity: 1;
   }
 
   &.prev {
-    left: 20px;
+    left: 15px;
   }
 
   &.next {
-    right: 20px;
+    right: 15px;
   }
 }
 
