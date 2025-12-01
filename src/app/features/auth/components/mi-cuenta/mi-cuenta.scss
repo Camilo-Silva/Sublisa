@@ -20,6 +20,13 @@
     margin: 0;
     font-size: 1.75rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 
   .btn-logout {
@@ -31,6 +38,13 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
 
     &:hover {
       transform: translateY(-2px);
@@ -50,6 +64,13 @@
     margin: 0 0 1.5rem 0;
     font-size: 1.3rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -83,6 +104,14 @@
     font-size: 1.2rem;
     color: #666;
     margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 
   .btn-ir-catalogo {
@@ -241,6 +270,13 @@
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
 
     &:hover {
       transform: translateY(-2px);
@@ -344,6 +380,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  svg {
+    flex-shrink: 0;
+  }
 
   &:hover:not(:disabled) {
     background: #E6338B;
@@ -395,6 +438,13 @@
     margin: 0;
     font-size: 1.5rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 
   .btn-close-modal {
@@ -440,6 +490,13 @@
     margin: 0 0 1rem 0;
     font-size: 1.25rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -529,6 +586,13 @@
   h4 {
     margin: 0 0 0.5rem 0;
     color: #856404;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 
   p {
@@ -667,3 +731,4 @@
     }
   }
 }
+

@@ -113,7 +113,14 @@ h1 {
   color: #555;
 
   .icono {
-    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5C1D73;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -193,6 +200,14 @@ h1 {
     margin: 0;
     font-size: 0.875rem;
     color: #856404;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      flex-shrink: 0;
+      stroke: #856404;
+    }
   }
 }
 

@@ -202,12 +202,78 @@
   }
 }
 
+// Estilos específicos para modales de logout
+.modal-logout-confirm {
+  .modal-icon {
+    width: 80px;
+    height: 80px;
+    background: #fff3cd;
+    color: #c62828;
+
+    svg {
+      animation: scaleIn 0.4s ease-out;
+    }
+  }
+
+  .btn-confirm {
+    background: #c62828;
+    color: white;
+
+    &:hover {
+      background: #a71e1e;
+      box-shadow: 0 6px 16px rgba(198, 40, 40, 0.3);
+    }
+  }
+}
+
+.modal-logout-success {
+  .modal-icon {
+    width: 100px;
+    height: 100px;
+    background: #d4edda;
+    color: #28a745;
+
+    svg {
+      animation: successIconBounce 0.6s ease-out;
+    }
+  }
+
+  .modal-header h2 {
+    animation: successPulse 0.5s ease-out;
+  }
+
+  .modal-body p {
+    animation: fadeIn 0.5s ease-out 0.2s both;
+  }
+}
+
 @keyframes scaleIn {
   from {
     transform: scale(0);
   }
   to {
     transform: scale(1);
+  }
+}
+
+@keyframes successIconBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
 

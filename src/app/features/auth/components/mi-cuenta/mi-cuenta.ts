@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { ConfiguracionService } from '../../../../core/services/configuracion.service';
+import { ModalService } from '../../../../core/services/modal.service';
 import { UserProfile, Pedido } from '../../../../core/models';
 
 @Component({
@@ -35,7 +36,8 @@ export class MiCuenta implements OnInit {
   constructor(
     public readonly authService: AuthService,
     private readonly pedidosService: PedidosService,
-    private readonly configuracionService: ConfiguracionService
+    private readonly configuracionService: ConfiguracionService,
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -80,8 +82,11 @@ export class MiCuenta implements OnInit {
     }
   }
 
-  async cerrarSesion() {
-    if (confirm('¿Deseas cerrar sesión?')) {
+  async logout() {
+    const confirmado = await this.modalService.logoutConfirm();
+
+    if (confirmado) {
+      await this.modalService.logoutSuccess();
       await this.authService.logout();
     }
   }

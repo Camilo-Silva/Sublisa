@@ -106,11 +106,10 @@ export class Header implements OnInit {
   }
 
   async logout() {
-    const result = await this.modalService.confirm(
-      'Cerrar Sesión',
-      '¿Estás seguro de que deseas cerrar sesión?'
-    );
-    if (result) {
+    const confirmado = await this.modalService.logoutConfirm();
+
+    if (confirmado) {
+      await this.modalService.logoutSuccess();
       await this.authService.logout();
       this.cerrarMenu();
     }

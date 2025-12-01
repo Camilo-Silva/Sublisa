@@ -3,9 +3,11 @@ import { Injectable, signal } from '@angular/core';
 export interface ModalConfig {
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'confirm';
+  type: 'info' | 'success' | 'warning' | 'error' | 'confirm' | 'logout-confirm' | 'logout-success';
   confirmText?: string;
   cancelText?: string;
+  autoClose?: boolean;
+  autoCloseDelay?: number;
 }
 
 export interface ModalState extends ModalConfig {
@@ -31,6 +33,13 @@ export class ModalService {
         isOpen: true,
         resolve
       });
+
+      // Auto-cerrar si está configurado
+      if (config.autoClose && config.autoCloseDelay) {
+        setTimeout(() => {
+          this.close(true);
+        }, config.autoCloseDelay);
+      }
     });
   }
 
@@ -63,6 +72,26 @@ export class ModalService {
 
   warning(message: string): Promise<boolean> {
     return this.alert('Advertencia', message, 'warning');
+  }
+
+  logoutConfirm(): Promise<boolean> {
+    return this.showModal({
+      title: '¿Cerrar sesión?',
+      message: '¿Estás seguro que deseas cerrar tu sesión?',
+      type: 'logout-confirm',
+      confirmText: 'Cerrar Sesión',
+      cancelText: 'Cancelar'
+    });
+  }
+
+  logoutSuccess(): Promise<boolean> {
+    return this.showModal({
+      title: 'Sesión cerrada exitosamente',
+      message: 'Hasta pronto, te esperamos de vuelta',
+      type: 'logout-success',
+      autoClose: true,
+      autoCloseDelay: 1500
+    });
   }
 
   close(result: boolean = false) {

@@ -8,6 +8,19 @@
             @case ('error') { <span class="icon-error">✕</span> }
             @case ('warning') { <span class="icon-warning">⚠</span> }
             @case ('confirm') { <span class="icon-confirm">?</span> }
+            @case ('logout-confirm') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            }
+            @case ('logout-success') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            }
             @default { <span class="icon-info">i</span> }
           }
         </div>
@@ -19,13 +32,15 @@
       </div>
 
       <div class="modal-footer">
-        @if (modalService.modalState().type === 'confirm') {
+        @if (modalService.modalState().type === 'confirm' || modalService.modalState().type === 'logout-confirm') {
           <button class="btn-cancel" (click)="onCancel()">
             {{ modalService.modalState().cancelText || 'Cancelar' }}
           </button>
           <button class="btn-confirm" (click)="onConfirm()">
             {{ modalService.modalState().confirmText || 'Confirmar' }}
           </button>
+        } @else if (modalService.modalState().type === 'logout-success') {
+          <!-- Sin botones, se cierra automáticamente -->
         } @else {
           <button class="btn-confirm" (click)="onConfirm()">
             {{ modalService.modalState().confirmText || 'Aceptar' }}
