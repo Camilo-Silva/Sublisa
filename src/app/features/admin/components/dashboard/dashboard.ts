@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ModalService } from '../../../../core/services/modal.service';
 
 interface Estadisticas {
   totalPedidos: number;
@@ -38,7 +39,8 @@ export class Dashboard implements OnInit {
     private readonly pedidosService: PedidosService,
     private readonly productosService: ProductosService,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -88,13 +90,11 @@ export class Dashboard implements OnInit {
   }
 
   async cerrarSesion() {
-    if (confirm('¿Deseas cerrar sesión?')) {
-      try {
-        await this.authService.logout();
-      } catch (err) {
-        console.error('Error al cerrar sesión:', err);
-        alert('Error al cerrar sesión');
-      }
+    const confirmado = await this.modalService.logoutConfirm();
+
+    if (confirmado) {
+      await this.modalService.logoutSuccess();
+      await this.authService.logout();
     }
   }
 

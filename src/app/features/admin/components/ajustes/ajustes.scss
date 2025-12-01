@@ -12,17 +12,50 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 
   h1 {
     margin: 0;
     font-size: 2rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg {
+      color: #5C1D73;
+      flex-shrink: 0;
+    }
   }
 
   .subtitle {
     margin: 0.5rem 0 0 0;
     color: #666;
     font-size: 1rem;
+  }
+
+  .btn-volver {
+    padding: 0.875rem 1.5rem;
+    background: white;
+    color: #5C1D73;
+    text-decoration: none;
+    border: 2px solid #5C1D73;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+
+    &:hover {
+      background: #5C1D73;
+      color: white;
+      transform: translateY(-2px);
+    }
   }
 }
 
@@ -83,7 +116,13 @@
     font-size: 1rem;
 
     .label-icon {
-      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        color: #5C1D73;
+      }
     }
   }
 
@@ -176,6 +215,14 @@
     margin: 0 0 1rem 0;
     font-size: 1.25rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg {
+      color: #17a2b8;
+      flex-shrink: 0;
+    }
   }
 
   ul {

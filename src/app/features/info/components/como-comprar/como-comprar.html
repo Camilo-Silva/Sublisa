@@ -14,7 +14,12 @@
             <li>Al seleccionar <strong>"Finalizar Compra"</strong> encontrarás los medios de pagos y promociones disponibles</li>
           </ol>
           <p class="nota">
-            ⚠️ A las 48 hs de haber realizado el pedido, si no se abona, el sistema cancela automáticamente la orden.
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            A las 48 hs de haber realizado el pedido, si no se abona, el sistema cancela automáticamente la orden.
           </p>
         </div>
       </div>
@@ -43,7 +48,10 @@
             </div>
           </div>
           <p class="contacto-info">
-            📞 Ante cualquier duda, podés contactarnos por WhatsApp al
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            Ante cualquier duda, podés contactarnos por WhatsApp al
             <a [href]="getWhatsAppUrl()" target="_blank" class="whatsapp-link">
               {{ whatsapp() }}
             </a>
@@ -59,7 +67,13 @@
           </p>
           <div class="empresas-grid">
             <div class="empresa-badge" *ngFor="let empresa of empresasEnvio">
-              🚚 {{ empresa }}
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+              {{ empresa }}
             </div>
           </div>
           <p class="opcion-alternativa">
@@ -73,7 +87,12 @@
         <div class="respuesta">
           <p>Sí, podés retirar tu compra por nuestro local:</p>
           <div class="direccion-card">
-            <div class="icono-ubicacion">📍</div>
+            <div class="icono-ubicacion">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
             <div class="info-direccion">
               <p class="direccion">{{ ubicacion().direccion }}</p>
               <p class="localidad">{{ ubicacion().localidad }}, {{ ubicacion().provincia }}</p>

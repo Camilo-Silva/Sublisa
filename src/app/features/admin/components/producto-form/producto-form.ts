@@ -58,6 +58,7 @@ export class ProductoForm implements OnInit {
   ) {}
 
   async ngOnInit() {
+    window.scrollTo(0, 0);
     // Cargar categorías PRIMERO (para tener el mapa disponible)
     await this.cargarCategorias();
 

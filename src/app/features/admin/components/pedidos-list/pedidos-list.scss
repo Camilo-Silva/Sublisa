@@ -20,6 +20,14 @@
     margin: 0;
     font-size: 1.75rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg {
+      color: #5C1D73;
+      flex-shrink: 0;
+    }
   }
 
   p {
@@ -57,6 +65,14 @@
     margin: 0 0 1.5rem 0;
     font-size: 1.3rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg {
+      color: #5C1D73;
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -152,6 +168,23 @@
     font-size: 1.25rem;
     color: #666;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &.error-state p svg {
+    color: #dc3545;
+  }
+
+  &.empty-state p svg {
+    color: #5C1D73;
+    opacity: 0.3;
   }
 
   button {
@@ -274,17 +307,23 @@
     }
   }
 
-  .contacto-info {
+.contacto-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  span {
+    color: #333;
+    font-size: 0.95rem;
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    align-items: center;
+    gap: 0.5rem;
 
-    span {
-      color: #333;
-      font-size: 0.95rem;
+    svg {
+      color: #28a745;
+      flex-shrink: 0;
     }
-
-    small {
+  }    small {
       color: #666;
       font-size: 0.85rem;
     }

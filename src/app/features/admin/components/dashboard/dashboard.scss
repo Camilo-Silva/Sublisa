@@ -21,12 +21,26 @@
       margin: 0;
       font-size: 1.75rem;
       color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      svg {
+        color: #5C1D73;
+      }
     }
 
     .admin-info {
       margin: 0.5rem 0 0 0;
       color: #666;
       font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      svg {
+        color: #5C1D73;
+      }
     }
   }
 
@@ -39,6 +53,9 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 
     &:hover {
       background: #c82333;
@@ -59,6 +76,14 @@
     font-size: 1.25rem;
     color: #666;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    svg {
+      color: #dc3545;
+    }
   }
 
   .btn-retry {
@@ -101,8 +126,17 @@
   }
 
   .stat-icon {
-    font-size: 2.5rem;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .stat-info {
@@ -122,31 +156,51 @@
 
   &.stat-pedidos {
     border-left: 4px solid #5C1D73;
+
+    .stat-icon svg {
+      color: #5C1D73;
+    }
   }
 
   &.stat-pendientes {
     border-left: 4px solid #ffc107;
+
+    .stat-icon svg {
+      color: #ffc107;
+    }
   }
 
   &.stat-confirmados {
     border-left: 4px solid #28a745;
+
+    .stat-icon svg {
+      color: #28a745;
+    }
   }
 
   &.stat-productos {
     border-left: 4px solid #E6338B;
+
+    .stat-icon svg {
+      color: #E6338B;
+    }
   }
 
   &.stat-alerta {
     border-left: 4px solid #ff9800;
     background: #fff8e1;
+
+    .stat-icon svg {
+      color: #ff9800;
+    }
   }
 
   &.stat-critico {
     border-left: 4px solid #dc3545;
     background: #fff5f5;
-    
-    .stat-icon {
-      font-size: 2rem;
+
+    .stat-icon svg {
+      color: #dc3545;
     }
 
     .stat-info h3 {
@@ -166,6 +220,13 @@
     margin: 0 0 1.5rem 0;
     font-size: 1.5rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      color: #5C1D73;
+    }
   }
 }
 
@@ -189,7 +250,14 @@
   box-shadow: 0 2px 8px rgba(92, 29, 115, 0.3);
 
   .action-icon {
-    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .action-label {
@@ -220,6 +288,13 @@
       margin: 0;
       font-size: 1.5rem;
       color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      svg {
+        color: #5C1D73;
+      }
     }
 
     .link-ver-todos {
@@ -372,6 +447,14 @@
     font-size: 1.25rem;
     color: #999;
     margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    svg {
+      color: #5C1D73;
+    }
   }
 }
 

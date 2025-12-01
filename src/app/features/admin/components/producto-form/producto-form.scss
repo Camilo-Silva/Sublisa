@@ -20,6 +20,13 @@
     margin: 0;
     font-size: 1.75rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      color: #5C1D73;
+    }
   }
 
   .btn-volver {
@@ -68,6 +75,14 @@
   text-align: center;
   color: #c33;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .form-section {
@@ -84,6 +99,13 @@
     margin: 0 0 1.5rem 0;
     font-size: 1.3rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    svg {
+      color: #5C1D73;
+    }
   }
 
   h3 {
@@ -201,6 +223,14 @@
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   .imagen-acciones {
@@ -217,12 +247,20 @@
     transition: opacity 0.3s;
 
     button {
-      padding: 0.375rem 0.75rem;
+      padding: 0.5rem;
       border: none;
       border-radius: 6px;
-      font-size: 1rem;
       cursor: pointer;
       transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        color: white;
+      }
 
       &:hover {
         transform: scale(1.1);
@@ -248,10 +286,17 @@
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
 
     &:hover {
       transform: scale(1.1);
@@ -283,9 +328,15 @@
   }
 
   .upload-icon {
-    font-size: 3rem;
-    display: block;
+    display: flex;
+    justify-content: center;
     margin-bottom: 1rem;
+
+    svg {
+      color: #5C1D73;
+      width: 48px;
+      height: 48px;
+    }
   }
 
   .upload-text {
@@ -337,6 +388,18 @@
     background: #28a745;
     color: white;
     min-width: 200px;
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
 
     &:hover:not(:disabled) {
       background: #218838;

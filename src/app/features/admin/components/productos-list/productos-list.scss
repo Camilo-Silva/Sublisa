@@ -20,6 +20,14 @@
     margin: 0;
     font-size: 1.75rem;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg {
+      color: #5C1D73;
+      flex-shrink: 0;
+    }
   }
 
   p {
@@ -37,6 +45,9 @@
     font-weight: 600;
     transition: all 0.3s;
     box-shadow: 0 2px 8px rgba(92, 29, 115, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
     &:hover {
       background: #E6338B;
@@ -57,10 +68,20 @@
 
   .search-box {
     flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      color: #999;
+      pointer-events: none;
+    }
 
     input {
       width: 100%;
-      padding: 0.875rem 1rem;
+      padding: 0.875rem 1rem 0.875rem 3rem;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
       font-size: 1rem;
@@ -110,6 +131,23 @@
     font-size: 1.25rem;
     color: #666;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &.error-state p svg {
+    color: #dc3545;
+  }
+
+  &.empty-state p svg {
+    color: #5C1D73;
+    opacity: 0.3;
   }
 
   .btn-retry,
@@ -198,8 +236,13 @@
     }
 
     .sin-imagen {
-      font-size: 2rem;
-      color: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        color: #ccc;
+      }
     }
   }
 
@@ -280,9 +323,15 @@
       padding: 0.5rem 0.75rem;
       border: none;
       border-radius: 6px;
-      font-size: 1.25rem;
       cursor: pointer;
       transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        color: white;
+      }
     }
 
     .btn-editar {
@@ -348,6 +397,13 @@
   h2 {
     margin: 0;
     font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 }
 

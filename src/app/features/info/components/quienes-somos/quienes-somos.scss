@@ -85,6 +85,10 @@
           display: flex;
           align-items: center;
           gap: 10px;
+
+          svg {
+            color: #5C1D73;
+          }
         }
 
         p {

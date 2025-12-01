@@ -1,12 +1,21 @@
 <div class="categorias-admin-container">
   <div class="page-header">
     <div>
-      <h1>📁 Gestión de Categorías</h1>
+      <h1>
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Gestión de Categorías
+      </h1>
       <p class="subtitle">Administra las categorías y subcategorías de productos</p>
     </div>
     <div class="header-actions">
       <button class="btn-primary" (click)="abrirModalNuevaCategoria()">
-        ➕ Nueva Categoría
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Nueva Categoría
       </button>
       <a routerLink="/admin/dashboard" class="btn-volver">
         ← Volver
@@ -47,16 +56,33 @@
 
             <div class="categoria-actions">
               <button class="btn-icon" (click)="toggleSubcategorias(categoria)" title="Ver subcategorías">
-                {{ categoriaSeleccionada()?.id === categoria.id ? '▼' : '▶' }}
+                @if (categoriaSeleccionada()?.id === categoria.id) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                }
               </button>
               <button class="btn-icon" (click)="abrirModalNuevaSubcategoria(categoria)" title="Agregar subcategoría">
-                ➕
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
               </button>
               <button class="btn-icon btn-edit" (click)="abrirModalEditarCategoria(categoria)" title="Editar">
-                ✏️
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
               </button>
               <button class="btn-icon btn-delete" (click)="eliminarCategoria(categoria)" title="Eliminar">
-                🗑️
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
               </button>
             </div>
           </div>
@@ -67,7 +93,7 @@
               <h4 class="subcategorias-title">Subcategorías</h4>
 
               @if (subcategorias().length === 0) {
-                <p class="empty-message">No hay subcategorías. Haz click en ➕ para agregar una.</p>
+                <p class="empty-message">No hay subcategorías. Haz click en el botón + para agregar una.</p>
               } @else {
                 <div class="subcategorias-grid">
                   @for (sub of subcategorias(); track sub.id) {
@@ -85,10 +111,16 @@
                       </div>
                       <div class="subcategoria-actions">
                         <button class="btn-icon-small btn-edit" (click)="abrirModalEditarSubcategoria(sub)" title="Editar">
-                          ✏️
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                          </svg>
                         </button>
                         <button class="btn-icon-small btn-delete" (click)="eliminarSubcategoria(sub)" title="Eliminar">
-                          🗑️
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          </svg>
                         </button>
                       </div>
                     </div>
@@ -114,8 +146,27 @@
     <div class="modal-overlay" (click)="cerrarModalCategoria()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>{{ categoriaEditando() ? '✏️ Editar Categoría' : '➕ Nueva Categoría' }}</h2>
-          <button class="btn-close" (click)="cerrarModalCategoria()">✕</button>
+          <h2>
+            @if (categoriaEditando()) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Editar Categoría
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Nueva Categoría
+            }
+          </h2>
+          <button class="btn-close" (click)="cerrarModalCategoria()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
 
         <form (ngSubmit)="guardarCategoria()" class="modal-form">
@@ -196,8 +247,27 @@
     <div class="modal-overlay" (click)="cerrarModalSubcategoria()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>{{ subcategoriaEditando() ? '✏️ Editar Subcategoría' : '➕ Nueva Subcategoría' }}</h2>
-          <button class="btn-close" (click)="cerrarModalSubcategoria()">✕</button>
+          <h2>
+            @if (subcategoriaEditando()) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Editar Subcategoría
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Nueva Subcategoría
+            }
+          </h2>
+          <button class="btn-close" (click)="cerrarModalSubcategoria()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
 
         <form (ngSubmit)="guardarSubcategoria()" class="modal-form">

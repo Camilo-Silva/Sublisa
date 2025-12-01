@@ -1,13 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ConfiguracionService } from '../../../../core/services/configuracion.service';
 import { ConfiguracionNegocio } from '../../../../core/models';
 import { ModalService } from '../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-ajustes',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './ajustes.html',
   styleUrl: './ajustes.scss',
 })
@@ -31,6 +32,7 @@ export class Ajustes implements OnInit {
   ) {}
 
   ngOnInit() {
+    window.scrollTo(0, 0);
     this.cargarConfiguracion();
   }
 
