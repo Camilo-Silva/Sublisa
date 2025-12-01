@@ -10,7 +10,8 @@ export const authGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);
 
   try {
-    const isAuthenticated = authService.isAuthenticated();
+    // Verificar sesión de forma asíncrona
+    const isAuthenticated = await authService.verifySession();
 
     if (isAuthenticated) {
       return true;
@@ -33,7 +34,8 @@ export const adminGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);
 
   try {
-    const isAuthenticated = authService.isAuthenticated();
+    // Verificar sesión de forma asíncrona
+    const isAuthenticated = await authService.verifySession();
 
     if (!isAuthenticated) {
       console.log('❌ No autenticado, redirigiendo a /login');
