@@ -72,7 +72,6 @@
 
     <button (click)="carritoService.abrirCarrito()" class="carrito-mobile">
       🛒
-      <!-- <a href="https://iconscout.com/icons/carrito" class="text-underline font-size-sm" target="_blank">carro</a> by <a href="https://iconscout.com/es/contributors/unicons/:assets" class="text-underline font-size-sm" target="_blank">Unicons Font</a> -->
       @if (carritoService.cantidadTotal() > 0) {
         <span class="badge-mobile">{{ carritoService.cantidadTotal() }}</span>
       }
