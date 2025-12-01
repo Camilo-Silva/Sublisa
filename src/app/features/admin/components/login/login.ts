@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit {
   email = signal('');
   password = signal('');
   loading = signal(false);
@@ -29,6 +29,10 @@ export class Login {
         this.returnUrl.set(params['returnUrl']);
       }
     });
+  }
+
+  ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   async onSubmit() {

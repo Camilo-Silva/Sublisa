@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './registro.html',
   styleUrl: './registro.scss',
 })
-export class Registro {
+export class Registro implements OnInit {
   nombre = signal('');
   apellido = signal('');
   email = signal('');
@@ -130,6 +130,10 @@ export class Registro {
     private readonly authService: AuthService,
     private readonly router: Router
   ) {}
+
+  ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
 
   onCodigoAreaChange() {
     // Limpiar el número si excede los dígitos permitidos
