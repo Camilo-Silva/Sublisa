@@ -447,6 +447,14 @@
   transition: all 0.3s;
   position: relative;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+
+  svg {
+    flex-shrink: 0;
+  }
 
   &:hover {
     background-color: rgba(230, 51, 139, 0.1);
@@ -459,7 +467,7 @@
   }
 
   &.carrito-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
 
@@ -502,6 +510,12 @@
       background-color: rgba(0, 0, 0, 0.3);
     }
   }
+
+  &.login-link {
+    svg {
+      margin-top: 1px;
+    }
+  }
 }
 
 .logout-btn {
@@ -515,17 +529,27 @@
   transition: all 0.3s;
   font-size: 1rem;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+
+  svg {
+    flex-shrink: 0;
+  }
 
   &:hover {
-    background: #D32F2F;
+    background: #c62828;
+    color: white;
     transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(198, 40, 40, 0.3);
   }
 }
 
 .carrito-mobile {
   display: none;
   position: relative;
-  color: white;
+  color: #5C1D73;
   font-size: 1.75rem;
   text-decoration: none;
   padding: 0.5rem;
@@ -536,11 +560,21 @@
   cursor: pointer;
   outline: none;
 
+  svg {
+    display: block;
+    stroke: #5C1D73;
+    transition: stroke 0.3s;
+  }
+
   &:hover,
   &:focus,
   &:active {
     background: transparent;
     outline: none;
+
+    svg {
+      stroke: #E6338B;
+    }
   }
 
   &:active {
