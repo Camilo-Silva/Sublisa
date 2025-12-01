@@ -53,6 +53,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/components/mi-cuenta/mi-cuenta').then(m => m.MiCuenta),
     canActivate: [authGuard]
   },
+  {
+    path: 'recuperar-password',
+    loadComponent: () => import('./features/auth/components/recuperar-password/recuperar-password').then(m => m.RecuperarPassword)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./features/auth/components/reset-password/reset-password').then(m => m.ResetPassword)
+  },
 
   // Rutas de administración (protegidas con adminGuard)
   {

@@ -279,4 +279,36 @@ export class AuthService {
       throw error;
     }
   }
+
+  /**
+   * Envía email para recuperar contraseña
+   */
+  async resetPassword(email: string): Promise<void> {
+    try {
+      const { error } = await this.supabase.getClient().auth.resetPasswordForEmail(email, {
+        redirectTo: `${globalThis.location.origin}/reset-password`
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error al enviar email de recuperación:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Actualiza la contraseña del usuario (después de usar el link de recuperación)
+   */
+  async updatePassword(newPassword: string): Promise<void> {
+    try {
+      const { error } = await this.supabase.getClient().auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error al actualizar contraseña:', error);
+      throw error;
+    }
+  }
 }
