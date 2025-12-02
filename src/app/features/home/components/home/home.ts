@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { Catalogo } from '../../../tienda/components/catalogo/catalogo';
+import { ConfiguracionService } from '../../../../core/services/configuracion.service';
 
 @Component({
   selector: 'app-home',
@@ -11,22 +12,17 @@ import { Catalogo } from '../../../tienda/components/catalogo/catalogo';
   styleUrl: './home.scss',
 })
 export class Home implements OnInit, OnDestroy {
-  // Carrousel - Banners principales
-  imagenes = [
-    '/images/1.png',
-    '/images/2.png',
-    '/images/3.png',
-    '/images/4.png'
-  ];
-
+  // Carrousel - Banners principales (se cargan desde BD)
+  imagenes = signal<string[]>([]);
   imagenActual = signal(0);
   private intervalId?: number;
+  loadingCarousel = signal(true);
 
   // Variables para drag/swipe
   private isDragging = false;
   private startX = 0;
   private currentX = 0;
-  private threshold = 50; // Píxeles mínimos para cambiar de slide
+  private readonly threshold = 50; // Píxeles mínimos para cambiar de slide
 
   // Categorías destacadas - Usar las imágenes proporcionadas
   categorias = [
@@ -56,13 +52,18 @@ export class Home implements OnInit, OnDestroy {
     // }
   ];
 
-  constructor(private readonly titleService: Title) {}
+  constructor(
+    private readonly titleService: Title,
+    private readonly configuracionService: ConfiguracionService
+  ) {}
 
   ngOnInit() {
     this.titleService.setTitle('Tienda Online de Sublisa');
     // Scroll al inicio de la página
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.iniciarCarrousel();
+
+    // Cargar imágenes del carousel desde BD
+    void this.cargarImagenesCarousel();
   }
 
   ngOnDestroy() {
@@ -71,21 +72,52 @@ export class Home implements OnInit, OnDestroy {
     }
   }
 
+  async cargarImagenesCarousel() {
+    try {
+      this.loadingCarousel.set(true);
+      const imagenesDB = await this.configuracionService.getImagenesCarousel();
+      const urls = imagenesDB.map((img: any) => img.url);
+      this.imagenes.set(urls);
+    } catch (error) {
+      console.error('Error al cargar imágenes del carousel:', error);
+      // Fallback a imágenes por defecto si falla
+      this.imagenes.set([
+        '/images/1.png',
+        '/images/2.png',
+        '/images/3.png',
+        '/images/4.png'
+      ]);
+    } finally {
+      this.loadingCarousel.set(false);
+
+      // Iniciar carousel solo si hay imágenes
+      if (this.imagenes().length > 0) {
+        this.iniciarCarrousel();
+      }
+    }
+  }
+
   iniciarCarrousel() {
-    this.intervalId = window.setInterval(() => {
+    this.intervalId = globalThis.setInterval(() => {
       this.siguiente();
     }, 5000); // Cambiar cada 5 segundos
   }
 
   siguiente() {
+    const totalImagenes = this.imagenes().length;
+    if (totalImagenes === 0) return;
+
     this.imagenActual.update(actual =>
-      actual === this.imagenes.length - 1 ? 0 : actual + 1
+      actual === totalImagenes - 1 ? 0 : actual + 1
     );
   }
 
   anterior() {
+    const totalImagenes = this.imagenes().length;
+    if (totalImagenes === 0) return;
+
     this.imagenActual.update(actual =>
-      actual === 0 ? this.imagenes.length - 1 : actual - 1
+      actual === 0 ? totalImagenes - 1 : actual - 1
     );
   }
 
@@ -101,7 +133,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   reanudarCarrousel() {
-    if (!this.intervalId) {
+    if (!this.intervalId && this.imagenes().length > 0) {
       this.iniciarCarrousel();
     }
   }

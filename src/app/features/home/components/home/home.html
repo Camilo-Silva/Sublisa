@@ -15,40 +15,52 @@
       (touchmove)="onTouchMove($event)"
       (touchend)="onTouchEnd()"
     >
-      @for (imagen of imagenes; track $index) {
-        <div
-          class="carrousel-slide"
-          [class.active]="imagenActual() === $index"
-        >
-          <img [src]="imagen" [alt]="'Banner ' + ($index + 1)" draggable="false">
+      @if (loadingCarousel()) {
+        <div class="carrousel-loading">
+          <p>Cargando imágenes...</p>
         </div>
+      } @else if (imagenes().length === 0) {
+        <div class="carrousel-empty">
+          <p>No hay imágenes disponibles</p>
+        </div>
+      } @else {
+        @for (imagen of imagenes(); track $index) {
+          <div
+            class="carrousel-slide"
+            [class.active]="imagenActual() === $index"
+          >
+            <img [src]="imagen" [alt]="'Banner ' + ($index + 1)" draggable="false">
+          </div>
+        }
       }
     </div>
 
-    <!-- Controles del Carrousel -->
-    <button class="carrousel-control prev" (click)="anterior()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-      </svg>
-    </button>
+    @if (!loadingCarousel() && imagenes().length > 0) {
+      <!-- Controles del Carrousel -->
+      <button class="carrousel-control prev" (click)="anterior()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
 
-    <button class="carrousel-control next" (click)="siguiente()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-      </svg>
-    </button>
+      <button class="carrousel-control next" (click)="siguiente()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </button>
 
-    <!-- Indicadores -->
-    <div class="carrousel-indicators">
-      @for (imagen of imagenes; track $index) {
-        <button
-          class="indicator"
-          [class.active]="imagenActual() === $index"
-          (click)="irAImagen($index)"
-          [attr.aria-label]="'Ir a imagen ' + ($index + 1)"
-        ></button>
-      }
-    </div>
+      <!-- Indicadores -->
+      <div class="carrousel-indicators">
+        @for (imagen of imagenes(); track $index) {
+          <button
+            class="indicator"
+            [class.active]="imagenActual() === $index"
+            (click)="irAImagen($index)"
+            [attr.aria-label]="'Ir a imagen ' + ($index + 1)"
+          ></button>
+        }
+      </div>
+    }
   </div>
 
   <!-- Categorías Destacadas -->

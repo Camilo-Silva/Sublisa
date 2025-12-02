@@ -52,6 +52,27 @@
   }
 }
 
+// Estados de carga y vacío
+.carrousel-loading,
+.carrousel-empty {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #5C1D73 0%, #E6338B 100%);
+  color: white;
+
+  p {
+    font-size: 1.25rem;
+    margin: 0;
+    opacity: 0.9;
+  }
+}
+
 // Controles del Carrousel
 .carrousel-control {
   position: absolute;

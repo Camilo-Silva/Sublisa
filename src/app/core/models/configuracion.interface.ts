@@ -16,3 +16,12 @@ export interface ConfiguracionNegocio {
   localidad: string;
   provincia: string;
 }
+
+export interface ImagenCarousel {
+  id: string;
+  url: string;
+  orden: number;
+  activo: boolean;
+  created_at?: string;
+  updated_at?: string;
+}

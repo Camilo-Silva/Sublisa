@@ -113,4 +113,93 @@ export class ConfiguracionService {
   async recargar(): Promise<void> {
     await this.cargarConfiguracion();
   }
+
+  /**
+   * Obtiene todas las imágenes del carousel activas ordenadas
+   */
+  async getImagenesCarousel(): Promise<any[]> {
+    const { data, error } = await this.supabase.getClient()
+      .from('imagenes_carousel')
+      .select('*')
+      .eq('activo', true)
+      .order('orden', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  /**
+   * Obtiene todas las imágenes del carousel (incluidas inactivas) - para admin
+   */
+  async getAllImagenesCarousel(): Promise<any[]> {
+    const { data, error } = await this.supabase.getClient()
+      .from('imagenes_carousel')
+      .select('*')
+      .order('orden', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  /**
+   * Agregar nueva imagen al carousel
+   */
+  async agregarImagenCarousel(url: string, orden?: number): Promise<void> {
+    // Si no se especifica orden, obtener el máximo actual + 1
+    if (orden === undefined) {
+      const { data, error: selectError } = await this.supabase.getClient()
+        .from('imagenes_carousel')
+        .select('orden')
+        .order('orden', { ascending: false })
+        .limit(1)
+        .maybeSingle(); // Cambio: maybeSingle() en vez de single() para manejar tabla vacía
+
+      // Si hay error en el SELECT, intentar orden 1 por defecto
+      orden = (data && !selectError) ? data.orden + 1 : 1;
+    }
+
+    const { error } = await this.supabase.getClient()
+      .from('imagenes_carousel')
+      .insert({ url, orden, activo: true });
+
+    if (error) throw error;
+  }
+
+  /**
+   * Actualizar imagen del carousel
+   */
+  async actualizarImagenCarousel(id: string, updates: { url?: string; orden?: number; activo?: boolean }): Promise<void> {
+    const { error } = await this.supabase.getClient()
+      .from('imagenes_carousel')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Eliminar imagen del carousel
+   */
+  async eliminarImagenCarousel(id: string): Promise<void> {
+    const { error } = await this.supabase.getClient()
+      .from('imagenes_carousel')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Actualizar orden de múltiples imágenes
+   */
+  async actualizarOrdenCarousel(imagenes: { id: string; orden: number }[]): Promise<void> {
+    const updates = imagenes.map(img =>
+      this.supabase.getClient()
+        .from('imagenes_carousel')
+        .update({ orden: img.orden, updated_at: new Date().toISOString() })
+        .eq('id', img.id)
+    );
+
+    await Promise.all(updates);
+  }
 }
