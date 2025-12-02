@@ -234,4 +234,91 @@ export class CategoriasService {
     const subcategorias = await this.getSubcategorias(categoria.id);
     return subcategorias.map(s => s.nombre);
   }
+
+  /**
+   * Verifica si una subcategoría tiene productos asignados
+   */
+  async subcategoriaTieneProductos(subcategoriaId: string): Promise<{ tieneProductos: boolean; cantidad: number }> {
+    // Primero obtener el nombre de la subcategoría
+    const { data: subcategoria, error: subError } = await this.supabase.getClient()
+      .from('subcategorias')
+      .select('nombre')
+      .eq('id', subcategoriaId)
+      .single();
+
+    if (subError) throw subError;
+    if (!subcategoria) {
+      return { tieneProductos: false, cantidad: 0 };
+    }
+
+    // Buscar productos que usan ese nombre de subcategoría
+    const { count, error } = await this.supabase.getClient()
+      .from('productos')
+      .select('*', { count: 'exact', head: true })
+      .eq('subcategoria', subcategoria.nombre);
+
+    if (error) throw error;
+
+    return {
+      tieneProductos: (count || 0) > 0,
+      cantidad: count || 0
+    };
+  }
+
+  /**
+   * Verifica si una categoría puede ser eliminada
+   * No puede eliminarse si tiene subcategorías o productos asignados
+   */
+  async categoriaPuedeEliminar(categoriaId: string): Promise<{
+    puedeEliminar: boolean;
+    tieneSubcategorias: boolean;
+    cantidadSubcategorias: number;
+    tieneProductos: boolean;
+    cantidadProductos: number
+  }> {
+    // Obtener nombre de la categoría
+    const { data: categoria, error: catError } = await this.supabase.getClient()
+      .from('categorias')
+      .select('nombre')
+      .eq('id', categoriaId)
+      .single();
+
+    if (catError) throw catError;
+    if (!categoria) {
+      return {
+        puedeEliminar: false,
+        tieneSubcategorias: false,
+        cantidadSubcategorias: 0,
+        tieneProductos: false,
+        cantidadProductos: 0
+      };
+    }
+
+    // Verificar subcategorías
+    const { count: countSub, error: errorSub } = await this.supabase.getClient()
+      .from('subcategorias')
+      .select('*', { count: 'exact', head: true })
+      .eq('categoria_id', categoriaId);
+
+    if (errorSub) throw errorSub;
+
+    // Verificar productos con ese nombre de categoría
+    const { count: countProd, error: errorProd } = await this.supabase.getClient()
+      .from('productos')
+      .select('*', { count: 'exact', head: true })
+      .eq('categoria', categoria.nombre);
+
+    if (errorProd) throw errorProd;
+
+    const tieneSubcategorias = (countSub || 0) > 0;
+    const tieneProductos = (countProd || 0) > 0;
+
+    return {
+      puedeEliminar: !tieneSubcategorias && !tieneProductos,
+      tieneSubcategorias,
+      cantidadSubcategorias: countSub || 0,
+      tieneProductos,
+      cantidadProductos: countProd || 0
+    };
+  }
 }

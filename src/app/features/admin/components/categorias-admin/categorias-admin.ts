@@ -138,17 +138,39 @@ export class CategoriasAdmin implements OnInit {
   }
 
   async eliminarCategoria(categoria: Categoria) {
-    const confirmar = await this.modalService.confirm(
-      '¿Eliminar categoría?',
-      `Se eliminará "${categoria.nombre}" y todas sus subcategorías`
-    );
-
-    if (!confirmar) return;
-
     try {
       this.loading.set(true);
-      await this.categoriasService.deleteCategoria(categoria.id);
-      await this.modalService.success('Categoría eliminada');
+
+      // Verificar si puede eliminarse
+      const validacion = await this.categoriasService.categoriaPuedeEliminar(categoria.id);
+
+      if (!validacion.puedeEliminar) {
+        let mensaje = `La categoría "${categoria.nombre}" no se puede eliminar porque:`;
+        const razones: string[] = [];
+
+        if (validacion.tieneSubcategorias) {
+          razones.push(`• Tiene ${validacion.cantidadSubcategorias} subcategoría${validacion.cantidadSubcategorias > 1 ? 's' : ''} asociada${validacion.cantidadSubcategorias > 1 ? 's' : ''}`);
+        }
+
+        if (validacion.tieneProductos) {
+          razones.push(`• Tiene ${validacion.cantidadProductos} producto${validacion.cantidadProductos > 1 ? 's' : ''} asignado${validacion.cantidadProductos > 1 ? 's' : ''}`);
+        }
+
+        mensaje += '\n\n' + razones.join('\n');
+
+        await this.modalService.alert('No se puede eliminar', mensaje);
+        return;
+      }
+
+      const confirmar = await this.modalService.confirm(
+        '¿Eliminar categoría?',
+        `Se eliminará permanentemente "${categoria.nombre}" de la base de datos.`
+      );
+
+      if (!confirmar) return;
+
+      await this.categoriasService.deleteCategoriaHard(categoria.id);
+      await this.modalService.success('Categoría eliminada permanentemente');
       await this.cargarCategorias();
     } catch (err) {
       console.error('Error al eliminar categoría:', err);
@@ -241,17 +263,29 @@ export class CategoriasAdmin implements OnInit {
   }
 
   async eliminarSubcategoria(subcategoria: Subcategoria) {
-    const confirmar = await this.modalService.confirm(
-      '¿Eliminar subcategoría?',
-      `Se eliminará "${subcategoria.nombre}"`
-    );
-
-    if (!confirmar) return;
-
     try {
       this.loading.set(true);
-      await this.categoriasService.deleteSubcategoria(subcategoria.id);
-      await this.modalService.success('Subcategoría eliminada');
+
+      // Verificar si tiene productos asignados
+      const { tieneProductos, cantidad } = await this.categoriasService.subcategoriaTieneProductos(subcategoria.id);
+
+      if (tieneProductos) {
+        await this.modalService.alert(
+          'No se puede eliminar',
+          `La subcategoría "${subcategoria.nombre}" tiene ${cantidad} producto${cantidad > 1 ? 's' : ''} asignado${cantidad > 1 ? 's' : ''}. No se puede eliminar.`
+        );
+        return;
+      }
+
+      const confirmar = await this.modalService.confirm(
+        '¿Eliminar subcategoría?',
+        `Se eliminará permanentemente "${subcategoria.nombre}" de la base de datos.`
+      );
+
+      if (!confirmar) return;
+
+      await this.categoriasService.deleteSubcategoriaHard(subcategoria.id);
+      await this.modalService.success('Subcategoría eliminada permanentemente');
 
       if (this.categoriaSeleccionada()) {
         await this.cargarSubcategorias(this.categoriaSeleccionada()!.id);
