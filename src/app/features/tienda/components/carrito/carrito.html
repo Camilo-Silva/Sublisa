@@ -14,7 +14,7 @@
   } @else {
     <div class="carrito-contenido">
       <div class="items-lista">
-        @for (item of carritoService.items(); track item.producto.id) {
+        @for (item of carritoService.items(); track item.producto.id + (item.talle?.id || '')) {
           <div class="item-carrito">
             <div class="item-imagen">
               <img [src]="item.producto.imagenes?.[0]?.url || 'https://via.placeholder.com/100'" [alt]="item.producto.nombre" />
@@ -22,20 +22,32 @@
 
             <div class="item-info">
               <h3>{{ item.producto.nombre }}</h3>
-              <p class="item-precio">${{ item.producto.precio | number:'1.2-2' }} c/u</p>
+              @if (item.talle) {
+                <p class="item-talle">Talle: {{ item.talle.codigo }}</p>
+              }
+              <p class="item-precio">${{ (item.precio_unitario || item.producto.precio) | number:'1.2-2' }} c/u</p>
+              <p class="item-stock-info">{{ getStockDisponible(item) }} disponibles</p>
             </div>
 
             <div class="item-cantidad">
-              <button (click)="disminuirCantidad(item.producto.id, item.cantidad)" class="btn-cantidad">-</button>
+              <button
+                (click)="disminuirCantidad(item.producto.id, item.cantidad, item.talle?.id)"
+                class="btn-cantidad"
+                [disabled]="item.cantidad <= 1"
+              >-</button>
               <span class="cantidad">{{ item.cantidad }}</span>
-              <button (click)="aumentarCantidad(item.producto.id, item.cantidad)" class="btn-cantidad">+</button>
+              <button
+                (click)="aumentarCantidad(item.producto.id, item.cantidad, getStockMaximo(item), item.talle?.id)"
+                class="btn-cantidad"
+                [disabled]="getStockMaximo(item) <= 0"
+              >+</button>
             </div>
 
             <div class="item-subtotal">
               <span class="subtotal">${{ item.subtotal | number:'1.2-2' }}</span>
             </div>
 
-            <button (click)="eliminarProducto(item.producto.id)" class="btn-eliminar">
+            <button (click)="eliminarProducto(item.producto.id, item.talle?.id)" class="btn-eliminar">
               ×
             </button>
           </div>

@@ -124,12 +124,22 @@
               <span class="cantidad">{{ cantidad() }}</span>
               <button
                 (click)="aumentarCantidad()"
-                [disabled]="cantidad() >= stockDisponible()"
+                [disabled]="cantidad() >= stockRestante()"
                 class="btn-cantidad"
               >
                 +
               </button>
             </div>
+            @if (cantidadEnCarrito() > 0) {
+              <small class="info-carrito">
+                Ya tienes {{ cantidadEnCarrito() }} en el carrito
+                @if (stockRestante() === 0) {
+                  <span class="sin-stock-adicional"> - Sin stock adicional disponible</span>
+                } @else {
+                  <span class="stock-adicional"> - Puedes agregar {{ stockRestante() }} más</span>
+                }
+              </small>
+            }
           </div>
 
           <div class="acciones">
@@ -138,10 +148,13 @@
               [disabled]="!puedeAgregar || agregando()"
               class="btn-agregar-carrito"
               [class.agregando]="agregando()"
+              [class.sin-stock]="stockRestante() === 0"
             >
               @if (agregando()) {
                 <span class="spinner"></span>
                 Agregando...
+              } @else if (stockRestante() === 0) {
+                Sin Stock Disponible
               } @else {
                 🛒 Agregar al Carrito
               }

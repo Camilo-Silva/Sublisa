@@ -132,6 +132,17 @@
       background-color: #5C1D73;
     }
   }
+
+  &.en-carrito {
+    background-color: #28a745;
+    cursor: default;
+
+    &:hover {
+      background-color: #28a745;
+      transform: none;
+      box-shadow: none;
+    }
+  }
 }
 
 @keyframes spin {

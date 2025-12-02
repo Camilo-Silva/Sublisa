@@ -40,7 +40,7 @@ export class CarritoService {
   /**
    * Añade un producto al carrito (con soporte para talles)
    */
-  agregarProducto(producto: Producto, cantidad: number = 1, talle?: Talle, precioUnitario?: number): void {
+  agregarProducto(producto: Producto, cantidad: number = 1, talle?: Talle, precioUnitario?: number, talleStock?: number): void {
     const items = [...this.itemsSignal()];
 
     // Si tiene talle, buscar por producto Y talle
@@ -56,9 +56,13 @@ export class CarritoService {
     const precio = precioUnitario ?? producto.precio;
 
     if (index >= 0) {
-      // Si ya existe, aumentar cantidad
+      // Si ya existe, aumentar cantidad y actualizar talle_stock
       items[index].cantidad += cantidad;
       items[index].subtotal = items[index].cantidad * (items[index].precio_unitario || precio);
+      // Actualizar talle_stock si se proporciona (para mantenerlo sincronizado)
+      if (talleStock !== undefined) {
+        items[index].talle_stock = talleStock;
+      }
     } else {
       // Si no existe, agregarlo
       items.push({
@@ -66,6 +70,7 @@ export class CarritoService {
         cantidad,
         subtotal: precio * cantidad,
         talle,
+        talle_stock: talleStock,
         precio_unitario: precioUnitario
       });
     }
@@ -141,6 +146,43 @@ export class CarritoService {
   getCantidadProducto(productoId: string): number {
     const item = this.itemsSignal().find(item => item.producto.id === productoId);
     return item?.cantidad || 0;
+  }
+
+  /**
+   * Obtiene la cantidad de un producto específico en el carrito (con soporte para talles)
+   */
+  getCantidadProductoConTalle(productoId: string, talleId?: string): number {
+    const items = this.itemsSignal();
+
+    if (talleId) {
+      // Si se especifica talle, buscar esa combinación específica
+      const item = items.find(item =>
+        item.producto.id === productoId && item.talle?.id === talleId
+      );
+      return item?.cantidad || 0;
+    } else {
+      // Si no se especifica talle, buscar producto sin talle
+      const item = items.find(item =>
+        item.producto.id === productoId && !item.talle
+      );
+      return item?.cantidad || 0;
+    }
+  }
+
+  /**
+   * Verifica si se puede agregar más cantidad al carrito considerando el stock disponible
+   */
+  puedeAgregarMas(productoId: string, stockDisponible: number, talleId?: string): boolean {
+    const cantidadEnCarrito = this.getCantidadProductoConTalle(productoId, talleId);
+    return cantidadEnCarrito < stockDisponible;
+  }
+
+  /**
+   * Obtiene el stock restante disponible para agregar al carrito
+   */
+  getStockRestante(productoId: string, stockDisponible: number, talleId?: string): number {
+    const cantidadEnCarrito = this.getCantidadProductoConTalle(productoId, talleId);
+    return Math.max(0, stockDisponible - cantidadEnCarrito);
   }
 
   /**

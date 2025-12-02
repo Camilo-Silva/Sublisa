@@ -52,6 +52,78 @@ export class DetalleProducto implements OnInit, OnDestroy {
     return prod.precio;
   });
 
+  // Computed para obtener cantidad ya en el carrito
+  cantidadEnCarrito = computed(() => {
+    const prod = this.producto();
+    if (!prod) return 0;
+
+    const talle = this.talleSeleccionado();
+
+    // Forzar suscripción al signal de items del carrito
+    const items = this.carritoService.items();
+
+    // Buscar la cantidad en el carrito
+    if (talle?.id) {
+      // IMPORTANTE: En el carrito guardamos talle.talle (objeto Talle), no talle (ProductoTalle)
+      // Por eso debemos comparar contra talle.talle.id
+      const talleIdABuscar = talle.talle?.id;
+      const item = items.find(item =>
+        item.producto.id === prod.id && item.talle?.id === talleIdABuscar
+      );
+
+      // DEBUG: Log para verificar búsqueda
+      console.log('🔍 DEBUG cantidadEnCarrito (con talle):', {
+        productoId: prod.id,
+        productoTalleId: talle.id,
+        talleId: talleIdABuscar,
+        talleCodigo: talle.talle?.codigo,
+        itemsEnCarrito: items.length,
+        itemEncontrado: !!item,
+        cantidadEncontrada: item?.cantidad || 0,
+        todosLosItems: items.map(i => ({
+          prodId: i.producto.id,
+          talleId: i.talle?.id,
+          cantidad: i.cantidad
+        }))
+      });
+
+      return item?.cantidad || 0;
+    } else {
+      const item = items.find(item =>
+        item.producto.id === prod.id && !item.talle
+      );
+
+      console.log('🔍 DEBUG cantidadEnCarrito (sin talle):', {
+        productoId: prod.id,
+        itemEncontrado: !!item,
+        cantidadEncontrada: item?.cantidad || 0
+      });
+
+      return item?.cantidad || 0;
+    }
+  });
+
+  // Computed para obtener stock restante (stock disponible - cantidad en carrito)
+  stockRestante = computed(() => {
+    const stock = this.stockDisponible();
+    const enCarrito = this.cantidadEnCarrito();
+    const restante = Math.max(0, stock - enCarrito);
+
+    // DEBUG: Log para verificar valores
+    const prod = this.producto();
+    const talle = this.talleSeleccionado();
+    console.log('🔍 DEBUG stockRestante:', {
+      productoId: prod?.id,
+      talleId: talle?.id,
+      talleCodigo: talle?.talle?.codigo,
+      stockDisponible: stock,
+      cantidadEnCarrito: enCarrito,
+      stockRestante: restante
+    });
+
+    return restante;
+  });
+
   // Computed para verificar si el producto tiene talles
   tieneTalles = computed(() => {
     const prod = this.producto();
@@ -160,10 +232,13 @@ export class DetalleProducto implements OnInit, OnDestroy {
 
   seleccionarTalle(talle: ProductoTalle) {
     this.talleSeleccionado.set(talle);
-    // Resetear cantidad si excede el stock del nuevo talle
-    if (this.cantidad() > talle.stock) {
-      this.cantidad.set(Math.min(1, talle.stock));
-    }
+    
+    // Esperar a que los computed se actualicen
+    setTimeout(() => {
+      // Resetear cantidad a 1 si hay stock restante, o 0 si no hay
+      const stockRestanteNuevoTalle = this.stockRestante();
+      this.cantidad.set(stockRestanteNuevoTalle > 0 ? 1 : 0);
+    }, 0);
   }
 
   onTalleChange(event: Event) {
@@ -180,8 +255,10 @@ export class DetalleProducto implements OnInit, OnDestroy {
   }
 
   aumentarCantidad() {
-    const stockMax = this.stockDisponible();
-    if (this.cantidad() < stockMax) {
+    const stockMax = this.stockRestante();
+    const cantidadActual = this.cantidad();
+    // Solo aumentar si hay stock restante Y la cantidad actual es menor
+    if (stockMax > 0 && cantidadActual < stockMax) {
       this.cantidad.update(c => c + 1);
     }
   }
@@ -207,15 +284,24 @@ export class DetalleProducto implements OnInit, OnDestroy {
 
     const talle = this.talleSeleccionado();
     const precio = this.precioActual();
+    const talleStock = talle?.stock;
 
     this.carritoService.agregarProducto(
       prod,
       this.cantidad(),
       talle?.talle,
-      precio
+      precio,
+      talleStock
     );
 
-    await new Promise(resolve => setTimeout(resolve, 200));
+    // Esperar un momento para que el signal se actualice
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // Resetear cantidad: si hay stock restante, poner 1, si no hay, poner 0
+    const nuevoStockRestante = this.stockRestante();
+    this.cantidad.set(nuevoStockRestante > 0 ? 1 : 0);
+
+    await new Promise(resolve => setTimeout(resolve, 150));
     this.agregando.set(false);
     this.carritoService.abrirCarrito();
   }
@@ -229,8 +315,10 @@ export class DetalleProducto implements OnInit, OnDestroy {
       return false;
     }
 
-    const stockMax = this.stockDisponible();
-    return stockMax >= this.cantidad();
+    // Validar que haya stock restante Y que la cantidad sea válida
+    const stockRestanteValue = this.stockRestante();
+    const cantidadValue = this.cantidad();
+    return stockRestanteValue > 0 && cantidadValue > 0 && cantidadValue <= stockRestanteValue;
   }
 
   // Métodos del Lightbox

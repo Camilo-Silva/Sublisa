@@ -29,12 +29,26 @@
                 </p>
               }
               <p class="item-precio">${{ item.precio_unitario || item.producto.precio | number:'1.2-2' }} c/u</p>
+              @if (getStockDisponible(item) > 0) {
+                <p class="item-stock">
+                  <span class="stock-icon">📦</span>
+                  {{ getStockDisponible(item) }} disponibles
+                </p>
+              }
 
               <div class="item-actions">
                 <div class="item-cantidad">
-                  <button (click)="disminuirCantidad(item.producto.id, item.cantidad, item.talle?.id)" class="btn-cantidad" [disabled]="eliminandoId() === (item.talle ? item.producto.id + '_' + item.talle.id : item.producto.id)">-</button>
+                  <button
+                    (click)="disminuirCantidad(item.producto.id, item.cantidad, item.talle?.id)"
+                    class="btn-cantidad"
+                    [disabled]="item.cantidad <= 1 || eliminandoId() === (item.talle ? item.producto.id + '_' + item.talle.id : item.producto.id)"
+                  >-</button>
                   <span class="cantidad">{{ item.cantidad }}</span>
-                  <button (click)="aumentarCantidad(item.producto.id, item.cantidad, item.talle?.id)" class="btn-cantidad" [disabled]="eliminandoId() === (item.talle ? item.producto.id + '_' + item.talle.id : item.producto.id)">+</button>
+                  <button
+                    (click)="aumentarCantidad(item.producto.id, item.cantidad, getStockMaximo(item), item.talle?.id)"
+                    class="btn-cantidad"
+                    [disabled]="getStockMaximo(item) <= 0 || eliminandoId() === (item.talle ? item.producto.id + '_' + item.talle.id : item.producto.id)"
+                  >+</button>
                 </div>
                 <span class="item-subtotal">${{ item.subtotal | number:'1.2-2' }}</span>
                 @if (eliminandoId() === (item.talle ? item.producto.id + '_' + item.talle.id : item.producto.id)) {

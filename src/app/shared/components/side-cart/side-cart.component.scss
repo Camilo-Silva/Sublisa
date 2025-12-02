@@ -181,6 +181,20 @@
       color: #999;
     }
   }
+
+  .item-stock {
+    font-size: 0.8rem;
+    color: #28a745;
+    margin: 0;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    .stock-icon {
+      font-size: 0.9rem;
+    }
+  }
 }
 
 .item-actions {

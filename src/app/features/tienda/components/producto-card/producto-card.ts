@@ -39,6 +39,11 @@ export class ProductoCard {
       return;
     }
 
+    // Verificar si hay stock disponible considerando lo que ya está en el carrito
+    if (!this.puedeAgregar) {
+      return;
+    }
+
     this.agregando.set(true);
 
     // Simular pequeño delay para mostrar "Agregando..."
@@ -66,5 +71,39 @@ export class ProductoCard {
 
   tieneTalles(): boolean {
     return !!(this.producto.talles && this.producto.talles.length > 0);
+  }
+
+  /**
+   * Verifica si se puede agregar el producto al carrito
+   * Considera el stock disponible y la cantidad ya en el carrito
+   */
+  get puedeAgregar(): boolean {
+    // Si tiene talles, siempre permitir ir al detalle
+    if (this.tieneTalles()) {
+      return true;
+    }
+
+    // Sin stock
+    if (this.producto.stock === 0) {
+      return false;
+    }
+
+    // Verificar si todavía hay stock disponible considerando lo que está en el carrito
+    return this.carritoService.puedeAgregarMas(this.producto.id, this.producto.stock);
+  }
+
+  /**
+   * Obtiene el texto del botón según el estado
+   */
+  get textoBoton(): string {
+    if (this.agregando()) return 'Agregando...';
+    if (this.tieneTalles()) return 'Ver Talles';
+
+    const cantidadEnCarrito = this.carritoService.getCantidadProductoConTalle(this.producto.id);
+    if (cantidadEnCarrito > 0 && !this.puedeAgregar) {
+      return 'En Carrito';
+    }
+
+    return 'Agregar';
   }
 }
