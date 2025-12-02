@@ -29,7 +29,13 @@
             class="carrousel-slide"
             [class.active]="imagenActual() === $index"
           >
-            <img [src]="imagen" [alt]="'Banner ' + ($index + 1)" draggable="false">
+            <img
+              [src]="imagen"
+              [alt]="'Banner ' + ($index + 1)"
+              draggable="false"
+              [attr.loading]="$index === 0 ? 'eager' : 'lazy'"
+              [attr.fetchpriority]="$index === 0 ? 'high' : 'auto'"
+            >
           </div>
         }
       }
@@ -71,7 +77,11 @@
       @for (categoria of categorias; track categoria.nombre) {
         <a [href]="categoria.ruta" class="categoria-card">
           <div class="categoria-imagen">
-            <img [src]="categoria.imagen" [alt]="categoria.nombre">
+            <img
+              [src]="categoria.imagen"
+              [alt]="categoria.nombre"
+              loading="lazy"
+            >
             <div class="categoria-overlay">
               <h3>{{ categoria.nombre }}</h3>
               <p>{{ categoria.descripcion }}</p>

@@ -9,6 +9,11 @@ export class ConfiguracionService {
   // Signal para mantener la configuración en cache y actualizar automáticamente
   private readonly configuracionCache = signal<ConfiguracionNegocio | null>(null);
 
+  // Cache para imágenes del carousel
+  private imagenesCarouselCache: any[] | null = null;
+  private imagenesCarouselCacheTime: number = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+
   constructor(private readonly supabase: SupabaseService) {}
 
   /**
@@ -116,8 +121,17 @@ export class ConfiguracionService {
 
   /**
    * Obtiene todas las imágenes del carousel activas ordenadas
+   * Usa cache para evitar consultas repetidas
    */
   async getImagenesCarousel(): Promise<any[]> {
+    const now = Date.now();
+
+    // Si hay cache válido, retornarlo
+    if (this.imagenesCarouselCache && (now - this.imagenesCarouselCacheTime) < this.CACHE_DURATION) {
+      return this.imagenesCarouselCache;
+    }
+
+    // Si no hay cache o expiró, consultar
     const { data, error } = await this.supabase.getClient()
       .from('imagenes_carousel')
       .select('*')
@@ -125,7 +139,21 @@ export class ConfiguracionService {
       .order('orden', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+
+    // Guardar en cache
+    this.imagenesCarouselCache = data || [];
+    this.imagenesCarouselCacheTime = now;
+
+    return this.imagenesCarouselCache;
+  }
+
+  /**
+   * Invalida el cache de imágenes del carousel
+   * Llamar después de actualizar imágenes desde admin
+   */
+  invalidarCacheImagenesCarousel(): void {
+    this.imagenesCarouselCache = null;
+    this.imagenesCarouselCacheTime = 0;
   }
 
   /**

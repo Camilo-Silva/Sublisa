@@ -78,6 +78,9 @@ export class Home implements OnInit, OnDestroy {
       const imagenesDB = await this.configuracionService.getImagenesCarousel();
       const urls = imagenesDB.map((img: any) => img.url);
       this.imagenes.set(urls);
+
+      // Precargar las imágenes del carousel
+      this.precargarImagenes(urls);
     } catch (error) {
       console.error('Error al cargar imágenes del carousel:', error);
       // Fallback a imágenes por defecto si falla
@@ -95,6 +98,16 @@ export class Home implements OnInit, OnDestroy {
         this.iniciarCarrousel();
       }
     }
+  }
+
+  /**
+   * Precarga imágenes en el navegador para cargarlas instantáneamente
+   */
+  private precargarImagenes(urls: string[]): void {
+    urls.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
   }
 
   iniciarCarrousel() {
