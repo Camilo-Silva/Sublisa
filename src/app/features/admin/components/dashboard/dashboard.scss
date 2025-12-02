@@ -248,6 +248,8 @@
   border-radius: 10px;
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(92, 29, 115, 0.3);
+  position: relative;
+  overflow: hidden;
 
   .action-icon {
     display: flex;
@@ -265,11 +267,18 @@
     font-size: 1rem;
   }
 
+  .action-description {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    text-align: center;
+  }
+
   &:hover {
     background: #E6338B;
     transform: translateY(-4px);
     box-shadow: 0 6px 16px rgba(230, 51, 139, 0.4);
   }
+
 }
 
 .recent-orders {

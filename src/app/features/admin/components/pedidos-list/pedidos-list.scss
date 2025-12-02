@@ -39,17 +39,16 @@
   .btn-volver {
     padding: 0.875rem 1.75rem;
     background: white;
-    color: #5C1D73;
+    color: #666;
     text-decoration: none;
-    border: 2px solid #5C1D73;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s;
+    font-weight: 500;
+    transition: all 0.2s;
 
     &:hover {
-      background: #5C1D73;
-      color: white;
-      transform: translateY(-2px);
+      border-color: #E6338B;
+      color: #E6338B;
     }
   }
 }

@@ -223,85 +223,21 @@
 
         @if (tieneTalles()) {
           <div class="talles-content">
-            <!-- Formulario para agregar/editar talle -->
-            <div class="talle-form-card">
-              <h3>{{ editandoTalle() ? 'Editar Talle' : 'Agregar Talle' }}</h3>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="talle-select">Talle *</label>
-                  <select
-                    id="talle-select"
-                    [ngModel]="talleCampos.talle_id()"
-                    (ngModelChange)="talleCampos.talle_id.set($event)"
-                    name="talle_id"
-                    [disabled]="editandoTalle() !== null"
-                  >
-                    <option value="">Seleccionar talle...</option>
-                    @for (talle of tallesDisponibles(); track talle.id) {
-                      @if (!talleYaAgregado(talle.id) || editandoTalle() === talle.id) {
-                        <option [value]="talle.id">
-                          {{ talle.codigo }} - {{ talle.nombre }}
-                        </option>
-                      }
-                    }
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="talle-stock">Stock *</label>
-                  <input
-                    type="number"
-                    id="talle-stock"
-                    [ngModel]="talleCampos.stock()"
-                    (ngModelChange)="talleCampos.stock.set($event)"
-                    name="talle_stock"
-                    min="0"
-                    placeholder="0"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label for="talle-precio">
-                    Precio Específico
-                    <span class="label-hint">(opcional)</span>
-                  </label>
-                  <input
-                    type="number"
-                    id="talle-precio"
-                    [ngModel]="talleCampos.precio()"
-                    (ngModelChange)="talleCampos.precio.set($event)"
-                    name="talle_precio"
-                    min="0"
-                    step="0.01"
-                    placeholder="Usa precio base"
-                  />
-                </div>
-              </div>
-
-              <div class="talle-form-actions">
-                @if (editandoTalle()) {
-                  <button
-                    type="button"
-                    class="btn-secondary-small"
-                    (click)="cancelarEdicionTalle()"
-                  >
-                    Cancelar
-                  </button>
-                }
-                <button
-                  type="button"
-                  class="btn-primary-small"
-                  [disabled]="!puedeAgregarTalle()"
-                  (click)="agregarOActualizarTalle()"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  {{ editandoTalle() ? 'Actualizar' : 'Agregar' }}
-                </button>
-              </div>
-            </div>
+            <!-- Botón para agregar nuevo talle cuando no hay ninguno en edición -->
+            @if (!editandoTalle() && !mostrarModalTalle()) {
+              <button
+                type="button"
+                class="btn-agregar-talle"
+                [disabled]="tallesDisponibles().length === 0 || tallesDisponibles().length === tallesProducto().length"
+                (click)="mostrarModalTalle.set(true)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Agregar Talle
+              </button>
+            }
 
             <!-- Tabla de talles agregados -->
             @if (tallesProducto().length > 0) {
@@ -372,6 +308,96 @@
               </div>
             }
           </div>
+
+          <!-- Modal para editar talle -->
+          @if (mostrarModalTalle()) {
+            <div class="modal-overlay" (click)="cancelarEdicionTalle()" (keydown.escape)="cancelarEdicionTalle()">
+              <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>{{ editandoTalle() ? 'Editar Talle' : 'Agregar Talle' }}</h3>
+                  <button type="button" class="modal-close" (click)="cancelarEdicionTalle()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="modal-talle-select">Talle *</label>
+                    <select
+                      id="modal-talle-select"
+                      [ngModel]="talleCampos.talle_id()"
+                      (ngModelChange)="talleCampos.talle_id.set($event)"
+                      name="talle_id"
+                      [disabled]="editandoTalle() !== null"
+                    >
+                      <option value="">Seleccionar talle...</option>
+                      @for (talle of tallesDisponibles(); track talle.id) {
+                        @if (!talleYaAgregado(talle.id) || editandoTalle() === talle.id) {
+                          <option [value]="talle.id">
+                            {{ talle.codigo }} - {{ talle.nombre }}
+                          </option>
+                        }
+                      }
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="modal-talle-stock">Stock *</label>
+                    <input
+                      type="number"
+                      id="modal-talle-stock"
+                      [ngModel]="talleCampos.stock()"
+                      (ngModelChange)="talleCampos.stock.set($event)"
+                      name="talle_stock"
+                      min="0"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="modal-talle-precio">
+                      Precio Específico
+                      <span class="label-hint">(opcional)</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="modal-talle-precio"
+                      [ngModel]="talleCampos.precio()"
+                      (ngModelChange)="talleCampos.precio.set($event)"
+                      name="talle_precio"
+                      min="0"
+                      step="0.01"
+                      placeholder="Usa precio base"
+                    />
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn-secondary"
+                    (click)="cancelarEdicionTalle()"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-primary"
+                    [disabled]="!puedeAgregarTalle()"
+                    (click)="agregarOActualizarTalle()"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    {{ editandoTalle() ? 'Actualizar' : 'Agregar' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
         }
       </div>
 

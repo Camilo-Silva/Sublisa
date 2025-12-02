@@ -736,6 +736,172 @@
     }
   }
 
+  // Botón agregar talle
+  .btn-agregar-talle {
+    padding: 0.75rem 1.5rem;
+    background: #5C1D73;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover:not(:disabled) {
+      background: #E6338B;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230, 51, 139, 0.3);
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  // Modal para editar talle
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e9ecef;
+
+    h3 {
+      margin: 0;
+      color: #5C1D73;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: #6c757d;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        color: #dc3545;
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 2rem;
+
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .label-hint {
+      font-size: 0.85rem;
+      color: #888;
+      font-weight: normal;
+    }
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #e9ecef;
+
+    .btn-primary,
+    .btn-secondary {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .btn-primary {
+      background: #5C1D73;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #E6338B;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(230, 51, 139, 0.3);
+      }
+
+      &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #5C1D73;
+      border: 2px solid #5C1D73;
+
+      &:hover {
+        background: #f8f9fa;
+        border-color: #E6338B;
+        color: #E6338B;
+      }
+    }
+  }
+
   // Estado vacío
   .empty-talles {
     text-align: center;

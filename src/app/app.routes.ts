@@ -112,6 +112,11 @@ export const routes: Routes = [
         canActivate: [adminGuard]
       },
       {
+        path: 'talles',
+        loadComponent: () => import('./features/admin/components/talles-admin/talles-admin').then(m => m.TallesAdmin),
+        canActivate: [adminGuard]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

@@ -60,6 +60,7 @@ export class ProductoForm implements OnInit {
   tallesDisponibles = signal<Talle[]>([]);
   tallesProducto = signal<ProductoTalle[]>([]);
   editandoTalle = signal<string | null>(null);
+  mostrarModalTalle = signal(false);
 
   // Signals individuales para el formulario (reactivos)
   talleCampos = {
@@ -319,6 +320,16 @@ export class ProductoForm implements OnInit {
 
     if (!talleId || stock < 0) return;
 
+    // Confirmación solo para edición
+    if (this.editandoTalle()) {
+      const talle = this.tallesDisponibles().find(t => t.id === talleId);
+      const confirmado = await this.modalService.confirm(
+        'Confirmar Actualización',
+        `¿Actualizar el talle ${talle?.codigo} con stock: ${stock}${precio ? ` y precio: $${precio}` : ''}?`
+      );
+      if (!confirmado) return;
+    }
+
     const productoId = this.productoId();
     if (!productoId) {
       // Si es producto nuevo, agregar a la lista temporal
@@ -397,6 +408,7 @@ export class ProductoForm implements OnInit {
       }
     }
 
+    this.mostrarModalTalle.set(false);
     this.resetearFormularioTalle();
   }
 
@@ -405,6 +417,7 @@ export class ProductoForm implements OnInit {
     this.talleCampos.talle_id.set(productoTalle.talle_id);
     this.talleCampos.stock.set(productoTalle.stock);
     this.talleCampos.precio.set(productoTalle.precio ?? null);
+    this.mostrarModalTalle.set(true);
   }
 
   async eliminarTalle(productoTalle: ProductoTalle) {
@@ -448,6 +461,7 @@ export class ProductoForm implements OnInit {
   }
 
   cancelarEdicionTalle() {
+    this.mostrarModalTalle.set(false);
     this.resetearFormularioTalle();
   }
 
