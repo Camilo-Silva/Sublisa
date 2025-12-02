@@ -222,6 +222,7 @@
                 <thead>
                   <tr>
                     <th>Producto</th>
+                    <th>Talle</th>
                     <th>Cantidad</th>
                     <th>Precio Unit.</th>
                     <th>Subtotal</th>
@@ -235,6 +236,13 @@
                           <strong>{{ detalle.producto.nombre }}</strong>
                           <small>SKU: {{ detalle.producto.sku }}</small>
                         </div>
+                      </td>
+                      <td class="text-center">
+                        @if (detalle.talle_codigo) {
+                          <span class="talle-badge">{{ detalle.talle_codigo }}</span>
+                        } @else {
+                          <span class="talle-na">—</span>
+                        }
                       </td>
                       <td class="text-center">{{ detalle.cantidad }}</td>
                       <td>${{ detalle.precio_unitario | number:'1.2-2' }}</td>

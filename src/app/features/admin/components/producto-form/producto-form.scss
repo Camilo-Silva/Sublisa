@@ -139,6 +139,13 @@
     font-weight: 600;
     color: #333;
     font-size: 0.95rem;
+
+    .label-hint {
+      font-size: 0.85rem;
+      color: #888;
+      font-weight: normal;
+      margin-left: 0.5rem;
+    }
   }
 
   input,
@@ -148,6 +155,13 @@
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s;
+
+    &.disabled-input {
+      background-color: #f5f5f5;
+      color: #666;
+      cursor: not-allowed;
+      border-color: #e0e0e0;
+    }
 
     &:focus {
       outline: none;
@@ -167,6 +181,21 @@
 
   input[type="number"] {
     max-width: 200px;
+  }
+
+  small.stock-info-talles {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #5C1D73;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: "ℹ️";
+      font-size: 1rem;
+    }
   }
 }
 
@@ -415,6 +444,325 @@
   }
 }
 
+// ============================================
+// ESTILOS PARA GESTIÓN DE TALLES
+// ============================================
+
+.talles-section {
+  .section-header-with-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    h2 {
+      margin: 0;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .toggle-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #5C1D73;
+      }
+    }
+  }
+
+  .section-description {
+    margin-bottom: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .talles-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  // Toggle switch
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .slider {
+        background-color: #5C1D73;
+
+        &:before {
+          transform: translateX(24px);
+        }
+      }
+
+      &:focus + .slider {
+        box-shadow: 0 0 0 3px rgba(92, 29, 115, 0.1);
+      }
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 28px;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  // Formulario de talle
+  .talle-form-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #5C1D73;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .label-hint {
+      font-size: 0.85rem;
+      color: #888;
+      font-weight: normal;
+    }
+
+    .talle-form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .btn-primary-small,
+    .btn-secondary-small {
+      padding: 0.6rem 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    .btn-primary-small {
+      background: #5C1D73;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #4a1660;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(92, 29, 115, 0.3);
+      }
+
+      &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
+    .btn-secondary-small {
+      background: white;
+      color: #5C1D73;
+      border: 2px solid #5C1D73;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+    }
+  }
+
+  // Tabla de talles
+  .talles-table-container {
+    h3 {
+      margin-bottom: 1rem;
+      color: #333;
+      font-size: 1.1rem;
+    }
+  }
+
+  .talles-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    thead {
+      background: #5C1D73;
+      color: white;
+
+      th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #e9ecef;
+        transition: background 0.2s;
+
+        &:hover {
+          background: #f8f9fa;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+      td {
+        padding: 1rem;
+        vertical-align: middle;
+
+        &:first-child {
+          font-weight: 600;
+          color: #5C1D73;
+
+          .talle-nombre-full {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: normal;
+            color: #666;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+    }
+
+    .stock-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      background: #d4edda;
+      color: #155724;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+
+      &.stock-bajo {
+        background: #fff3cd;
+        color: #856404;
+      }
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 0.5rem;
+
+      .btn-icon {
+        padding: 0.5rem;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        &.btn-edit {
+          color: #007bff;
+
+          &:hover {
+            background: #e7f3ff;
+          }
+        }
+
+        &.btn-delete {
+          color: #dc3545;
+
+          &:hover {
+            background: #ffe6e8;
+          }
+        }
+      }
+    }
+  }
+
+  // Estado vacío
+  .empty-talles {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+
+    svg {
+      color: #adb5bd;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+      color: #495057;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    small {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .producto-form-container {
     padding: 1rem;
@@ -440,6 +788,65 @@
     button,
     a {
       width: 100%;
+    }
+  }
+
+  // Responsive talles
+  .talles-section {
+    .section-header-with-toggle {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .talle-form-card .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .talles-table {
+      display: block;
+      overflow-x: auto;
+
+      thead {
+        display: none;
+      }
+
+      tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+      }
+
+      tbody td {
+        display: block;
+        text-align: right;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #f1f3f5;
+
+        &:before {
+          content: attr(data-label);
+          float: left;
+          font-weight: 600;
+          color: #5C1D73;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:first-child {
+          text-align: left;
+
+          &:before {
+            content: "Talle: ";
+          }
+        }
+      }
+
+      .table-actions {
+        justify-content: flex-end;
+      }
     }
   }
 }

@@ -51,12 +51,15 @@
         }
 
         <div class="precio-section">
-          <span class="precio">${{ prod.precio | number:'1.2-2' }}</span>
+          <span class="precio">${{ precioActual() | number:'1.2-2' }}</span>
+          @if (talleSeleccionado() && talleSeleccionado()!.precio) {
+            <span class="precio-talle-label">Precio para este talle</span>
+          }
         </div>
 
-        @if (prod.stock > 0) {
+        @if (stockDisponible() > 0) {
           <div class="stock-info">
-            <span class="stock-disponible">✓ {{ prod.stock }} unidades disponibles</span>
+            <span class="stock-disponible">✓ {{ stockDisponible() }} unidades disponibles</span>
           </div>
         } @else {
           <div class="stock-info sin-stock">
@@ -71,7 +74,43 @@
           </div>
         }
 
-        @if (prod.stock > 0) {
+        <!-- Selector de Talles -->
+        @if (tieneTalles()) {
+          <div class="talles-selector">
+            <label for="talle-select">Talle:</label>
+            <select
+              id="talle-select"
+              class="talle-select"
+              [value]="talleSeleccionado()?.id || ''"
+              (change)="onTalleChange($event)"
+            >
+              @for (talleItem of prod.talles; track talleItem.id) {
+                <option
+                  [value]="talleItem.id"
+                  [disabled]="talleItem.stock === 0"
+                >
+                  {{ talleItem.talle?.codigo }} - {{ talleItem.talle?.nombre }}
+                  @if (talleItem.stock === 0) {
+                    (Sin stock)
+                  } @else if (talleItem.stock < 5) {
+                    (¡Últimas {{ talleItem.stock }}!)
+                  }
+                </option>
+              }
+            </select>
+            @if (talleSeleccionado()) {
+              <div class="talle-info-detalle">
+                @if (talleSeleccionado()!.precio) {
+                  <span class="precio-talle">Precio: ${{ talleSeleccionado()!.precio | number:'1.2-2' }}</span>
+                  <span class="separador">•</span>
+                }
+                <span class="stock-talle">{{ talleSeleccionado()!.stock }} disponibles</span>
+              </div>
+            }
+          </div>
+        }
+
+        @if (stockDisponible() > 0) {
           <div class="cantidad-selector">
             <label>Cantidad:</label>
             <div class="selector">
@@ -85,7 +124,7 @@
               <span class="cantidad">{{ cantidad() }}</span>
               <button
                 (click)="aumentarCantidad()"
-                [disabled]="cantidad() >= prod.stock"
+                [disabled]="cantidad() >= stockDisponible()"
                 class="btn-cantidad"
               >
                 +

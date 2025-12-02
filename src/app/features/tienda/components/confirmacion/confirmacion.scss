@@ -143,6 +143,20 @@ h1 {
     flex-direction: column;
     gap: 0.25rem;
 
+    .item-talle-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.125rem 0.5rem;
+      background-color: #5C1D73;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+      line-height: 1.2;
+      margin-left: 0.5rem;
+    }
+
     .cantidad {
       font-size: 0.875rem;
       color: #666;

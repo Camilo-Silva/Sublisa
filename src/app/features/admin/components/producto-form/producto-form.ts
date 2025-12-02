@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { ProductosService } from '../../../../core/services/productos.service';
 import { SupabaseService } from '../../../../core/services/supabase.service';
 import { ModalService } from '../../../../core/services/modal.service';
 import { CategoriasService } from '../../../../core/services/categorias.service';
+import { Talle, ProductoTalle } from '../../../../core/models';
 
 interface FormData {
   nombre: string;
@@ -15,6 +16,12 @@ interface FormData {
   sku: string;
   categoria: string;
   subcategoria: string;
+}
+
+interface TalleForm {
+  talle_id: string;
+  stock: number;
+  precio: number | null;
 }
 
 @Component({
@@ -48,6 +55,29 @@ export class ProductoForm implements OnInit {
   selectedFiles = signal<File[]>([]);
   previewUrls = signal<string[]>([]);
 
+  // Señales para talles
+  tieneTalles = signal(false);
+  tallesDisponibles = signal<Talle[]>([]);
+  tallesProducto = signal<ProductoTalle[]>([]);
+  editandoTalle = signal<string | null>(null);
+
+  // Signals individuales para el formulario (reactivos)
+  talleCampos = {
+    talle_id: signal(''),
+    stock: signal(0),
+    precio: signal<number | null>(null)
+  };
+
+  // Computed para verificar si puede agregar talle
+  puedeAgregarTalle = computed(() => {
+    return this.talleCampos.talle_id() !== '' && this.talleCampos.stock() >= 0;
+  });
+
+  // Computed para calcular stock total de todos los talles
+  stockTotalTalles = computed(() => {
+    return this.tallesProducto().reduce((total, pt) => total + pt.stock, 0);
+  });
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -61,6 +91,9 @@ export class ProductoForm implements OnInit {
     window.scrollTo(0, 0);
     // Cargar categorías PRIMERO (para tener el mapa disponible)
     await this.cargarCategorias();
+
+    // Cargar talles disponibles
+    await this.cargarTalles();
 
     // Luego cargar el producto si es modo edición
     this.route.params.subscribe(params => {
@@ -116,11 +149,26 @@ export class ProductoForm implements OnInit {
       }
 
       this.imagenes.set(producto.imagenes || []);
+
+      // Cargar talles del producto si tiene
+      if (producto.talles && producto.talles.length > 0) {
+        this.tieneTalles.set(true);
+        this.tallesProducto.set(producto.talles);
+      }
     } catch (err) {
       console.error('Error al cargar producto:', err);
       this.error.set('Error al cargar el producto');
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  async cargarTalles() {
+    try {
+      const talles = await this.productosService.getTalles();
+      this.tallesDisponibles.set(talles);
+    } catch (err) {
+      console.error('Error al cargar talles:', err);
     }
   }
 
@@ -214,6 +262,209 @@ export class ProductoForm implements OnInit {
     });
   }
 
+  // ============================================
+  // MÉTODOS PARA GESTIÓN DE TALLES
+  // ============================================
+
+  async toggleTieneTalles() {
+    const nuevoValor = !this.tieneTalles();
+
+    // Si se desactiva talles y hay talles configurados, confirmar
+    if (!nuevoValor && this.tallesProducto().length > 0) {
+      const confirmar = await this.modalService.confirm(
+        'Desactivar gestión de talles',
+        'Se eliminarán todos los talles configurados y deberás ingresar el stock manualmente. ¿Continuar?'
+      );
+      if (!confirmar) return;
+
+      // Si es producto existente, eliminar talles de BD
+      const productoId = this.productoId();
+      if (productoId) {
+        try {
+          for (const talle of this.tallesProducto()) {
+            if (talle.producto_id) {
+              await this.productosService.eliminarTalleProducto(talle.id);
+            }
+          }
+        } catch (err) {
+          console.error('Error al eliminar talles:', err);
+          await this.modalService.error('Error al eliminar los talles');
+          return;
+        }
+      }
+    }
+
+    this.tieneTalles.set(nuevoValor);
+
+    // Si se desactiva talles, limpiar los talles del producto
+    if (!nuevoValor) {
+      this.tallesProducto.set([]);
+      this.resetearFormularioTalle();
+    }
+  }
+
+  getTalleNombre(talleId: string): string {
+    const talle = this.tallesDisponibles().find(t => t.id === talleId);
+    return talle ? `${talle.codigo} - ${talle.nombre}` : '';
+  }
+
+  talleYaAgregado(talleId: string): boolean {
+    return this.tallesProducto().some(pt => pt.talle_id === talleId);
+  }
+
+  async agregarOActualizarTalle() {
+    const talleId = this.talleCampos.talle_id();
+    const stock = this.talleCampos.stock();
+    const precio = this.talleCampos.precio();
+
+    if (!talleId || stock < 0) return;
+
+    const productoId = this.productoId();
+    if (!productoId) {
+      // Si es producto nuevo, agregar a la lista temporal
+      const talle = this.tallesDisponibles().find(t => t.id === talleId);
+      if (!talle) return;
+
+      if (this.editandoTalle()) {
+        // Actualizar en lista temporal
+        this.tallesProducto.update(talles =>
+          talles.map(pt =>
+            pt.talle_id === this.editandoTalle()
+              ? { ...pt, stock, precio: precio ?? undefined }
+              : pt
+          )
+        );
+      } else {
+        // Agregar a lista temporal
+        this.tallesProducto.update(talles => [
+          ...talles,
+          {
+            id: crypto.randomUUID(), // Temporal
+            producto_id: '',
+            talle_id: talleId,
+            talle,
+            stock,
+            precio: precio ?? undefined,
+            activo: true
+          }
+        ]);
+      }
+    } else {
+      // Producto existente, guardar en BD
+      try {
+        if (this.editandoTalle()) {
+          // Actualizar talle existente
+          const talleProducto = this.tallesProducto().find(
+            pt => pt.talle_id === this.editandoTalle()
+          );
+          if (talleProducto) {
+            await this.productosService.actualizarTalleProducto(
+              talleProducto.id,
+              stock,
+              precio ?? undefined
+            );
+
+            // Actualizar en lista local
+            this.tallesProducto.update(talles =>
+              talles.map(pt =>
+                pt.id === talleProducto.id
+                  ? { ...pt, stock, precio: precio ?? undefined }
+                  : pt
+              )
+            );
+          }
+        } else {
+          // Agregar nuevo talle
+          const nuevoTalle = await this.productosService.agregarTalleProducto(
+            productoId,
+            talleId,
+            stock,
+            precio ?? undefined
+          );
+          this.tallesProducto.update(talles => [...talles, nuevoTalle]);
+        }
+
+        // Actualizar stock del producto con la suma de todos los talles
+        await this.actualizarStockProducto(productoId);
+
+        await this.modalService.success(
+          this.editandoTalle() ? 'Talle actualizado' : 'Talle agregado'
+        );
+      } catch (err) {
+        console.error('Error al guardar talle:', err);
+        await this.modalService.error('Error al guardar el talle');
+        return;
+      }
+    }
+
+    this.resetearFormularioTalle();
+  }
+
+  editarTalle(productoTalle: ProductoTalle) {
+    this.editandoTalle.set(productoTalle.talle_id);
+    this.talleCampos.talle_id.set(productoTalle.talle_id);
+    this.talleCampos.stock.set(productoTalle.stock);
+    this.talleCampos.precio.set(productoTalle.precio ?? null);
+  }
+
+  async eliminarTalle(productoTalle: ProductoTalle) {
+    const confirmar = await this.modalService.confirm(
+      '¿Eliminar este talle?',
+      'Se eliminará el talle y su stock asociado'
+    );
+    if (!confirmar) return;
+
+    const productoId = this.productoId();
+    if (productoId && productoTalle.producto_id) {
+      // Producto existente, eliminar de BD
+      try {
+        await this.productosService.eliminarTalleProducto(productoTalle.id);
+        this.tallesProducto.update(talles =>
+          talles.filter(pt => pt.id !== productoTalle.id)
+        );
+
+        // Actualizar stock del producto
+        await this.actualizarStockProducto(productoId);
+
+        await this.modalService.success('Talle eliminado');
+      } catch (err) {
+        console.error('Error al eliminar talle:', err);
+        await this.modalService.error('Error al eliminar el talle');
+      }
+    } else {
+      // Producto nuevo, eliminar de lista temporal
+      this.tallesProducto.update(talles =>
+        talles.filter(pt => pt.id !== productoTalle.id)
+      );
+    }
+  }
+
+  // Método auxiliar para actualizar el stock del producto
+  private async actualizarStockProducto(productoId: string) {
+    const stockTotal = this.stockTotalTalles();
+    await this.productosService.updateProducto(productoId, {
+      stock: stockTotal
+    });
+  }
+
+  cancelarEdicionTalle() {
+    this.resetearFormularioTalle();
+  }
+
+  resetearFormularioTalle() {
+    this.talleCampos.talle_id.set('');
+    this.talleCampos.stock.set(0);
+    this.talleCampos.precio.set(null);
+    this.editandoTalle.set(null);
+  }
+
+  getPrecioMostrado(productoTalle: ProductoTalle): string {
+    if (productoTalle.precio !== null && productoTalle.precio !== undefined) {
+      return `$${productoTalle.precio.toFixed(2)}`;
+    }
+    return `$${this.formData().precio.toFixed(2)} (base)`;
+  }
+
   async onSubmit() {
     const data = this.formData();
 
@@ -228,9 +479,18 @@ export class ProductoForm implements OnInit {
       return;
     }
 
-    if (data.stock < 0) {
-      await this.modalService.warning('El stock debe ser mayor o igual a 0');
-      return;
+    // Si tiene talles, validar que haya al menos uno
+    if (this.tieneTalles()) {
+      if (this.tallesProducto().length === 0) {
+        await this.modalService.warning('Debes agregar al menos un talle');
+        return;
+      }
+    } else {
+      // Si no tiene talles, validar stock normal
+      if (data.stock < 0) {
+        await this.modalService.warning('El stock debe ser mayor o igual a 0');
+        return;
+      }
     }
 
     try {
@@ -239,13 +499,16 @@ export class ProductoForm implements OnInit {
 
       let productoId = this.productoId();
 
+      // Calcular stock: si tiene talles, sumar todos; sino usar el del formulario
+      const stockFinal = this.tieneTalles() ? this.stockTotalTalles() : data.stock;
+
       if (this.isEditMode() && productoId) {
         // Actualizar producto existente
         await this.productosService.updateProducto(productoId, {
           nombre: data.nombre,
           descripcion: data.descripcion || undefined,
           precio: data.precio,
-          stock: data.stock,
+          stock: stockFinal,
           sku: data.sku || undefined,
           categoria: data.categoria || undefined,
           subcategoria: data.subcategoria || undefined
@@ -256,13 +519,25 @@ export class ProductoForm implements OnInit {
           nombre: data.nombre,
           descripcion: data.descripcion,
           precio: data.precio,
-          stock: data.stock,
+          stock: stockFinal,
           sku: data.sku || undefined,
           categoria: data.categoria || undefined,
           subcategoria: data.subcategoria || undefined,
           activo: true
         });
         productoId = nuevoProducto.id;
+      }
+
+      // Guardar talles si es producto nuevo y tiene talles temporales
+      if (!this.isEditMode() && this.tieneTalles() && this.tallesProducto().length > 0 && productoId) {
+        for (const talleTemp of this.tallesProducto()) {
+          await this.productosService.agregarTalleProducto(
+            productoId,
+            talleTemp.talle_id,
+            talleTemp.stock,
+            talleTemp.precio
+          );
+        }
       }
 
       // Subir imágenes nuevas

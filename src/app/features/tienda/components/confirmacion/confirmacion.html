@@ -64,6 +64,9 @@
               <div class="item">
                 <span class="item-nombre">
                   {{ detalle.producto?.nombre || 'Producto' }}
+                  @if (detalle.talle_codigo) {
+                    <span class="item-talle-badge">{{ detalle.talle_codigo }}</span>
+                  }
                   <span class="cantidad">x{{ detalle.cantidad }}</span>
                 </span>
                 <span class="item-precio">${{ detalle.subtotal | number:'1.2-2' }}</span>

@@ -149,18 +149,230 @@
           </div>
 
           <div class="form-group">
-            <label for="stock">Stock *</label>
-            <input
-              type="number"
-              id="stock"
-              name="stock"
-              [(ngModel)]="formData().stock"
-              required
-              min="0"
-              placeholder="0"
-            />
+            <label for="stock">
+              Stock *
+              @if (tieneTalles()) {
+                <span class="label-hint">(calculado automáticamente)</span>
+              }
+            </label>
+            @if (tieneTalles()) {
+              <input
+                type="number"
+                id="stock"
+                name="stock"
+                [value]="stockTotalTalles()"
+                disabled
+                class="disabled-input"
+                required
+                min="0"
+                placeholder="0"
+              />
+            } @else {
+              <input
+                type="number"
+                id="stock"
+                name="stock"
+                [(ngModel)]="formData().stock"
+                required
+                min="0"
+                placeholder="0"
+              />
+            }
+            @if (tieneTalles() && stockTotalTalles() > 0) {
+              <small class="stock-info-talles">
+                Stock total de {{ tallesProducto().length }} talle(s): {{ stockTotalTalles() }} unidades
+              </small>
+            }
           </div>
         </div>
+      </div>
+
+      <!-- GESTIÓN DE TALLES -->
+      <div class="form-section talles-section">
+        <div class="section-header-with-toggle">
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            Gestión de Talles
+          </h2>
+          <div class="toggle-container">
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                [checked]="tieneTalles()"
+                (change)="toggleTieneTalles()"
+              />
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label">
+              {{ tieneTalles() ? 'Con Talles' : 'Sin Talles' }}
+            </span>
+          </div>
+        </div>
+
+        <p class="section-description">
+          @if (!tieneTalles()) {
+            El producto usa stock y precio general. Activa "Con Talles" para gestionar stock y precio por talle.
+          } @else {
+            Asigna stock y opcionalmente precio específico para cada talle. Si no asignas precio, se usará el precio base.
+          }
+        </p>
+
+        @if (tieneTalles()) {
+          <div class="talles-content">
+            <!-- Formulario para agregar/editar talle -->
+            <div class="talle-form-card">
+              <h3>{{ editandoTalle() ? 'Editar Talle' : 'Agregar Talle' }}</h3>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="talle-select">Talle *</label>
+                  <select
+                    id="talle-select"
+                    [ngModel]="talleCampos.talle_id()"
+                    (ngModelChange)="talleCampos.talle_id.set($event)"
+                    name="talle_id"
+                    [disabled]="editandoTalle() !== null"
+                  >
+                    <option value="">Seleccionar talle...</option>
+                    @for (talle of tallesDisponibles(); track talle.id) {
+                      @if (!talleYaAgregado(talle.id) || editandoTalle() === talle.id) {
+                        <option [value]="talle.id">
+                          {{ talle.codigo }} - {{ talle.nombre }}
+                        </option>
+                      }
+                    }
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="talle-stock">Stock *</label>
+                  <input
+                    type="number"
+                    id="talle-stock"
+                    [ngModel]="talleCampos.stock()"
+                    (ngModelChange)="talleCampos.stock.set($event)"
+                    name="talle_stock"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="talle-precio">
+                    Precio Específico
+                    <span class="label-hint">(opcional)</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="talle-precio"
+                    [ngModel]="talleCampos.precio()"
+                    (ngModelChange)="talleCampos.precio.set($event)"
+                    name="talle_precio"
+                    min="0"
+                    step="0.01"
+                    placeholder="Usa precio base"
+                  />
+                </div>
+              </div>
+
+              <div class="talle-form-actions">
+                @if (editandoTalle()) {
+                  <button
+                    type="button"
+                    class="btn-secondary-small"
+                    (click)="cancelarEdicionTalle()"
+                  >
+                    Cancelar
+                  </button>
+                }
+                <button
+                  type="button"
+                  class="btn-primary-small"
+                  [disabled]="!puedeAgregarTalle()"
+                  (click)="agregarOActualizarTalle()"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  {{ editandoTalle() ? 'Actualizar' : 'Agregar' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabla de talles agregados -->
+            @if (tallesProducto().length > 0) {
+              <div class="talles-table-container">
+                <h3>Talles Configurados</h3>
+                <table class="talles-table">
+                  <thead>
+                    <tr>
+                      <th>Talle</th>
+                      <th>Stock</th>
+                      <th>Precio</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (pt of tallesProducto(); track pt.id) {
+                      <tr>
+                        <td>
+                          <strong>{{ pt.talle?.codigo || 'N/A' }}</strong>
+                          <span class="talle-nombre-full">{{ pt.talle?.nombre || '' }}</span>
+                        </td>
+                        <td>
+                          <span class="stock-badge" [class.stock-bajo]="pt.stock < 10">
+                            {{ pt.stock }} unidades
+                          </span>
+                        </td>
+                        <td>{{ getPrecioMostrado(pt) }}</td>
+                        <td>
+                          <div class="table-actions">
+                            <button
+                              type="button"
+                              class="btn-icon btn-edit"
+                              (click)="editarTalle(pt)"
+                              title="Editar"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn-icon btn-delete"
+                              (click)="eliminarTalle(pt)"
+                              title="Eliminar"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="empty-talles">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                <p>No hay talles configurados</p>
+                <small>Agrega talles para gestionar stock y precios específicos</small>
+              </div>
+            }
+          </div>
+        }
       </div>
 
       <div class="form-section">

@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { ItemCarrito, Producto } from '../models';
+import { ItemCarrito, Producto, Talle } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -38,22 +38,35 @@ export class CarritoService {
   }
 
   /**
-   * Añade un producto al carrito
+   * Añade un producto al carrito (con soporte para talles)
    */
-  agregarProducto(producto: Producto, cantidad: number = 1): void {
+  agregarProducto(producto: Producto, cantidad: number = 1, talle?: Talle, precioUnitario?: number): void {
     const items = [...this.itemsSignal()];
-    const index = items.findIndex(item => item.producto.id === producto.id);
+
+    // Si tiene talle, buscar por producto Y talle
+    // Si no tiene talle, buscar solo por producto
+    const index = items.findIndex(item => {
+      if (talle) {
+        return item.producto.id === producto.id && item.talle?.id === talle.id;
+      }
+      return item.producto.id === producto.id && !item.talle;
+    });
+
+    // Precio a usar: específico del talle > específico pasado > precio base del producto
+    const precio = precioUnitario ?? producto.precio;
 
     if (index >= 0) {
       // Si ya existe, aumentar cantidad
       items[index].cantidad += cantidad;
-      items[index].subtotal = items[index].cantidad * items[index].producto.precio;
+      items[index].subtotal = items[index].cantidad * (items[index].precio_unitario || precio);
     } else {
       // Si no existe, agregarlo
       items.push({
         producto,
         cantidad,
-        subtotal: producto.precio * cantidad
+        subtotal: precio * cantidad,
+        talle,
+        precio_unitario: precioUnitario
       });
     }
 
@@ -62,29 +75,42 @@ export class CarritoService {
   }
 
   /**
-   * Elimina un producto del carrito
+   * Elimina un producto del carrito (con soporte para talles)
    */
-  eliminarProducto(productoId: string): void {
-    const items = this.itemsSignal().filter(item => item.producto.id !== productoId);
+  eliminarProducto(productoId: string, talleId?: string): void {
+    const items = this.itemsSignal().filter(item => {
+      if (talleId) {
+        // Si se especifica talle, eliminar solo esa combinación
+        return !(item.producto.id === productoId && item.talle?.id === talleId);
+      }
+      // Si no se especifica talle, eliminar todas las variantes del producto
+      return item.producto.id !== productoId;
+    });
+
     this.itemsSignal.set(items);
     this.saveToStorage();
   }
 
   /**
-   * Actualiza la cantidad de un producto
+   * Actualiza la cantidad de un producto (con soporte para talles)
    */
-  actualizarCantidad(productoId: string, cantidad: number): void {
+  actualizarCantidad(productoId: string, cantidad: number, talleId?: string): void {
     if (cantidad <= 0) {
-      this.eliminarProducto(productoId);
+      this.eliminarProducto(productoId, talleId);
       return;
     }
 
     const items = this.itemsSignal().map(item => {
-      if (item.producto.id === productoId) {
+      const coincide = talleId
+        ? (item.producto.id === productoId && item.talle?.id === talleId)
+        : (item.producto.id === productoId && !item.talle);
+
+      if (coincide) {
+        const precio = item.precio_unitario || item.producto.precio;
         return {
           ...item,
           cantidad,
-          subtotal: cantidad * item.producto.precio
+          subtotal: cantidad * precio
         };
       }
       return item;

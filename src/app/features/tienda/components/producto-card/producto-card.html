@@ -21,9 +21,12 @@
         [disabled]="producto.stock === 0 || agregando()"
         class="btn-agregar"
         [class.agregando]="agregando()"
+        [class.btn-ver-talles]="tieneTalles()"
       >
         @if (agregando()) {
           Agregando...
+        } @else if (tieneTalles()) {
+          Ver Talles
         } @else {
           Agregar
         }

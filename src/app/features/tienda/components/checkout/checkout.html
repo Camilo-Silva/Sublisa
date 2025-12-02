@@ -116,11 +116,16 @@
       <h2>Resumen del Pedido</h2>
 
       <div class="items-resumen">
-        @for (item of carritoService.items(); track item.producto.id) {
+        @for (item of carritoService.items(); track item.producto.id + (item.talle?.id || '')) {
           <div class="item-resumen">
             <div class="item-info">
-              <span class="item-nombre">{{ item.producto.nombre }}</span>
-              <span class="item-detalle">${{ item.producto.precio | number:'1.2-2' }} c/u x {{ item.cantidad }}</span>
+              <span class="item-nombre">
+                {{ item.producto.nombre }}
+                @if (item.talle) {
+                  <span class="item-talle-badge">{{ item.talle.codigo }}</span>
+                }
+              </span>
+              <span class="item-detalle">${{ item.precio_unitario | number:'1.2-2' }} c/u x {{ item.cantidad }}</span>
             </div>
             <span class="item-precio">${{ item.subtotal | number:'1.2-2' }}</span>
           </div>

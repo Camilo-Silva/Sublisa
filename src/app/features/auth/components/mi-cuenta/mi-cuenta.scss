@@ -513,6 +513,12 @@
       padding: 1rem;
       text-align: left;
       font-weight: 600;
+
+      &:nth-child(1) { width: 35%; } // Producto
+      &:nth-child(2) { width: 10%; text-align: center; } // Talle
+      &:nth-child(3) { width: 12%; text-align: center; } // Cantidad
+      &:nth-child(4) { width: 18%; } // Precio Unit.
+      &:nth-child(5) { width: 18%; } // Subtotal
     }
   }
 
@@ -547,6 +553,24 @@
 
   .text-center {
     text-align: center;
+  }
+
+  .talle-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.75rem;
+    background-color: #5C1D73;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 6px;
+    min-width: 40px;
+  }
+
+  .talle-na {
+    color: #999;
+    font-style: italic;
   }
 
   .subtotal {

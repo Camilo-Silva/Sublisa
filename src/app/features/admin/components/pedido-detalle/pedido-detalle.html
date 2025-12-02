@@ -119,6 +119,7 @@
           <thead>
             <tr>
               <th>Producto</th>
+              <th>Talle</th>
               <th>Cantidad</th>
               <th>Precio Unit.</th>
               <th>Subtotal</th>
@@ -134,6 +135,13 @@
                       <small class="sku">SKU: {{ detalle.producto?.sku }}</small>
                     }
                   </td>
+                  <td class="talle-cell">
+                    @if (detalle.talle_codigo) {
+                      <span class="talle-badge">{{ detalle.talle_codigo }}</span>
+                    } @else {
+                      <span class="talle-na">—</span>
+                    }
+                  </td>
                   <td class="cantidad">{{ detalle.cantidad }}</td>
                   <td class="precio">${{ detalle.precio_unitario | number:'1.2-2' }}</td>
                   <td class="subtotal">${{ detalle.subtotal | number:'1.2-2' }}</td>
@@ -141,13 +149,13 @@
               }
             } @else {
               <tr>
-                <td colspan="4" class="no-items">No hay productos en este pedido</td>
+                <td colspan="5" class="no-items">No hay productos en este pedido</td>
               </tr>
             }
           </tbody>
           <tfoot>
             <tr class="total-row">
-              <td colspan="3"><strong>Total:</strong></td>
+              <td colspan="4"><strong>Total:</strong></td>
               <td class="total-final"><strong>${{ ped.total | number:'1.2-2' }}</strong></td>
             </tr>
           </tfoot>

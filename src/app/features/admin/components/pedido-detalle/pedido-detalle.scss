@@ -341,6 +341,28 @@
       font-family: monospace;
     }
 
+    .talle-cell {
+      text-align: center;
+    }
+
+    .talle-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem 0.75rem;
+      background-color: #5C1D73;
+      color: white;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 6px;
+      min-width: 40px;
+    }
+
+    .talle-na {
+      color: #999;
+      font-style: italic;
+    }
+
     .cantidad {
       font-weight: 700;
       color: #333;
@@ -442,7 +464,7 @@
     justify-content: center;
     gap: 0.5rem;
 
-    
+
 
     &:hover:not(:disabled) {
       background: #218838;

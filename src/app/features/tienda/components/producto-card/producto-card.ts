@@ -1,6 +1,6 @@
 import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CarritoService } from '../../../../core/services/carrito.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { Producto } from '../../../../core/models';
@@ -18,7 +18,8 @@ export class ProductoCard {
 
   constructor(
     public carritoService: CarritoService,
-    private readonly toastService: ToastService
+    private readonly toastService: ToastService,
+    private readonly router: Router
   ) {}
 
   get imagenPrincipal(): string {
@@ -31,6 +32,12 @@ export class ProductoCard {
     event.stopPropagation();
 
     if (this.agregando()) return;
+
+    // Si el producto tiene talles, redirigir al detalle para que seleccione
+    if (this.producto.talles && this.producto.talles.length > 0) {
+      this.router.navigate(['/producto', this.producto.id]);
+      return;
+    }
 
     this.agregando.set(true);
 
@@ -55,5 +62,9 @@ export class ProductoCard {
 
   get estaEnCarrito(): boolean {
     return this.carritoService.estaEnCarrito(this.producto.id);
+  }
+
+  tieneTalles(): boolean {
+    return !!(this.producto.talles && this.producto.talles.length > 0);
   }
 }

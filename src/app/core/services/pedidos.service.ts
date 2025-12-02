@@ -194,8 +194,10 @@ export class PedidosService {
         pedido_id: pedidoData.id!,
         producto_id: item.producto.id,
         cantidad: item.cantidad,
-        precio_unitario: item.producto.precio,
-        subtotal: item.subtotal
+        precio_unitario: item.precio_unitario ?? item.producto.precio,
+        subtotal: item.subtotal,
+        talle_id: item.talle?.id,
+        talle_codigo: item.talle?.codigo
       }));
 
       const { error: detallesError } = await this.supabase.getClient()

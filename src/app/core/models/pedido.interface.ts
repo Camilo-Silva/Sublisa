@@ -21,6 +21,8 @@ export interface DetallePedido {
   cantidad: number;
   precio_unitario: number;
   subtotal: number;
+  talle_id?: string;
+  talle_codigo?: string;
   producto?: Producto;
 }
 

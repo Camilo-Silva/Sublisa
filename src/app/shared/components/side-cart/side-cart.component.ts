@@ -19,20 +19,21 @@ export class SideCartComponent {
     private readonly modalService: ModalService
   ) {}
 
-  aumentarCantidad(productoId: string, cantidadActual: number) {
-    this.carritoService.actualizarCantidad(productoId, cantidadActual + 1);
+  aumentarCantidad(productoId: string, cantidadActual: number, talleId?: string) {
+    this.carritoService.actualizarCantidad(productoId, cantidadActual + 1, talleId);
   }
 
-  disminuirCantidad(productoId: string, cantidadActual: number) {
+  disminuirCantidad(productoId: string, cantidadActual: number, talleId?: string) {
     if (cantidadActual > 1) {
-      this.carritoService.actualizarCantidad(productoId, cantidadActual - 1);
+      this.carritoService.actualizarCantidad(productoId, cantidadActual - 1, talleId);
     }
   }
 
-  async eliminarProducto(productoId: string) {
-    this.eliminandoId.set(productoId);
+  async eliminarProducto(productoId: string, talleId?: string) {
+    const key = talleId ? `${productoId}_${talleId}` : productoId;
+    this.eliminandoId.set(key);
     await new Promise(resolve => setTimeout(resolve, 400));
-    this.carritoService.eliminarProducto(productoId);
+    this.carritoService.eliminarProducto(productoId, talleId);
     this.eliminandoId.set(null);
   }
 

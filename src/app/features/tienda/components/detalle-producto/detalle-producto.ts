@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { CarritoService } from '../../../../core/services/carrito.service';
-import { Producto } from '../../../../core/models';
+import { Producto, ProductoTalle } from '../../../../core/models';
 import { Breadcrumbs, BreadcrumbItem } from '../../../../shared/components/breadcrumbs/breadcrumbs';
 
 @Component({
@@ -22,6 +22,41 @@ export class DetalleProducto implements OnInit, OnDestroy {
   lightboxAbierto = signal(false);
   indiceImagenActual = signal(0);
   agregando = signal(false);
+
+  // Signals para talles
+  talleSeleccionado = signal<ProductoTalle | null>(null);
+
+  // Computed para obtener stock disponible según talle
+  stockDisponible = computed(() => {
+    const prod = this.producto();
+    if (!prod) return 0;
+
+    const talle = this.talleSeleccionado();
+    if (talle) {
+      return talle.stock;
+    }
+
+    return prod.stock;
+  });
+
+  // Computed para obtener precio según talle
+  precioActual = computed(() => {
+    const prod = this.producto();
+    if (!prod) return 0;
+
+    const talle = this.talleSeleccionado();
+    if (talle && talle.precio !== undefined && talle.precio !== null) {
+      return talle.precio;
+    }
+
+    return prod.precio;
+  });
+
+  // Computed para verificar si el producto tiene talles
+  tieneTalles = computed(() => {
+    const prod = this.producto();
+    return prod?.talles && prod.talles.length > 0;
+  });
 
   // Breadcrumbs dinámicos
   breadcrumbs = computed<BreadcrumbItem[]>(() => {
@@ -101,6 +136,11 @@ export class DetalleProducto implements OnInit, OnDestroy {
 
       this.producto.set(data);
 
+      // Si tiene talles, seleccionar el primero por defecto
+      if (data.talles && data.talles.length > 0) {
+        this.talleSeleccionado.set(data.talles[0]);
+      }
+
       // Establecer imagen principal
       const imagenPrincipal = data.imagenes?.find(img => img.es_principal);
       this.imagenSeleccionada.set(
@@ -118,9 +158,30 @@ export class DetalleProducto implements OnInit, OnDestroy {
     this.imagenSeleccionada.set(url);
   }
 
-  aumentarCantidad() {
+  seleccionarTalle(talle: ProductoTalle) {
+    this.talleSeleccionado.set(talle);
+    // Resetear cantidad si excede el stock del nuevo talle
+    if (this.cantidad() > talle.stock) {
+      this.cantidad.set(Math.min(1, talle.stock));
+    }
+  }
+
+  onTalleChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const talleId = select.value;
     const prod = this.producto();
-    if (prod && this.cantidad() < prod.stock) {
+
+    if (prod?.talles) {
+      const talle = prod.talles.find(t => t.id === talleId);
+      if (talle) {
+        this.seleccionarTalle(talle);
+      }
+    }
+  }
+
+  aumentarCantidad() {
+    const stockMax = this.stockDisponible();
+    if (this.cantidad() < stockMax) {
       this.cantidad.update(c => c + 1);
     }
   }
@@ -133,19 +194,43 @@ export class DetalleProducto implements OnInit, OnDestroy {
 
   async agregarAlCarrito() {
     const prod = this.producto();
-    if (prod) {
-      this.agregando.set(true);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      this.carritoService.agregarProducto(prod, this.cantidad());
-      await new Promise(resolve => setTimeout(resolve, 200));
-      this.agregando.set(false);
-      this.carritoService.abrirCarrito();
+    if (!prod) return;
+
+    // Si tiene talles, validar que haya uno seleccionado
+    if (this.tieneTalles() && !this.talleSeleccionado()) {
+      alert('Por favor selecciona un talle');
+      return;
     }
+
+    this.agregando.set(true);
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const talle = this.talleSeleccionado();
+    const precio = this.precioActual();
+
+    this.carritoService.agregarProducto(
+      prod,
+      this.cantidad(),
+      talle?.talle,
+      precio
+    );
+
+    await new Promise(resolve => setTimeout(resolve, 200));
+    this.agregando.set(false);
+    this.carritoService.abrirCarrito();
   }
 
   get puedeAgregar(): boolean {
     const prod = this.producto();
-    return prod !== null && prod.stock >= this.cantidad();
+    if (!prod) return false;
+
+    // Si tiene talles, debe haber uno seleccionado
+    if (this.tieneTalles() && !this.talleSeleccionado()) {
+      return false;
+    }
+
+    const stockMax = this.stockDisponible();
+    return stockMax >= this.cantidad();
   }
 
   // Métodos del Lightbox

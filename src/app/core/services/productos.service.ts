@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Producto, ImagenProducto } from '../models';
+import { Producto, ImagenProducto, Talle, ProductoTalle } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +10,18 @@ export class ProductosService {
   constructor(private readonly supabase: SupabaseService) {}
 
   /**
-   * Obtiene todos los productos activos con sus imágenes
+   * Obtiene todos los productos activos con sus imágenes y talles
    */
   async getProductos(limit?: number): Promise<Producto[]> {
     let query = this.supabase.getClient()
       .from('productos')
       .select(`
         *,
-        imagenes:imagenes_producto(*)
+        imagenes:imagenes_producto(*),
+        talles:productos_talles(
+          *,
+          talle:talles(*)
+        )
       `)
       .eq('activo', true)
       .order('created_at', { ascending: false });
@@ -33,14 +37,18 @@ export class ProductosService {
   }
 
   /**
-   * Obtiene un producto por ID con sus imágenes
+   * Obtiene un producto por ID con sus imágenes y talles
    */
   async getProductoById(id: string): Promise<Producto | null> {
     const { data, error } = await this.supabase.getClient()
       .from('productos')
       .select(`
         *,
-        imagenes:imagenes_producto(*)
+        imagenes:imagenes_producto(*),
+        talles:productos_talles(
+          *,
+          talle:talles(*)
+        )
       `)
       .eq('id', id)
       .single();
@@ -175,5 +183,118 @@ export class ProductosService {
       .eq('id', imagenId);
 
     if (error) throw error;
+  }
+
+  // ============================================
+  // MÉTODOS PARA GESTIÓN DE TALLES
+  // ============================================
+
+  /**
+   * Obtiene todos los talles disponibles
+   */
+  async getTalles(): Promise<Talle[]> {
+    const { data, error } = await this.supabase.getClient()
+      .from('talles')
+      .select('*')
+      .eq('activo', true)
+      .order('orden', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  /**
+   * Obtiene los talles de un producto específico con su stock y precio
+   */
+  async getTallesProducto(productoId: string): Promise<ProductoTalle[]> {
+    const { data, error } = await this.supabase.getClient()
+      .from('productos_talles')
+      .select(`
+        *,
+        talle:talles(*)
+      `)
+      .eq('producto_id', productoId)
+      .eq('activo', true)
+      .order('talle.orden', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  /**
+   * Agrega un talle a un producto con stock y precio opcional
+   */
+  async agregarTalleProducto(
+    productoId: string,
+    talleId: string,
+    stock: number,
+    precio?: number
+  ): Promise<ProductoTalle> {
+    const { data, error } = await this.supabase.getClient()
+      .from('productos_talles')
+      .insert({
+        producto_id: productoId,
+        talle_id: talleId,
+        stock,
+        precio,
+        activo: true
+      })
+      .select(`
+        *,
+        talle:talles(*)
+      `)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  /**
+   * Actualiza stock y precio de un talle específico de un producto
+   */
+  async actualizarTalleProducto(
+    productoTalleId: string,
+    stock: number,
+    precio?: number
+  ): Promise<ProductoTalle> {
+    const { data, error } = await this.supabase.getClient()
+      .from('productos_talles')
+      .update({ stock, precio })
+      .eq('id', productoTalleId)
+      .select(`
+        *,
+        talle:talles(*)
+      `)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  /**
+   * Elimina un talle de un producto
+   */
+  async eliminarTalleProducto(productoTalleId: string): Promise<void> {
+    const { error } = await this.supabase.getClient()
+      .from('productos_talles')
+      .delete()
+      .eq('id', productoTalleId);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Verifica si un producto tiene talles configurados
+   */
+  async productTieneTalles(productoId: string): Promise<boolean> {
+    const { data, error } = await this.supabase.getClient()
+      .from('productos_talles')
+      .select('id')
+      .eq('producto_id', productoId)
+      .eq('activo', true)
+      .limit(1);
+
+    if (error) throw error;
+    return (data?.length || 0) > 0;
   }
 }
