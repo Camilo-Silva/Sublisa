@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ProductosService } from '../../../../core/services/productos.service';
 import { CategoriasService } from '../../../../core/services/categorias.service';
+import { ModalService } from '../../../../core/services/modal.service';
 import { Producto } from '../../../../core/models';
 
 @Component({
@@ -19,6 +20,7 @@ export class ProductosList implements OnInit {
   error = signal<string | null>(null);
   busqueda = signal('');
   productoAEliminar = signal<Producto | null>(null);
+  mostrarInactivos = signal(false);
 
   // Filtros
   categoriaSeleccionada = signal<string | null>(null);
@@ -53,6 +55,7 @@ export class ProductosList implements OnInit {
   constructor(
     private readonly productosService: ProductosService,
     private readonly categoriasService: CategoriasService,
+    private readonly modalService: ModalService,
     private readonly router: Router
   ) {}
 
@@ -65,7 +68,9 @@ export class ProductosList implements OnInit {
     try {
       this.loading.set(true);
       this.error.set(null);
-      const data = await this.productosService.getProductos();
+      const data = this.mostrarInactivos()
+        ? await this.productosService.getProductosInactivos()
+        : await this.productosService.getProductos();
       this.productos.set(data);
       this.productosFiltrados.set(data);
     } catch (err) {
@@ -74,6 +79,11 @@ export class ProductosList implements OnInit {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  async toggleMostrarInactivos() {
+    this.mostrarInactivos.set(!this.mostrarInactivos());
+    await this.cargarProductos();
   }
 
   filtrarProductos() {
@@ -140,6 +150,10 @@ export class ProductosList implements OnInit {
     this.router.navigate(['/admin/productos/editar', id]);
   }
 
+  confirmarDesactivar(producto: Producto) {
+    this.productoAEliminar.set(producto);
+  }
+
   confirmarEliminar(producto: Producto) {
     this.productoAEliminar.set(producto);
   }
@@ -153,24 +167,74 @@ export class ProductosList implements OnInit {
     if (!producto?.id) return;
 
     try {
-      // Eliminar imágenes asociadas
-      if (producto.imagenes && producto.imagenes.length > 0) {
-        for (const imagen of producto.imagenes) {
-          await this.productosService.deleteImagenProducto(imagen.id, imagen.url);
+      // Si el producto está inactivo, intentar eliminación permanente
+      if (!producto.activo) {
+        const verificacion = await this.productosService.puedeEliminarPermanente(producto.id);
+
+        if (verificacion.puede) {
+          const confirmado = await this.modalService.confirm(
+            '¿Eliminar permanentemente?',
+            'Este producto está inactivo y no tiene stock ni precio asignado. ¿Deseas eliminarlo permanentemente de la base de datos? Esta acción no se puede deshacer.'
+          );
+
+          if (confirmado) {
+            // Eliminar imágenes asociadas
+            if (producto.imagenes && producto.imagenes.length > 0) {
+              for (const imagen of producto.imagenes) {
+                await this.productosService.deleteImagenProducto(imagen.id, imagen.url);
+              }
+            }
+
+            // Eliminar permanentemente
+            await this.productosService.deleteProductoPermanente(producto.id);
+            await this.cargarProductos();
+            this.productoAEliminar.set(null);
+            await this.modalService.success('Producto eliminado permanentemente de la base de datos');
+            return;
+          } else {
+            this.productoAEliminar.set(null);
+            return;
+          }
+        } else {
+          // No se puede eliminar permanentemente, mostrar razón
+          await this.modalService.warning(
+            `No se puede eliminar permanentemente: ${verificacion.razon}`
+          );
+          this.productoAEliminar.set(null);
+          return;
         }
       }
 
-      // Eliminar producto
+      // Eliminación normal (soft delete) para productos activos
       await this.productosService.deleteProducto(producto.id);
 
       // Actualizar lista
       await this.cargarProductos();
       this.productoAEliminar.set(null);
 
-      alert('✅ Producto eliminado exitosamente');
+      // Mostrar modal de éxito
+      await this.modalService.success('Producto desactivado correctamente');
     } catch (err) {
       console.error('Error al eliminar producto:', err);
-      alert('❌ Error al eliminar el producto');
+      await this.modalService.error('Error al eliminar el producto');
+    }
+  }
+
+  async activarProducto(producto: Producto) {
+    const confirmado = await this.modalService.confirm(
+      '¿Reactivar producto?',
+      `¿Deseas reactivar el producto "${producto.nombre}"?`
+    );
+
+    if (!confirmado) return;
+
+    try {
+      await this.productosService.activarProducto(producto.id);
+      await this.cargarProductos();
+      await this.modalService.success('Producto reactivado correctamente');
+    } catch (err) {
+      console.error('Error al reactivar producto:', err);
+      await this.modalService.error('Error al reactivar el producto');
     }
   }
 

@@ -86,11 +86,15 @@
 
 .toolbar {
   margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 
   .search-box {
     position: relative;
     display: flex;
     align-items: center;
+    flex: 1;
     max-width: 500px;
 
     .search-icon {
@@ -118,6 +122,37 @@
       &::placeholder {
         color: #999;
       }
+    }
+  }
+
+  .btn-toggle-inactivos {
+    padding: 0.875rem 1.5rem;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    color: #666;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      border-color: #5C1D73;
+      color: #5C1D73;
+    }
+
+    &.active {
+      background: #5C1D73;
+      border-color: #5C1D73;
+      color: white;
     }
   }
 }
@@ -543,11 +578,29 @@
       }
     }
 
+    .btn-desactivar {
+      background: #ff9800;
+
+      &:hover {
+        background: #f57c00;
+        transform: scale(1.1);
+      }
+    }
+
     .btn-eliminar {
       background: #dc3545;
 
       &:hover {
         background: #c82333;
+        transform: scale(1.1);
+      }
+    }
+
+    .btn-activar {
+      background: #28a745;
+
+      &:hover {
+        background: #218838;
         transform: scale(1.1);
       }
     }

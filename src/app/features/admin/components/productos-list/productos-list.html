@@ -39,6 +39,23 @@
         (input)="filtrarProductos()"
       />
     </div>
+    <button
+      class="btn-toggle-inactivos"
+      [class.active]="mostrarInactivos()"
+      (click)="toggleMostrarInactivos()"
+      title="{{ mostrarInactivos() ? 'Ver productos activos' : 'Ver productos inactivos' }}"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        @if (mostrarInactivos()) {
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        } @else {
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        }
+      </svg>
+      {{ mostrarInactivos() ? 'Ver Activos' : 'Ver Inactivos' }}
+    </button>
   </div>
 
   <!-- Filtros por Categoría y Subcategoría -->
@@ -235,26 +252,53 @@
               </td>
               <td>
                 <div class="acciones">
-                  <button
-                    (click)="editarProducto(producto.id)"
-                    class="btn-editar"
-                    title="Editar"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg>
-                  </button>
-                  <button
-                    (click)="confirmarEliminar(producto)"
-                    class="btn-eliminar"
-                    title="Eliminar"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                  </button>
+                  @if (mostrarInactivos()) {
+                    <!-- Acciones para productos inactivos -->
+                    <button
+                      (click)="activarProducto(producto)"
+                      class="btn-activar"
+                      title="Reactivar producto"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
+                        <path d="M12 8v4l2 2"></path>
+                      </svg>
+                    </button>
+                    <button
+                      (click)="confirmarEliminar(producto)"
+                      class="btn-eliminar"
+                      title="Eliminar permanentemente"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </button>
+                  } @else {
+                    <!-- Acciones para productos activos -->
+                    <button
+                      (click)="editarProducto(producto.id)"
+                      class="btn-editar"
+                      title="Editar producto"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                    </button>
+                    <button
+                      (click)="confirmarDesactivar(producto)"
+                      class="btn-desactivar"
+                      title="Desactivar (ocultar de la tienda)"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    </button>
+                  }
                 </div>
               </td>
             </tr>
@@ -279,19 +323,24 @@
               <line x1="12" y1="9" x2="12" y2="13"></line>
               <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
-            Confirmar Eliminación
+            {{ productoAEliminar()!.activo ? 'Confirmar Desactivación' : 'Confirmar Eliminación' }}
           </h2>
         </div>
         <div class="modal-body">
-          <p>¿Estás seguro de que deseas eliminar el producto <strong>{{ productoAEliminar()!.nombre }}</strong>?</p>
-          <p class="warning-text">Esta acción no se puede deshacer y también eliminará todas las imágenes asociadas.</p>
+          @if (productoAEliminar()!.activo) {
+            <p>¿Estás seguro de que deseas desactivar el producto <strong>{{ productoAEliminar()!.nombre }}</strong>?</p>
+            <p class="warning-text">El producto quedará oculto de la tienda pero podrás reactivarlo más tarde desde la sección de productos inactivos.</p>
+          } @else {
+            <p>¿Estás seguro de que deseas eliminar permanentemente el producto <strong>{{ productoAEliminar()!.nombre }}</strong>?</p>
+            <p class="warning-text">Esta acción no se puede deshacer y también eliminará todas las imágenes asociadas.</p>
+          }
         </div>
         <div class="modal-footer">
           <button (click)="cancelarEliminar()" class="btn-cancelar">
             Cancelar
           </button>
           <button (click)="eliminarProducto()" class="btn-confirmar-eliminar">
-            Eliminar Producto
+            {{ productoAEliminar()!.activo ? 'Desactivar Producto' : 'Eliminar Producto' }}
           </button>
         </div>
       </div>

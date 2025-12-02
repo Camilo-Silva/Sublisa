@@ -103,7 +103,13 @@ export class ProductosService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      // Detectar error de SKU duplicado
+      if (error.code === '23505' && error.message.includes('productos_sku_key')) {
+        throw new Error('SKU_DUPLICADO');
+      }
+      throw error;
+    }
     return data;
   }
 
@@ -118,7 +124,13 @@ export class ProductosService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      // Detectar error de SKU duplicado
+      if (error.code === '23505' && error.message.includes('productos_sku_key')) {
+        throw new Error('SKU_DUPLICADO');
+      }
+      throw error;
+    }
     return data;
   }
 
@@ -132,6 +144,75 @@ export class ProductosService {
       .eq('id', id);
 
     if (error) throw error;
+  }
+
+  /**
+   * Verifica si un producto puede ser eliminado permanentemente
+   * (no tiene stock ni precio asignado)
+   */
+  async puedeEliminarPermanente(id: string): Promise<{ puede: boolean; razon?: string }> {
+    const producto = await this.getProductoById(id);
+
+    if (!producto) {
+      return { puede: false, razon: 'Producto no encontrado' };
+    }
+
+    // Verificar si tiene stock
+    if (producto.stock > 0) {
+      return { puede: false, razon: `El producto tiene ${producto.stock} unidades en stock` };
+    }
+
+    // Verificar si tiene precio asignado
+    if (producto.precio > 0) {
+      return { puede: false, razon: 'El producto tiene un precio asignado' };
+    }
+
+    return { puede: true };
+  }
+
+  /**
+   * Elimina un producto permanentemente de la base de datos
+   */
+  async deleteProductoPermanente(id: string): Promise<void> {
+    const { error } = await this.supabase.getClient()
+      .from('productos')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Reactiva un producto desactivado
+   */
+  async activarProducto(id: string): Promise<void> {
+    const { error } = await this.supabase.getClient()
+      .from('productos')
+      .update({ activo: true })
+      .eq('id', id);
+
+    if (error) throw error;
+  }
+
+  /**
+   * Obtiene productos inactivos
+   */
+  async getProductosInactivos(): Promise<Producto[]> {
+    const { data, error } = await this.supabase.getClient()
+      .from('productos')
+      .select(`
+        *,
+        imagenes:imagenes_producto(*),
+        talles:productos_talles(
+          *,
+          talle:talles(*)
+        )
+      `)
+      .eq('activo', false)
+      .order('updated_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
   }
 
   /**

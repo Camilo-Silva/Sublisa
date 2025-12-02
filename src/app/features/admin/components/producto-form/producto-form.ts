@@ -250,6 +250,15 @@ export class ProductoForm implements OnInit {
     }
   }
 
+  // Helper methods para normalizar valores numéricos
+  updatePrecio(value: number | null) {
+    this.formData.set({ ...this.formData(), precio: value || 0 });
+  }
+
+  updateStock(value: number | null) {
+    this.formData.set({ ...this.formData(), stock: value || 0 });
+  }
+
   onCategoriaChange(categoria: string) {
     const subcategorias = this.subcategoriasMap().get(categoria) || [];
     this.subcategoriasDisponibles.set(subcategorias);
@@ -482,30 +491,42 @@ export class ProductoForm implements OnInit {
   async onSubmit() {
     const data = this.formData();
 
-    // Validación
+    // Normalizar valores vacíos o null a 0
+    const precioNormalizado = data.precio || 0;
+    const stockNormalizado = data.stock || 0;
+
+    // Validación del nombre
     if (!data.nombre.trim()) {
-      await this.modalService.warning('El nombre es obligatorio');
+      await this.modalService.warning('El nombre del producto es obligatorio');
       return;
     }
 
-    if (data.precio < 0) {
-      await this.modalService.warning('El precio debe ser mayor o igual a 0');
+    // Validar que precio no sea negativo
+    if (precioNormalizado < 0) {
+      await this.modalService.warning('El precio no puede ser negativo');
       return;
     }
 
     // Si tiene talles, validar que haya al menos uno
     if (this.tieneTalles()) {
       if (this.tallesProducto().length === 0) {
-        await this.modalService.warning('Debes agregar al menos un talle');
+        await this.modalService.warning('Debes agregar al menos un talle con stock y precio');
         return;
       }
     } else {
       // Si no tiene talles, validar stock normal
-      if (data.stock < 0) {
-        await this.modalService.warning('El stock debe ser mayor o igual a 0');
+      if (stockNormalizado < 0) {
+        await this.modalService.warning('El stock no puede ser negativo');
         return;
       }
     }
+
+    // Actualizar formData con valores normalizados
+    this.formData.update(fd => ({
+      ...fd,
+      precio: precioNormalizado,
+      stock: stockNormalizado
+    }));
 
     try {
       this.loading.set(true);
@@ -513,30 +534,33 @@ export class ProductoForm implements OnInit {
 
       let productoId = this.productoId();
 
+      // Obtener datos actualizados con valores normalizados
+      const dataNormalizada = this.formData();
+
       // Calcular stock: si tiene talles, sumar todos; sino usar el del formulario
-      const stockFinal = this.tieneTalles() ? this.stockTotalTalles() : data.stock;
+      const stockFinal = this.tieneTalles() ? this.stockTotalTalles() : dataNormalizada.stock;
 
       if (this.isEditMode() && productoId) {
         // Actualizar producto existente
         await this.productosService.updateProducto(productoId, {
-          nombre: data.nombre,
-          descripcion: data.descripcion || undefined,
-          precio: data.precio,
+          nombre: dataNormalizada.nombre,
+          descripcion: dataNormalizada.descripcion || undefined,
+          precio: dataNormalizada.precio,
           stock: stockFinal,
-          sku: data.sku || undefined,
-          categoria: data.categoria || undefined,
-          subcategoria: data.subcategoria || undefined
+          sku: dataNormalizada.sku || undefined,
+          categoria: dataNormalizada.categoria || undefined,
+          subcategoria: dataNormalizada.subcategoria || undefined
         });
       } else {
         // Crear nuevo producto
         const nuevoProducto = await this.productosService.createProducto({
-          nombre: data.nombre,
-          descripcion: data.descripcion,
-          precio: data.precio,
+          nombre: dataNormalizada.nombre,
+          descripcion: dataNormalizada.descripcion,
+          precio: dataNormalizada.precio,
           stock: stockFinal,
-          sku: data.sku || undefined,
-          categoria: data.categoria || undefined,
-          subcategoria: data.subcategoria || undefined,
+          sku: dataNormalizada.sku || undefined,
+          categoria: dataNormalizada.categoria || undefined,
+          subcategoria: dataNormalizada.subcategoria || undefined,
           activo: true
         });
         productoId = nuevoProducto.id;
@@ -575,10 +599,20 @@ export class ProductoForm implements OnInit {
         `Producto ${this.isEditMode() ? 'actualizado' : 'creado'} exitosamente`
       );
       this.router.navigate(['/admin/productos']);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error al guardar producto:', err);
-      this.error.set('Error al guardar el producto');
-      await this.modalService.error('Error al guardar el producto');
+
+      // Detectar error de SKU duplicado
+      if (err?.message === 'SKU_DUPLICADO') {
+        const sku = data.sku || 'sin SKU';
+        this.error.set(`El SKU "${sku}" ya existe en otro producto`);
+        await this.modalService.error(
+          `El SKU "${sku}" ya está registrado en otro producto. Por favor, utiliza un SKU diferente o déjalo vacío.`
+        );
+      } else {
+        this.error.set('Error al guardar el producto');
+        await this.modalService.error('Error al guardar el producto');
+      }
     } finally {
       this.loading.set(false);
     }
