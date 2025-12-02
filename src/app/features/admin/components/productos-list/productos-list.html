@@ -34,10 +34,107 @@
       </svg>
       <input
         type="text"
-        placeholder="Buscar por nombre, SKU, categoría..."
+        placeholder="Buscar por nombre, SKU..."
         [(ngModel)]="busqueda"
         (input)="filtrarProductos()"
       />
+    </div>
+  </div>
+
+  <!-- Filtros por Categoría y Subcategoría -->
+  <div class="filtros-section" [class.expandido]="filtrosExpandidos()">
+    <div class="filtros-header" (click)="toggleFiltros()">
+      <div class="filtros-titulo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        <h3>Filtros</h3>
+        @if (categoriaSeleccionada() || subcategoriaSeleccionada()) {
+          <span class="badge-filtros-activos">{{ (categoriaSeleccionada() ? 1 : 0) + (subcategoriaSeleccionada() ? 1 : 0) }}</span>
+        }
+      </div>
+
+      <div class="filtros-controles">
+        @if (categoriaSeleccionada() || subcategoriaSeleccionada()) {
+          <button class="btn-limpiar-filtros" (click)="limpiarFiltros(); $event.stopPropagation()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            Limpiar
+          </button>
+        }
+        <svg
+          class="icono-chevron"
+          [class.rotado]="filtrosExpandidos()"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <div class="filtros-contenido" [class.visible]="filtrosExpandidos()">
+      <!-- Categorías -->
+      @if (categorias().length > 0) {
+        <div class="filtro-grupo">
+          <label class="filtro-label">Categorías</label>
+          <div class="chips-container">
+            @for (categoria of categorias(); track categoria) {
+              <button
+                class="chip"
+                [class.active]="categoriaSeleccionada() === categoria"
+                (click)="seleccionarCategoria(categoria)"
+              >
+                {{ categoria }}
+                @if (categoriaSeleccionada() === categoria) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Subcategorías -->
+      @if (subcategorias().length > 0) {
+        <div class="filtro-grupo">
+          <label class="filtro-label">Subcategorías</label>
+          <div class="chips-container">
+            @for (subcategoria of subcategorias(); track subcategoria) {
+              <button
+                class="chip"
+                [class.active]="subcategoriaSeleccionada() === subcategoria"
+                (click)="seleccionarSubcategoria(subcategoria)"
+              >
+                {{ subcategoria }}
+                @if (subcategoriaSeleccionada() === subcategoria) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Resumen de filtros activos -->
+      @if (categoriaSeleccionada() || subcategoriaSeleccionada()) {
+        <div class="filtros-activos">
+          <span class="filtros-count">{{ productosFiltrados().length }} producto{{ productosFiltrados().length !== 1 ? 's' : '' }} encontrado{{ productosFiltrados().length !== 1 ? 's' : '' }}</span>
+        </div>
+      }
     </div>
   </div>
 
