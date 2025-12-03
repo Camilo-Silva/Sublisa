@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.scss',
 })
-export class ResetPassword {
+export class ResetPassword implements OnInit {
   newPassword = signal('');
   confirmPassword = signal('');
   loading = signal(false);
@@ -23,6 +23,24 @@ export class ResetPassword {
     private readonly authService: AuthService,
     private readonly router: Router
   ) {}
+
+  async ngOnInit() {
+    // Esperar a que Supabase procese el hash de la URL
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Verificar si hay errores en el hash
+    const hash = window.location.hash;
+    if (hash && hash.includes('error')) {
+      const params = new URLSearchParams(hash.substring(1));
+      const errorCode = params.get('error_code');
+
+      if (errorCode === 'otp_expired') {
+        this.error.set('El enlace ha expirado. Solicita uno nuevo desde la página de recuperar contraseña.');
+      } else {
+        this.error.set('El enlace es inválido. Solicita uno nuevo desde la página de recuperar contraseña.');
+      }
+    }
+  }
 
   async onSubmit() {
     if (!this.newPassword() || !this.confirmPassword()) {
