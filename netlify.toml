@@ -1,0 +1,42 @@
+[build]
+  # Comando para construir la aplicación Angular
+  command = "npm run build:prod"
+  # Directorio donde se genera el build
+  publish = "dist/sublisa-app/browser"
+
+[build.environment]
+  # Versión de Node.js
+  NODE_VERSION = "20"
+
+# Configuración para SPA (Single Page Application)
+# Redirige todas las rutas al index.html para que funcione el enrutamiento de Angular
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers de seguridad
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache para assets estáticos
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache para archivos JS y CSS
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

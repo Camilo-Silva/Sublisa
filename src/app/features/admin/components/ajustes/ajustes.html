@@ -30,29 +30,32 @@
     <div class="ajustes-content">
       <div class="config-form">
 
-        <!-- Nombre del Negocio -->
-        <div class="form-group">
-          <label for="nombre_negocio">
-            <span class="label-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-            </span>
-            Nombre del Negocio
-          </label>
-          <input
-            type="text"
-            id="nombre_negocio"
-            [value]="configuracion().nombre_negocio"
-            (input)="actualizarCampo('nombre_negocio', $any($event.target).value)"
-            placeholder="Ej: Sublisa"
-            required
-          />
-          <small class="help-text">Este nombre aparecerá en tu tienda y comunicaciones</small>
-        </div>
+        <div class="form-grid">
+          <!-- Columna 1: Nombre, Email y WhatsApp -->
+          <div class="form-column">
+            <!-- Nombre del Negocio -->
+            <div class="form-group">
+              <label for="nombre_negocio">
+                <span class="label-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                  </svg>
+                </span>
+                Nombre del Negocio
+              </label>
+              <input
+                type="text"
+                id="nombre_negocio"
+                [value]="configuracion().nombre_negocio"
+                (input)="actualizarCampo('nombre_negocio', $any($event.target).value)"
+                placeholder="Ej: Sublisa"
+                required
+              />
+              <small class="help-text">Este nombre aparecerá en tu tienda y comunicaciones</small>
+            </div>
 
-        <!-- Email de Contacto -->
+            <!-- Email de Contacto -->
         <div class="form-group">
           <label for="email_contacto">
             <span class="label-icon">
@@ -94,29 +97,12 @@
           />
           <small class="help-text">Incluye código de país (ej: +54911XXXXXXXX)</small>
         </div>
+          </div>
 
-        <!-- Mensaje de Bienvenida -->
-        <div class="form-group">
-          <label for="mensaje_bienvenida">
-            <span class="label-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
-            </span>
-            Mensaje de Bienvenida
-          </label>
-          <textarea
-            id="mensaje_bienvenida"
-            [value]="configuracion().mensaje_bienvenida"
-            (input)="actualizarCampo('mensaje_bienvenida', $any($event.target).value)"
-            placeholder="¡Bienvenido a Sublisa! Tu tienda de productos de sublimación"
-            rows="4"
-          ></textarea>
-          <small class="help-text">Mensaje que se enviará automáticamente por WhatsApp a nuevos clientes</small>
-        </div>
-
-        <!-- Dirección -->
-        <div class="form-group">
+          <!-- Columna 2: Ubicación -->
+          <div class="form-column">
+            <!-- Dirección -->
+            <div class="form-group">
           <label for="direccion">
             <span class="label-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -180,6 +166,8 @@
             required
           />
           <small class="help-text">Provincia o estado</small>
+        </div>
+          </div>
         </div>
 
         <!-- Botones de Acción -->
@@ -383,7 +371,7 @@
       </div>
 
       <!-- Panel de Información -->
-      <div class="info-panel">
+      <!-- <div class="info-panel">
         <h3>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
@@ -409,7 +397,7 @@
             <strong>Ubicación:</strong> Se muestra en el footer y en las páginas de información
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
   }
 </div>
