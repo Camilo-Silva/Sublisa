@@ -71,21 +71,7 @@ export class DetalleProducto implements OnInit, OnDestroy {
         item.producto.id === prod.id && item.talle?.id === talleIdABuscar
       );
 
-      // DEBUG: Log para verificar búsqueda
-      console.log('🔍 DEBUG cantidadEnCarrito (con talle):', {
-        productoId: prod.id,
-        productoTalleId: talle.id,
-        talleId: talleIdABuscar,
-        talleCodigo: talle.talle?.codigo,
-        itemsEnCarrito: items.length,
-        itemEncontrado: !!item,
-        cantidadEncontrada: item?.cantidad || 0,
-        todosLosItems: items.map(i => ({
-          prodId: i.producto.id,
-          talleId: i.talle?.id,
-          cantidad: i.cantidad
-        }))
-      });
+
 
       return item?.cantidad || 0;
     } else {
@@ -93,11 +79,7 @@ export class DetalleProducto implements OnInit, OnDestroy {
         item.producto.id === prod.id && !item.talle
       );
 
-      console.log('🔍 DEBUG cantidadEnCarrito (sin talle):', {
-        productoId: prod.id,
-        itemEncontrado: !!item,
-        cantidadEncontrada: item?.cantidad || 0
-      });
+
 
       return item?.cantidad || 0;
     }
@@ -109,17 +91,7 @@ export class DetalleProducto implements OnInit, OnDestroy {
     const enCarrito = this.cantidadEnCarrito();
     const restante = Math.max(0, stock - enCarrito);
 
-    // DEBUG: Log para verificar valores
-    const prod = this.producto();
-    const talle = this.talleSeleccionado();
-    console.log('🔍 DEBUG stockRestante:', {
-      productoId: prod?.id,
-      talleId: talle?.id,
-      talleCodigo: talle?.talle?.codigo,
-      stockDisponible: stock,
-      cantidadEnCarrito: enCarrito,
-      stockRestante: restante
-    });
+
 
     return restante;
   });

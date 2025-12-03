@@ -133,7 +133,7 @@ export class AuthService {
         // Si el perfil no existe, crearlo (caso de email confirmation activada)
         let profile = this.userProfileSignal();
         if (!profile) {
-          console.log('Perfil no encontrado, creando...');
+
           const metadata = user.user_metadata || {};
 
           const { error: profileError } = await this.supabase.getClient()
@@ -157,19 +157,9 @@ export class AuthService {
         }
 
         // Redirigir según el rol
-        console.log('🔑 LOGIN COMPLETADO:', {
-          email: user.email,
-          userId: user.id,
-          profile: profile,
-          rol: profile?.rol,
-          isAdmin: profile?.rol === 'admin'
-        });
-
         if (profile?.rol === 'admin') {
-          console.log('✅ Usuario es ADMIN, redirigiendo a /admin/dashboard');
           await this.router.navigate(['/admin/dashboard']);
         } else {
-          console.log('✅ Usuario es CLIENTE, redirigiendo a /mi-cuenta');
           await this.router.navigate(['/mi-cuenta']);
         }
       }

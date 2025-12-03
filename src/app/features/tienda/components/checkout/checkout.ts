@@ -179,7 +179,7 @@ export class Checkout implements OnInit {
         this.cliente.email = user.email;
       }
 
-      console.log('✅ Datos de usuario autocompletos:', this.cliente);
+
     }
   }
 
@@ -188,7 +188,7 @@ export class Checkout implements OnInit {
     // Ejemplo: +5491138824544 (11 = código, 38824544 = número)
 
     if (!telefono.startsWith('+549')) {
-      console.warn('Formato de teléfono no reconocido:', telefono);
+
       return;
     }
 
@@ -205,13 +205,13 @@ export class Checkout implements OnInit {
           this.codigoArea.set(area.codigo);
           this.numeroTelefono.set(numero);
           this.cliente.telefono = telefono;
-          console.log('✅ Teléfono parseado:', { codigo: area.codigo, numero });
+
           return;
         }
       }
     }
 
-    console.warn('No se pudo parsear el teléfono:', telefono);
+
   }
 
   onCodigoAreaChange() {

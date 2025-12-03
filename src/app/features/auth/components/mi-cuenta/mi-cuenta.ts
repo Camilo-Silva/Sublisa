@@ -137,7 +137,7 @@ export class MiCuenta implements OnInit {
 
       this.pedidoSeleccionado.set(data);
       this.mostrarModal.set(true);
-      console.log('📦 Detalle del pedido cargado:', data);
+
     } catch (err) {
       console.error('Error al cargar detalle del pedido:', err);
       alert('Error al cargar el detalle del pedido');

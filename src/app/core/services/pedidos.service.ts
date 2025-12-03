@@ -81,13 +81,6 @@ export class PedidosService {
         .limit(1);
 
       if (clienteExistente && clienteExistente.length > 0) {
-        console.log('✅ Cliente existente encontrado para usuario autenticado');
-        console.log('📝 Actualizando cliente con datos:', {
-          nombre: clienteForm.nombre,
-          email: clienteForm.email,
-          clienteId: clienteExistente[0].id
-        });
-
         // Actualizar datos si cambiaron
         const { data: actualizado, error: errorUpdate } = await this.supabase.getClient()
           .from('clientes')
@@ -104,7 +97,7 @@ export class PedidosService {
           throw errorUpdate;
         }
 
-        console.log('✅ Cliente actualizado:', actualizado);
+
         return actualizado!;
       }
     }
@@ -117,7 +110,7 @@ export class PedidosService {
       .limit(1);
 
     if (clientePorTelefono && clientePorTelefono.length > 0) {
-      console.log('📞 Cliente encontrado por teléfono (no autenticado) - reusando sin actualizar');
+
       return clientePorTelefono[0];
     }
 
@@ -130,13 +123,13 @@ export class PedidosService {
         .limit(1);
 
       if (clientePorEmail && clientePorEmail.length > 0) {
-        console.log('📧 Cliente encontrado por email (no autenticado) - reusando sin actualizar');
+
         return clientePorEmail[0];
       }
     }
 
     // CASO 3: No existe - crear nuevo cliente
-    console.log('🆕 Creando nuevo cliente');
+
     const { data: nuevoCliente, error } = await this.supabase.getClient()
       .from('clientes')
       .insert(clienteForm)
@@ -305,7 +298,7 @@ Este es un correo automático del sistema Sublisa
       const result = await response.json();
 
       if (response.ok) {
-        console.log('✅ Email enviado a:', emailVendedor, result);
+
       } else {
         console.error('❌ Error al enviar email:', response.status, result);
       }
@@ -445,10 +438,10 @@ Este es un correo automático del sistema Sublisa
 
         if (updateError) throw updateError;
 
-        console.log(`Stock actualizado: ${producto.nombre} - Stock anterior: ${producto.stock}, Nuevo stock: ${nuevoStock}`);
+
       }
 
-      console.log(`✅ Stock descontado exitosamente para el pedido ${pedidoId}`);
+
     } catch (error) {
       console.error('Error al descontar stock:', error);
       throw error;
