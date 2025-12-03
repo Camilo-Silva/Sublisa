@@ -61,9 +61,6 @@ export class ComoComprarComponent implements OnInit {
 
   empresasEnvio = [
     'Correo Argentino',
-    'MD Cargas',
-    'Vía Cargo',
-    'Crucero Express',
-    'Bus Pack'
+    'Vía Cargo'
   ];
 }

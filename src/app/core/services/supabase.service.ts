@@ -71,7 +71,7 @@ export class SupabaseService {
         cacheControl: '3600',
         upsert: false
       });
-    
+
     if (error) throw error;
     return data;
   }
@@ -83,7 +83,7 @@ export class SupabaseService {
     const { data } = this.supabase.storage
       .from(bucket)
       .getPublicUrl(path);
-    
+
     return data.publicUrl;
   }
 
@@ -94,7 +94,7 @@ export class SupabaseService {
     const { error } = await this.supabase.storage
       .from(bucket)
       .remove([path]);
-    
+
     if (error) throw error;
   }
 }
