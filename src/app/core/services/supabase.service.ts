@@ -47,8 +47,18 @@ export class SupabaseService {
    * Cierra sesión
    */
   async signOut() {
-    const { error } = await this.supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      const { error } = await this.supabase.auth.signOut();
+      // Ignorar error si la sesión ya no existe (AuthSessionMissingError)
+      if (error && error.message !== 'Auth session missing!') {
+        throw error;
+      }
+    } catch (error: any) {
+      // Ignorar silenciosamente si la sesión ya expiró o no existe
+      if (error?.message !== 'Auth session missing!') {
+        throw error;
+      }
+    }
   }
 
   /**

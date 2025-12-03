@@ -185,13 +185,15 @@ export class AuthService {
   async logout(): Promise<void> {
     try {
       await this.supabase.signOut();
+    } catch (error) {
+      console.error('Error al cerrar sesión (ignorado):', error);
+      // Continuar con la limpieza local aunque falle el logout remoto
+    } finally {
+      // Siempre limpiar el estado local
       this.isAuthenticatedSignal.set(false);
       this.currentUserSignal.set(null);
       this.userProfileSignal.set(null);
       await this.router.navigate(['/']);
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      throw error;
     }
   }
 
