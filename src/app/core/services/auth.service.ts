@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { Router } from '@angular/router';
 import { UserProfile } from '../models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -278,7 +279,7 @@ export class AuthService {
   async resetPassword(email: string): Promise<void> {
     try {
       const { error } = await this.supabase.getClient().auth.resetPasswordForEmail(email, {
-        redirectTo: `${globalThis.location.origin}/reset-password`
+        redirectTo: `${environment.appUrl}/reset-password`
       });
 
       if (error) throw error;
