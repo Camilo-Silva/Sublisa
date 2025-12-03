@@ -81,13 +81,6 @@ export class PedidosService {
         .limit(1);
 
       if (clienteExistente && clienteExistente.length > 0) {
-
-        console.log('📝 Actualizando cliente con datos:', {
-          nombre: clienteForm.nombre,
-          email: clienteForm.email,
-          clienteId: clienteExistente[0].id
-        });
-
         // Actualizar datos si cambiaron
         const { data: actualizado, error: errorUpdate } = await this.supabase.getClient()
           .from('clientes')
