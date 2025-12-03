@@ -232,7 +232,7 @@ export class DetalleProducto implements OnInit, OnDestroy {
 
   seleccionarTalle(talle: ProductoTalle) {
     this.talleSeleccionado.set(talle);
-    
+
     // Esperar a que los computed se actualicen
     setTimeout(() => {
       // Resetear cantidad a 1 si hay stock restante, o 0 si no hay
