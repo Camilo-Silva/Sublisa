@@ -18,6 +18,9 @@ export class Confirmacion implements OnInit {
   }
 
   ngOnInit() {
+    // Scroll al inicio de la página
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Si no hay pedido, redirigir al inicio
     if (!this.pedido) {
       this.router.navigate(['/']);
