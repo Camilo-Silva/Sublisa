@@ -2,7 +2,6 @@ import { Injectable, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { Router } from '@angular/router';
 import { UserProfile } from '../models';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +25,12 @@ export class AuthService {
     try {
       const session = await this.supabase.getSession();
       if (session?.user) {
+        // No inicializar sesión si estamos en reset-password (sesión temporal)
+        const isResetPassword = window.location.pathname === '/reset-password';
+        if (isResetPassword) {
+          return;
+        }
+        
         this.isAuthenticatedSignal.set(true);
         this.currentUserSignal.set(session.user);
         await this.loadUserProfile(session.user.id);
@@ -279,7 +284,7 @@ export class AuthService {
   async resetPassword(email: string): Promise<void> {
     try {
       const { error } = await this.supabase.getClient().auth.resetPasswordForEmail(email, {
-        redirectTo: `${environment.appUrl}/reset-password`
+        redirectTo: `${globalThis.location.origin}/reset-password`
       });
 
       if (error) throw error;
