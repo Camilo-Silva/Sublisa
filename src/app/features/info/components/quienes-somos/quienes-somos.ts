@@ -52,9 +52,6 @@ export class QuienesSomosComponent implements OnInit {
 
   envios = [
     'Correo Argentino',
-    'MD Cargas',
-    'Vía Cargo',
-    'Crucero Express',
-    'Bus Pack'
+    'Vía Cargo'
   ];
 }
