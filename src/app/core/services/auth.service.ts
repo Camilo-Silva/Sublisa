@@ -157,19 +157,9 @@ export class AuthService {
         }
 
         // Redirigir según el rol
-        console.log('🔑 LOGIN COMPLETADO:', {
-          email: user.email,
-          userId: user.id,
-          profile: profile,
-          rol: profile?.rol,
-          isAdmin: profile?.rol === 'admin'
-        });
-
         if (profile?.rol === 'admin') {
-
           await this.router.navigate(['/admin/dashboard']);
         } else {
-
           await this.router.navigate(['/mi-cuenta']);
         }
       }
