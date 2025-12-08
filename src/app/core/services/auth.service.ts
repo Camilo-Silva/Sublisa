@@ -30,7 +30,7 @@ export class AuthService {
         if (isResetPassword) {
           return;
         }
-        
+
         this.isAuthenticatedSignal.set(true);
         this.currentUserSignal.set(session.user);
         await this.loadUserProfile(session.user.id);
